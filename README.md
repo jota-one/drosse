@@ -1,4 +1,5 @@
 # Drosse
+![Drosse](./drosse.svg "Dynamic js mock server")
 
 ## Features
 - Proxy
