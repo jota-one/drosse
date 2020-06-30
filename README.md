@@ -10,6 +10,7 @@
 - Sync with OpenAPI (Swagger)
 - Hateaoas support
 - CLI + UI
+- Skip login/session
 
 ## Future features
 - GraphQL support ?
