@@ -14,7 +14,7 @@ app.use(bodyParser.json())
 module.exports = args => {
   console.log(args)
   const port = args.port || process.env.PORT || '8000'
-  setScope('root', path.resolve(args.root) || path.resolve('.'))
+  setScope('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
   if (args.routesFile) {
     setScope('routesFile', args.routesFile)
   }
