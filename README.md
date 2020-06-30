@@ -5,7 +5,7 @@
 - Journey
 - In-memory db
 - Persist state (in-memory db dump to JSON file)
-- Fallback to static mocks
+- Fallback to static JSON mocks
 - Sync with OpenAPI (Swagger)
 - Hateaoas support
 
