@@ -7,3 +7,7 @@
 - Persist state (in-memory db dump to JSON file)
 - Fallback to static mocks
 - Sync with OpenAPI (Swagger)
+- Hateaoas support
+
+## Future features
+- GraphQL support ?
