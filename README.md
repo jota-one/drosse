@@ -8,6 +8,7 @@
 - Fallback to static JSON mocks
 - Sync with OpenAPI (Swagger)
 - Hateaoas support
+- CLI + UI
 
 ## Future features
 - GraphQL support ?
