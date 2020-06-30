@@ -1,10 +1,10 @@
 {
   "name": "@jota-one/drosse",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Mock your backend the right way.",
   "main": "index.js",
   "scripts": {
-    "serve": "node app"
+    "serve": "node bin/drosse"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,8 @@
   "homepage": "https://github.com/jota-one/drosse#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
     "commitizen": "^4.1.2",
