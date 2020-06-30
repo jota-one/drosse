@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const proxy = require('http-proxy-middleware')
 const path = require('path')
 const { setScope, checkRootFile, getScope, routes } = require('./io')
 const { parse } = require('./parser')
@@ -28,6 +29,11 @@ module.exports = args => {
   // if everything is well configured, create the routes
   const routesDefinition = routes()
   parse(app, routesDefinition)
+
+  // proxy all not found request to somewhere else
+  if (args.notfound) {
+    app.use('*', proxy.createProxyMiddleware({ target: args.notfound, changeOrigin: true }));
+  }
 
   app.listen(port, () => {
     console.log(`Listening to requests on http://localhost:${port}`)
