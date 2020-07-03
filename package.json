@@ -1,20 +1,20 @@
 {
   "name": "@jota-one/drosse",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Mock your backend the right way.",
   "main": "index.js",
   "bin": {
     "drosse": "./bin/drosse.js"
   },
   "scripts": {
-    "serve": "./bin/drosse.js"
+    "serve": "./bin/drosse.js serve"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jota-one/drosse.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Juniors at Work",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jota-one/drosse/issues"
@@ -24,21 +24,7 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.4",
+    "lodash": "^4.17.15",
     "yargs": "^15.3.1"
-  },
-  "devDependencies": {
-    "commitizen": "^4.1.2",
-    "cz-emoji": "^1.2.1",
-    "husky": "^4.2.5"
-  },
-  "husky": {
-    "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
-    }
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-emoji"
-    }
   }
 }

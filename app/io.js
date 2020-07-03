@@ -1,29 +1,23 @@
 const fs = require('fs')
 const path = require('path')
-
-// global scope
-const scope = {
-  routesFile: 'routes',
-  root: ''
-}
+const useState = require('./use/useState')
+const state = useState()
 
 const checkRootFile = () => {
-  return fs.existsSync(path.join(scope.root, scope.routesFile + '.js')) || fs.existsSync(path.join(scope.root, scope.routesFile + '.json'))
+  return fs.existsSync(path.join(state.get('root'), state.get('routesFile') + '.js')) || fs.existsSync(path.join(state.get('root'), state.get('routesFile') + '.json'))
 }
-const setScope = (key, value) => {
-  scope[key] = value
-}
-const getScope = key => {
-  if (key) {
-    return scope[key]
+
+const loadRcFile = () => {
+  if (fs.existsSync(path.join(state.get('root'), '.drosserc.js')) || fs.existsSync(path.join(state.get('root'), '.drosserc'))) {
+    const userConfig = require(path.join(state.get('root'), '.drosserc'))
+    state.merge(userConfig)
   }
-  return scope
 }
-const routes = () => require(path.join(scope.root, scope.routesFile))
+
+const routes = () => require(path.join(state.get('root'), state.get('routesFile')))
 
 module.exports = {
-  setScope,
   checkRootFile,
-  getScope,
+  loadRcFile,
   routes
 }

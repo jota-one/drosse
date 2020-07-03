@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-const app = require('../app')
-const argv = require('yargs').argv
-
-app(argv);
+require('yargs')
+  .usage('Usage: $0 <cmd> [args]')
+  .commandDir('../cmd')
+  .demandCommand(1, 'You need at least one command before moving on')
+  .help()
+  .argv

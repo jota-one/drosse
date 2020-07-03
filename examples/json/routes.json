@@ -1,26 +1,52 @@
 {
   "api": {
     "users": {
-      "_get": {
-        "body": [{
-          "id": 1,
-          "name": "Tadai"
-        }, {
-          "id": 2,
-          "name": "Jorinho"
-        }]
+      "DROSSE": {
+        "get": {
+          "body": [{
+            "id": 1,
+            "name": "Tadai"
+          }, {
+            "id": 2,
+            "name": "Jorinho"
+          }]
+        }
       },
       ":id": {
-        "_get": {
-          "body": {
-            "id": "{id}",
-            "name": "User {id}"
+        "DROSSE": {
+          "get": {
+            "body": {
+              "id": "{id}",
+              "name": "User {id}"
+            }
           }
         },
         "activate": {
-          "_post": {
-            "service": true,
-            "body": {}
+          "DROSSE": {
+            "post": {
+              "service": true,
+              "body": {}
+            }
+          }
+        }
+      },
+      "premiums": {
+        "DROSSE": {
+          "get": {
+            "body": [{
+              "id": 1,
+              "name": "Tadai"
+            }]
+          }
+        }
+      },
+      "aliens": {
+        "DROSSE": {
+          "get": {
+            "body": [{
+              "id": 2,
+              "name": "Jorinho"
+            }]
           }
         }
       }

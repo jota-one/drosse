@@ -1,11 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const proxy = require('http-proxy-middleware')
 const path = require('path')
-const { setScope, checkRootFile, getScope, routes } = require('./io')
-const { parse } = require('./parser')
+const useState = require('./use/useState')
+const { checkRootFile, loadRcFile, routes } = require('./io')
+const { parse, createProxies } = require('./parser')
 
 const app = express()
+const state = useState()
 
 
 // global middlewares
@@ -14,29 +15,26 @@ app.use(bodyParser.json())
 // start server
 module.exports = args => {
   console.log(args)
-  const port = args.port || process.env.PORT || '8000'
-  setScope('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
-  if (args.routesFile) {
-    setScope('routesFile', args.routesFile)
-  }
+  state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
+
+  // check for some users configuration in a .drosserc(.js) file
+  loadRcFile()
 
   // run some checks
   if (!checkRootFile()) {
-    console.error(`Please create a "${getScope('routesFile')}.json" or a "${getScope('routesFile')}.js" file in this directory: ${getScope('root')}, and restart.`)
+    console.error(`Please create a "${state.get('routesFile')}.json" or a "${state.get('routesFile')}.js" file in this directory: ${state.get('root')}, and restart.`)
     process.exit()
   }
 
   // if everything is well configured, create the routes
   const routesDefinition = routes()
   parse(app, routesDefinition)
+  createProxies(app)
 
-  // proxy all not found request to somewhere else
-  if (args.notfound) {
-    app.use('*', proxy.createProxyMiddleware({ target: args.notfound, changeOrigin: true }));
-  }
-
+  const port = args.port || state.get('port')
   app.listen(port, () => {
+    console.log(`App started${state.get('name') && ': name -> ' + state.get('name')}`)
     console.log(`Listening to requests on http://localhost:${port}`)
-    console.log(`The mocks will be read/written here: ${getScope('root')}`)
+    console.log(`The mocks will be read/written here: ${state.get('root')}`)
   })
 }
