@@ -16,6 +16,6 @@ export default {
 
 <style lang="postcss" scoped>
 .icon {
-  fill: var(--c-gray-active);
+  fill: inherit;
 }
 </style>

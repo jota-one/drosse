@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <TabBar />
-    <Server />
+    <main>
+      <Server />
+      <Help />
+    </main>
   </div>
 </template>
 
@@ -10,10 +13,11 @@ import '../public/fonts/FiraCode/fontface.css'
 import '../public/fonts/Oswald/fontface.css'
 import TabBar from '@/components/tabbar/TabBar'
 import Server from '@/views/Server'
+import Help from '@/components/Help'
 
 export default {
   name: 'App',
-  components: { TabBar, Server }
+  components: { TabBar, Server, Help }
 }
 </script>
 
@@ -55,6 +59,13 @@ button {
 
   &:focus {
     border-color: var(--c-gray-inactive);
+  }
+}
+
+#app {
+  main {
+    position: relative;
+    margin: 2rem 3rem;
   }
 }
 

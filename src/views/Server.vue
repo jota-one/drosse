@@ -1,5 +1,5 @@
 <template>
-  <main class="Server">
+  <div class="Server">
     <h2><Input value="cool-app" /></h2>
     <section class="config">
       <Drosse />
@@ -11,7 +11,7 @@
     <section class="routes">
       <Route />
     </section>
-  </main>
+  </div>
 </template>
 
 <script>
@@ -26,10 +26,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.Server {
-  margin: 2rem 3rem;
-}
-
 h2 {
   display: inline-flex;
   margin: 0 0 1rem 0;
