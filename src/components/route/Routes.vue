@@ -1,17 +1,23 @@
 <template>
   <div class="Routes">
-    <slot />
+    <div class="list">
+      <slot />
+    </div>
+    <AddRoute />
   </div>
 </template>
 
 <script>
+import AddRoute from './AddRoute'
+
 export default {
-  name: 'Routes'
+  name: 'Routes',
+  components: { AddRoute }
 }
 </script>
 
 <style lang="postcss" scoped>
-.Routes {
+.list {
   display: table;
 }
 </style>

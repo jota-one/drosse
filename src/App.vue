@@ -51,6 +51,7 @@ body {
 button {
   margin: 0;
   padding: 0;
+  font-family: FiraCode, monospace;
   border: 1px solid transparent;
   background: none;
   cursor: pointer;

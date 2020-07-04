@@ -25,7 +25,6 @@ export default {
   margin-right: .5rem;
   padding: .2rem .4rem;
   border-radius: .4rem;
-  font-family: FiraCode, monospace;
   font-size: .75rem;
   line-height: .75rem;
   font-weight: 700;
