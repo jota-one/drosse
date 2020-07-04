@@ -59,7 +59,7 @@ button {
   border-radius: .25rem;
 
   &:focus {
-    border-color: var(--c-gray-inactive);
+    border-color: var(--c-pink);
   }
 }
 
