@@ -141,6 +141,7 @@ export default {
       right: 1px;
       bottom: .5rem;
       border-left: 1px dashed;
+      z-index: -1;
     }
   }
 }
