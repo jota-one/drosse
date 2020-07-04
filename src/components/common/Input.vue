@@ -1,58 +1,53 @@
 <template>
   <span
-    :class="['Input', { focus }]"
-    :style="{ width: `${width}px` }"
+    :class="['Input', { focus: state.focus }]"
+    :style="{ width: `${state.width}px` }"
   >
     <input
       type="text"
-      :value="v"
+      :value="state.v"
       @input="onInput"
-      @focus="focus = true"
-      @blur="focus = false"
+      @focus="state.focus = true"
+      @blur="state.focus = false"
     >
-    <span ref="mask" class="mask">{{ v }}</span>
+    <span ref="mask" class="mask">{{ state.v }}</span>
   </span>
 </template>
 
 <script>
+import { ref, reactive, watchEffect, nextTick } from 'vue'
+
 export default {
   name: 'Input',
-
   props: {
-    value: {
-      type: String,
-      default: ''
-    }
+    value: String
   },
+  setup (props) {
+    const state = reactive({
+      v: '',
+      width: 0,
+      focus: false
+    })
 
-  data: () => ({
-    v: '',
-    width: 0,
-    focus: false
-  }),
+    const mask = ref(null)
 
-  watch: {
-    value: {
-      immediate: true,
-      handler () {
-        this.v = this.value
-        this.resize()
-      }
+    const onInput = event => {
+      state.v = event.target.value
+      resize()
     }
-  },
 
-  methods: {
-    onInput (event) {
-      this.v = event.target.value
-      this.resize()
-    },
-
-    resize () {
-      this.$nextTick(() => {
-        const width = this.$refs.mask.offsetWidth
-        this.width = width + 2
+    const resize = () => {
+      nextTick(() => {
+        state.width = mask.value.offsetWidth + 3
       })
     }
+
+    watchEffect(() => {
+      state.v = props.value
+      resize()
+    })
+
+    return { state, onInput, mask }
   }
 }
 </script>
