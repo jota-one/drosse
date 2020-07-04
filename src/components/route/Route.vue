@@ -30,7 +30,7 @@
     <div class="col throttle">
       <div class="inner">
         <Clickable class="icon throttle" icon="throttle" />
-        <Input class="input" :value="0" />
+        <Input class="input" value="0" />
       </div>
     </div>
     <div class="col headers">
