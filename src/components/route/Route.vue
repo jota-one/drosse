@@ -20,23 +20,28 @@
     </div>
     <div class="col handler">
       <div class="inner">
-        <Clickable class="icon fail" icon="fail" />
-        <Clickable class="icon proxy" icon="proxy" />
-        <Clickable class="icon" icon="file" />
-        <Clickable class="icon active" icon="json" />
+        <Clickable class="icon fail" icon="fail" title="Randomly fail route" />
+        <Clickable class="icon proxy" icon="proxy" title="Proxy route" />
+        <Clickable class="icon" icon="file" title="Handle response in file" />
+        <Clickable class="icon active" icon="json" title="Route response" />
         <Input class="input" :value="JSON.stringify({ some: 'json' })" />
       </div>
     </div>
     <div class="col throttle">
       <div class="inner">
-        <Clickable class="icon throttle" icon="throttle" />
+        <Clickable class="icon throttle" icon="throttle" title="Throttle" />
         <Input class="input" value="0" />
       </div>
     </div>
     <div class="col headers">
       <div class="inner">
-        <Clickable class="icon" icon="header" />
+        <Clickable class="icon" icon="header" title="Headers" />
         <Input class="input" :value="JSON.stringify({})" />
+      </div>
+    </div>
+    <div class="col delete">
+      <div class="inner">
+        <Clickable class="icon" icon="minus" title="Delete route" />
       </div>
     </div>
   </div>
@@ -98,8 +103,6 @@ export default {
 }
 
 .to {
-  /* width: 100%; */
-
   .inner {
     justify-content: center;
   }
@@ -121,9 +124,12 @@ export default {
 }
 
 .handler {
+  width: 100%;
+
   .input {
     min-width: 10rem;
     font-size: .9rem;
+    margin-right: 1rem;
   }
 }
 
@@ -131,21 +137,14 @@ export default {
 .headers {
   .inner {
     position: relative;
-    padding: 0 1rem;
-
-    &:before {
-      content: '';
-      position: absolute;
-      top: .5rem;
-      left: 0;
-      right: 1px;
-      bottom: .5rem;
-      border-left: 1px dashed;
-      z-index: -1;
-    }
   }
 }
 
+.delete .icon {
+  margin-top: .25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
 
 /* Colors */
 .Route {
@@ -191,5 +190,9 @@ export default {
 .throttle,
 .headers {
   color: var(--c-gray-inactive);
+}
+
+.delete .icon {
+  fill: var(--c-gray-active);
 }
 </style>

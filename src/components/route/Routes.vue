@@ -19,5 +19,6 @@ export default {
 <style lang="postcss" scoped>
 .list {
   display: table;
+  width: 100%;
 }
 </style>
