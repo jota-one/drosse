@@ -1,7 +1,7 @@
 <template>
-  <span :class="['Verb', { selected }]">
+  <button :class="['Verb', { selected }]">
     {{ type }}
-  </span>
+  </button>
 </template>
 
 <script>
@@ -22,8 +22,10 @@ export default {
 
 <style lang="postcss" scoped>
 .Verb {
+  margin-right: .5rem;
   padding: .2rem .4rem;
   border-radius: .4rem;
+  font-family: FiraCode, monospace;
   font-size: .75rem;
   line-height: .75rem;
   font-weight: 700;

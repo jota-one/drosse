@@ -30,7 +30,6 @@ h1 {
   font-weight: 500;
   font-size: 1.2rem;
   text-transform: uppercase;
-  color: var(--c-gray-inactive);
 }
 
 .add {
@@ -42,5 +41,13 @@ h1 {
 /* Colors */
 .TabBar {
   background-color: var(--c-tabbar-bg);
+}
+
+h1 {
+  color: var(--c-gray-inactive);
+}
+
+.add {
+  fill: var(--c-gray-inactive);
 }
 </style>

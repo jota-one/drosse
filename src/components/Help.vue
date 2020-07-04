@@ -26,7 +26,7 @@ export default {
   fill: var(--c-gray-inactive);
 
   &:hover {
-    fill: var(--c-blue);
+    fill: var(--c-help);
   }
 }
 </style>
