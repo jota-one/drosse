@@ -8,20 +8,22 @@
       </div>
       <Input class="root" value="/Users/tadai/dev/cool-app" />
     </section>
-    <section class="routes">
-      <Route />
-    </section>
+    <Routes>
+      <Route :route="{ level: 1, path: '/api' }" />
+      <Route :route="{ level: 2, path: '/users' }" />
+    </Routes>
   </div>
 </template>
 
 <script>
 import Drosse from '@/components/common/Drosse'
 import Input from '@/components/common/Input'
+import Routes from '@/components/route/Routes'
 import Route from '@/components/route/Route'
 
 export default {
   name: 'Server',
-  components: { Drosse, Input, Route }
+  components: { Drosse, Input, Routes, Route }
 }
 </script>
 

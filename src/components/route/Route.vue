@@ -1,14 +1,44 @@
 <template>
   <div class="Route">
-    <Clickable class="collapse" icon="chevron" />
-    <Input class="path" value="/api" />
-    <div class="verbs">
-      <Verb type="get" selected />
-      <Verb type="post" />
-      <Clickable class="remove" icon="minus" />
-      <Clickable class="add" icon="plus" />
+    <div class="col">
+      <div class="inner">
+        <div class="level" :style="{ width: `${(route.level + 1 )}rem` }"/>
+        <Clickable class="collapse" icon="chevron" />
+        <Input class="path" :value="route.path" />
+        <div class="verbs">
+          <Verb type="get" selected />
+          <Verb type="post" />
+          <Clickable class="remove" icon="minus" />
+          <Clickable class="add" icon="plus" />
+        </div>
+      </div>
     </div>
-    <Icon class="to" name="route" />
+    <div class="col to">
+      <div class="inner">
+        <Icon class="icon" name="route" />
+      </div>
+    </div>
+    <div class="col handler">
+      <div class="inner">
+        <Clickable class="icon fail" icon="fail" />
+        <Clickable class="icon proxy" icon="proxy" />
+        <Clickable class="icon" icon="file" />
+        <Clickable class="icon active" icon="json" />
+        <Input class="input" :value="JSON.stringify({ some: 'json' })" />
+      </div>
+    </div>
+    <div class="col throttle">
+      <div class="inner">
+        <Clickable class="icon throttle" icon="throttle" />
+        <Input class="input" :value="0" />
+      </div>
+    </div>
+    <div class="col headers">
+      <div class="inner">
+        <Clickable class="icon" icon="header" />
+        <Input class="input" :value="JSON.stringify({})" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -20,21 +50,35 @@ import Verb from './Verb'
 
 export default {
   name: 'Route',
-  components: { Clickable, Input, Icon, Verb }
+  components: { Clickable, Input, Icon, Verb },
+  props: { route: Object }
 }
 </script>
 
 <style lang="postcss" scoped>
 .Route {
+  display: table-row;
+}
+
+.col {
+  display: table-cell;
+  vertical-align: top;
+
+  &.full {
+    width: 100%;
+  }
+}
+
+.inner {
   display: flex;
   align-items: center;
-  padding: .5rem .75rem .5rem 2.25rem;
+  padding: .25rem 0;
 }
 
 .collapse {
   width: 1rem;
   height: 1rem;
-  margin: 0 .75rem .125rem 0;
+  margin: 0 .25rem .125rem 0;
 }
 
 .path {
@@ -50,13 +94,57 @@ export default {
 .remove {
   width: 1rem;
   height: 1rem;
+  margin-right: .25rem;
 }
 
 .to {
-  height: 2rem;
-  width: 2rem;
-  margin-left: 3rem;
+  /* width: 100%; */
+
+  .inner {
+    justify-content: center;
+  }
+
+  .icon {
+    height: 2rem;
+    width: 2rem;
+    margin: 0 3rem;
+  }
 }
+
+.icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.input {
+  margin: .25rem 0 0 .25rem;
+}
+
+.handler {
+  .input {
+    min-width: 10rem;
+    font-size: .9rem;
+  }
+}
+
+.throttle,
+.headers {
+  .inner {
+    position: relative;
+    padding: 0 1rem;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: .5rem;
+      left: 0;
+      right: 1px;
+      bottom: .5rem;
+      border-left: 1px dashed;
+    }
+  }
+}
+
 
 /* Colors */
 .Route {
@@ -77,5 +165,30 @@ export default {
 
 .to {
   fill: var(--c-gray-inactive);
+}
+
+.icon {
+  fill: var(--c-gray-inactive);
+
+  &.active {
+    fill: var(--c-green);
+
+    &.proxy {
+      fill: var(--c-blue);
+    }
+
+    &.fail {
+      fill: var(--c-red);
+    }
+
+    &.throttle {
+      fill: var(--c-yellow);
+    }
+  }
+}
+
+.throttle,
+.headers {
+  color: var(--c-gray-inactive);
 }
 </style>
