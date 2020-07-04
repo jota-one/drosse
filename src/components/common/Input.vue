@@ -10,7 +10,7 @@
       @focus="state.focus = true"
       @blur="state.focus = false"
     >
-    <span ref="mask" class="mask">{{ state.v }}</span>
+    <pre ref="mask" class="mask">{{ state.vMask }}</pre>
   </span>
 </template>
 
@@ -25,25 +25,31 @@ export default {
   setup (props) {
     const state = reactive({
       v: '',
+      vMask: '',
       width: 0,
       focus: false
     })
 
     const mask = ref(null)
 
+    const updateValue = value => {
+      state.v = value
+      state.vMask = value.replace(/\s/g, '_')
+    }
+
     const onInput = event => {
-      state.v = event.target.value
+      updateValue(event.target.value)
       resize()
     }
 
     const resize = () => {
       nextTick(() => {
-        state.width = mask.value.offsetWidth
+        state.width = mask.value.offsetWidth + 3
       })
     }
 
     watchEffect(() => {
-      state.v = props.value
+      updateValue(props.value)
       resize()
     })
 
@@ -80,9 +86,12 @@ input {
 
 .mask {
   position: absolute;
+  font-family: inherit;
+  outline: 1px solid red;
   top: 0;
   left: 0;
   visibility: hidden;
   white-space: nowrap;
+  user-select: none;
 }
 </style>
