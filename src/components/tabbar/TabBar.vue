@@ -1,23 +1,23 @@
 <template>
-  <div class="Tabbar">
+  <div class="TabBar">
     <h1>Drosse</h1>
-    <Tab/>
-    <Add class="add"/>
+    <Tab />
+    <Clickable icon="plus" class="add" />
   </div>
 </template>
 
 <script>
-import Tab from '@/components/tab/Tab'
-import Add from '@/components/button/Add'
+import Tab from './Tab'
+import Clickable from '@/components/common/Clickable'
 
 export default {
-  name: 'Tabbar',
-  components: { Tab, Add }
+  name: 'TabBar',
+  components: { Tab, Clickable }
 }
 </script>
 
 <style lang="postcss" scoped>
-.Tabbar {
+.TabBar {
   display: flex;
   align-items: center;
   padding-top: .5rem;
@@ -40,7 +40,7 @@ h1 {
 }
 
 /* Colors */
-.Tabbar {
+.TabBar {
   background-color: var(--c-tabbar-bg);
 }
 </style>

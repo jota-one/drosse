@@ -1,23 +1,27 @@
 <template>
   <div id="app">
-    <Tabbar/>
-    <Server/>
+    <TabBar />
+    <Server />
   </div>
 </template>
 
 <script>
 import '../public/fonts/FiraCode/fontface.css'
 import '../public/fonts/Oswald/fontface.css'
-import Tabbar from '@/components/tab/Tabbar'
+import TabBar from '@/components/tabbar/TabBar'
 import Server from '@/views/Server'
 
 export default {
   name: 'App',
-  components: { Tabbar, Server }
+  components: { TabBar, Server }
 }
 </script>
 
 <style lang="postcss">
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -43,9 +47,15 @@ body {
 button {
   margin: 0;
   padding: 0;
-  border: none;
+  border: 1px solid transparent;
   background: none;
   cursor: pointer;
+  outline: none;
+  border-radius: .25rem;
+
+  &:focus {
+    border-color: var(--c-gray-inactive);
+  }
 }
 
 /* Colors */

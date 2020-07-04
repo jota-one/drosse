@@ -1,7 +1,7 @@
 <template>
   <span
     :class="['Input', { focus: state.focus }]"
-    :style="{ width: `${state.width}px` }"
+    :style="{ width: `calc(${state.width}px + .75rem)` }"
   >
     <input
       type="text"
@@ -38,7 +38,7 @@ export default {
 
     const resize = () => {
       nextTick(() => {
-        state.width = mask.value.offsetWidth + 3
+        state.width = mask.value.offsetWidth
       })
     }
 
@@ -62,6 +62,7 @@ export default {
   &:hover,
   &.focus {
     border-color: var(--c-gray-inactive);
+    background-color: rgba(0,0,0, .1);
   }
 }
 

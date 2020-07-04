@@ -1,5 +1,7 @@
 <template>
-  <Icon class="icon status" name="play"/>
+  <button class="status">
+    <Icon class="icon" name="play"/>
+  </button>
 </template>
 
 <script>

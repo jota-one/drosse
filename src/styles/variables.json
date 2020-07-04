@@ -2,7 +2,7 @@
   "c-app-bg": "rgb(50,50,50)",
   "c-black": "rgb(0,0,0)",
   "c-blue": "rgb(52,212,246)",
-  "c-gray-active": "rgb(175,175,175)",
+  "c-gray-active": "rgb(150,150,150)",
   "c-gray-inactive": "rgb(92,92,92)",
   "c-green": "rgb(52,246,107)",
   "c-green-light": "rgb(164,252,188)",
