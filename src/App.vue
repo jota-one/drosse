@@ -5,6 +5,7 @@
       <Server />
       <Help />
     </main>
+    <Footer />
   </div>
 </template>
 
@@ -14,10 +15,11 @@ import '../public/fonts/Oswald/fontface.css'
 import TabBar from '@/components/tabbar/TabBar'
 import Server from '@/views/Server'
 import Help from '@/components/Help'
+import Footer from '@/components/Footer'
 
 export default {
   name: 'App',
-  components: { TabBar, Server, Help }
+  components: { TabBar, Server, Help, Footer }
 }
 </script>
 
@@ -67,6 +69,7 @@ button {
   main {
     position: relative;
     margin: 2rem 3rem;
+    min-height: calc(100vh - 13rem);
   }
 }
 

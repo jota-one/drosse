@@ -8,6 +8,7 @@
       v-for="(path, i) of paths"
       :key="`path-${i}`"
       fill-rule="evenodd"
+      clip-rule="evenodd"
       :opacity="path.opacity"
       :d="path.d"
     />

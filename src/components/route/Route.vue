@@ -141,7 +141,7 @@ export default {
 }
 
 .delete .icon {
-  margin-top: .25rem;
+  margin-top: .35rem;
   width: 1.5rem;
   height: 1.5rem;
 }
