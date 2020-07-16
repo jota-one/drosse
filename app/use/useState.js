@@ -15,8 +15,6 @@ module.exports = function () {
     },
     merge (conf) {
       state = _.merge(state, conf)
-
-      console.log('merged', state)
     }
   }
 }

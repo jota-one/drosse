@@ -13,7 +13,14 @@
     "type": "git",
     "url": "git+https://github.com/jota-one/drosse.git"
   },
-  "keywords": ["mock", "server", "loki", "dynamic", "feutre", "proxy"],
+  "keywords": [
+    "mock",
+    "server",
+    "loki",
+    "dynamic",
+    "feutre",
+    "proxy"
+  ],
   "author": "Juniors at Work",
   "license": "ISC",
   "bugs": {
@@ -26,6 +33,16 @@
     "http-proxy-middleware": "^1.0.4",
     "lodash": "^4.17.15",
     "lokijs": "^1.5.9",
+    "readdirp": "^3.4.0",
+    "stream-to-promise": "^3.0.0",
     "yargs": "^15.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.4.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
   }
 }

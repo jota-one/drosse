@@ -2,19 +2,19 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
 const useState = require('./use/useState')
+const useDb = require('./use/useDb')
 const { checkRootFile, loadRcFile, routes } = require('./io')
 const { parse, createProxies } = require('./parser')
 
 const app = express()
 const state = useState()
-
+const db = useDb()
 
 // global middlewares
 app.use(bodyParser.json())
 
 // start server
-module.exports = args => {
-  console.log(args)
+module.exports = async args => {
   state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
 
   // check for some users configuration in a .drosserc(.js) file
@@ -26,9 +26,9 @@ module.exports = args => {
     process.exit()
   }
 
-  // if everything is well configured, create the routes
-  const routesDefinition = routes()
-  parse(app, routesDefinition)
+  // if everything is well configured, load database and create the routes
+  await db.loadDb()
+  parse(app, routes())
   createProxies(app)
 
   const port = args.port || state.get('port')
