@@ -14,10 +14,19 @@ const loadRcFile = () => {
   }
 }
 
+const loadService = (routePath) => {
+  const serviceFile = path.join(state.get('root'), state.get('servicesPath'), routePath.filter(el => el[0] !== ':').join('.'))
+  if (!fs.existsSync(serviceFile + '.js')) {
+    return function (api) { console.log(`service [${serviceFile}.js] not found`) }
+  }
+  return require(serviceFile)
+}
+
 const routes = () => require(path.join(state.get('root'), state.get('routesFile')))
 
 module.exports = {
   checkRootFile,
   loadRcFile,
+  loadService,
   routes
 }
