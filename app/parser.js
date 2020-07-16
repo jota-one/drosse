@@ -31,9 +31,20 @@ const parse = (app, routes, root = []) => {
       const path = [''].concat(root)
       proxies.push({
         path: path.join('/'),
-        context: { target: d.proxy, changeOrigin: true }
+        context: { target: d.proxy, changeOrigin: true, onProxyReq: restream }
       })
     }
+  }
+}
+
+const restream = function(proxyReq, req) {
+  if (req.body) {
+    let bodyData = JSON.stringify(req.body);
+    // incase if content-type is application/x-www-form-urlencoded -> we need to change to application/json
+    proxyReq.setHeader('Content-Type','application/json');
+    proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+    // stream the content
+    proxyReq.write(bodyData);
   }
 }
 
