@@ -89,6 +89,18 @@ module.exports = function () {
         coll = db.addCollection(name)
       }
       return coll
+    },
+
+    query: {
+      byId (collection, id) {
+        const coll = db.getCollection(collection)
+        return coll.findOne({ 'drosse.ids': { $contains: id } })
+      },
+
+      find (collection, query) {
+        const coll = db.getCollection(collection)
+        return coll.find(query)
+      }
     }
   }
 }

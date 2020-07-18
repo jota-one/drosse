@@ -32,9 +32,9 @@ module.exports = async args => {
   createProxies(app)
 
   const port = args.port || state.get('port')
-  app.listen(port, () => {
+  app.listen(port, '0.0.0.0', () => {
     console.log(`App started${state.get('name') && ': name -> ' + state.get('name')}`)
-    console.log(`Listening to requests on http://localhost:${port}`)
+    console.log(`Listening to requests on http://0.0.0.0:${port}`)
     console.log(`The mocks will be read/written here: ${state.get('root')}`)
   })
 }
