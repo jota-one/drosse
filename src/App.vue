@@ -12,6 +12,7 @@
 <script>
 import '../public/fonts/FiraCode/fontface.css'
 import '../public/fonts/Oswald/fontface.css'
+import * as SockJS from 'sockjs-client'
 import TabBar from '@/components/tabbar/TabBar'
 import Server from '@/views/Server'
 import Help from '@/components/Help'
@@ -19,7 +20,21 @@ import Footer from '@/components/Footer'
 
 export default {
   name: 'App',
-  components: { TabBar, Server, Help, Footer }
+  components: { TabBar, Server, Help, Footer },
+  setup () {
+    var sock = new SockJS('/drosse')
+
+    sock.onopen = () => {}
+
+    sock.onmessage = e => {
+      console.log(JSON.parse(e.data))
+      // sock.close()
+    }
+
+    sock.onclose = () => {
+      console.log('close')
+    }
+  }
 }
 </script>
 

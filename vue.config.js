@@ -1,4 +1,5 @@
 const styleVariables = require('./src/styles/variables.json')
+const Discover = require('node-discover')
 
 module.exports = {
   css: {
@@ -10,6 +11,13 @@ module.exports = {
             variables: { ...styleVariables }
           })
         ]
+      }
+    }
+  },
+  devServer: {
+    proxy: {
+      '/drosse': {
+        target: 'http://localhost:9999'
       }
     }
   }
