@@ -1,6 +1,7 @@
+const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
-const path = require('path')
+const Discover = require('node-discover')
 const useState = require('./use/useState')
 const useDb = require('./use/useDb')
 const { checkRootFile, loadRcFile, routes } = require('./io')
@@ -32,9 +33,16 @@ module.exports = async args => {
   createProxies(app)
 
   const port = args.port || state.get('port')
-  app.listen(port, '0.0.0.0', () => {
-    console.log(`App started${state.get('name') && ': name -> ' + state.get('name')}`)
-    console.log(`Listening to requests on http://0.0.0.0:${port}`)
+  const name = state.get('name')
+  const root = path.dirname(__dirname)
+
+  app.listen(port, () => {
+    console.log(`App started${name && ': name -> ' + name}`)
+    console.log(`Listening to requests on http://localhost:${port}`)
     console.log(`The mocks will be read/written here: ${state.get('root')}`)
   })
+
+  const d = new Discover()
+
+  d.advertise({ port, name, root })
 }
