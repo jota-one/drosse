@@ -13,6 +13,17 @@ const db = useDb()
 
 // global middlewares
 app.use(bodyParser.json())
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin)
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS')
+
+  // intercept OPTIONS method
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200)
+  } else {
+    next()
+  }
+})
 
 // start server
 module.exports = async args => {
@@ -32,17 +43,26 @@ module.exports = async args => {
   parse(app, routes())
   createProxies(app)
 
+  // add reserved UI route
+  app.get('/UI', (req, res) => {
+    res.send({
+      routes: routes()
+    })
+  })
+
+  const proto = 'http'
+  const host = 'localhost'
   const port = args.port || state.get('port')
   const name = state.get('name')
   const root = path.dirname(__dirname)
 
   app.listen(port, () => {
     console.log(`App started${name && ': name -> ' + name}`)
-    console.log(`Listening to requests on http://localhost:${port}`)
+    console.log(`Listening to requests on ${proto}://${host}:${port}`)
     console.log(`The mocks will be read/written here: ${state.get('root')}`)
   })
 
   const d = new Discover()
 
-  d.advertise({ port, name, root })
+  d.advertise({ name, proto, host, port, root })
 }
