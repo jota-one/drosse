@@ -27,9 +27,10 @@ h1 {
   margin: 0 1rem .125rem 5rem;
   padding: 0;
   font-family: Oswald, sans-serif;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 1.2rem;
   text-transform: uppercase;
+  letter-spacing: 0;
 }
 
 .add {

@@ -7,6 +7,7 @@
         :<Input class="input" value="8000" />
       </div>
       <Input class="root" value="/Users/tadai/dev/cool-app" />
+      <!-- <input placeholder="Search in routes" value="" /> -->
     </section>
     <Routes>
       <Route :route="{ level: 1, path: '/api' }" />
@@ -30,7 +31,7 @@ export default {
 <style lang="postcss" scoped>
 h2 {
   display: inline-flex;
-  margin: 0 0 1rem 0;
+  margin: 0;
   padding: 0;
   font-weight: 400;
 }
