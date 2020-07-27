@@ -17,6 +17,6 @@ module.exports = {
 
   handler (yargs) {
     const app = require('../app')
-    app(yargs);
+    app(yargs)
   }
 }
