@@ -4,6 +4,7 @@ module.exports = {
     routesFile: 'routes',
     collectionsPath: 'collections',
     servicesPath: 'services',
+    staticPath: 'static',
     database: 'mocks.db'
   }
 }

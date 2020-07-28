@@ -1,5 +1,5 @@
 const proxy = require('http-proxy-middleware')
-const { loadService } = require('./io')
+const { loadService, loadStatic } = require('./io')
 const proxies = []
 const parse = (app, routes, root = []) => {
   Object.entries(routes)
@@ -22,13 +22,21 @@ const parse = (app, routes, root = []) => {
           const service = loadService(root)
           return res.send(service(api))
         }
+        if (d.get.static) {
+          const file = loadStatic(root, req.params, 'get')
+          return res.send(file)
+        }
         res.send(d.get.body)
       })
       console.log('created a GET route', '/' + root.join('/'))
     }
     if (d.post) {
       app.post('/' + root.join('/'), (req, res, next) => {
-        res.send({})
+        if (d.post.static) {
+          const file = loadStatic(root, req.params, 'post')
+          return res.send(file)
+        }
+        res.send(d.post.body)
       })
       console.log('created a POST route', '/' + root.join('/'))
     }

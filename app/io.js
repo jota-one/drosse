@@ -1,5 +1,7 @@
 const fs = require('fs')
 const path = require('path')
+const { isEmpty } = require('lodash')
+const { resolveExpress } = require('./strings')
 const useState = require('./use/useState')
 const state = useState()
 
@@ -22,11 +24,31 @@ const loadService = (routePath) => {
   return require(serviceFile)
 }
 
+const loadStatic = (routePath, params = {}, verb = null) => {
+  const staticFile = resolveExpress(path.join(
+    state.get('root'),
+    state.get('staticPath'),
+    routePath.join('.').concat((verb ? `.${verb}` : ''))
+  ), params)
+
+  if (!fs.existsSync(staticFile + '.json')) {
+    if (verb) {
+      return loadStatic(routePath, params)
+    }
+    if (!isEmpty(params)) {
+      return loadStatic(routePath)
+    }
+    return { drosse: `file [${staticFile}.json] not found.` }
+  }
+  return require(staticFile)
+}
+
 const routes = () => require(path.join(state.get('root'), state.get('routesFile')))
 
 module.exports = {
   checkRootFile,
   loadRcFile,
   loadService,
+  loadStatic,
   routes
 }
