@@ -26,9 +26,22 @@ export default {
 
     sock.onopen = () => {}
 
-    sock.onmessage = e => {
-      console.log(JSON.parse(e.data))
-      // sock.close()
+    sock.onmessage = async e => {
+      const { event, adv } = JSON.parse(e.data)
+      const { name, proto, host, port, root } = adv
+
+      if (event === 'up') {
+        const response = await fetch(`${proto}://${host}:${port}/UI`)
+        const config = await response.json()
+
+        console.log(`"${name}" [:${port}] is up`)
+        console.log('-> root', root)
+        console.log('-> config', config)
+      }
+
+      if (event === 'down') {
+        console.log(`"${name}" [:${port}] went down`)
+      }
     }
 
     sock.onclose = () => {
