@@ -75,6 +75,7 @@ module.exports = async args => {
   const hostsStr = '\n - ' + hosts
     .map(host => getAdress(proto, host, port)).join('\n - ')
 
+  app.listen(port, 'localhost')
   app.listen(port, ipAddress, () => {
     console.log(`App started${name && ': name -> ' + name}`)
     console.log(`Listening to requests on ${hostsStr}`)
