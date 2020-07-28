@@ -1,0 +1,21 @@
+{
+  "api": {
+    "user":{
+      "basket": {
+        "v2": {
+          ":customerId": {
+            "purchases": {
+              ":year": {
+                "DROSSE": {
+                  "get": {
+                    "service": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
