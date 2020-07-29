@@ -68,7 +68,7 @@ a {
 
 
 header {
-  margin-top: 1rem;
+  margin-top: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -77,12 +77,6 @@ header {
 @media screen and (min-width: 480px) {
   header {
     align-items: flex-end;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  header {
-    margin-top: 2rem;
   }
 }
 
@@ -198,14 +192,13 @@ h2 em {
 
 .app {
   position: relative;
-  margin: 0 -1.5rem 1rem -1rem;
+  margin: 1rem -1.5rem 1rem -1rem;
   overflow: auto;
   max-width: calc(100% + 3.5rem);
 }
 
 @media screen and (min-width: 768px) {
   .app {
-    margin-top: 1rem;
     margin-right: -2.5rem;
     max-width: calc(100% + 4rem);
   }
