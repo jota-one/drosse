@@ -63,6 +63,7 @@ em {
 
 a {
   text-decoration: none;
+  display: inline-flex;
 }
 
 
@@ -158,11 +159,20 @@ h2 em {
 
 .help {
   margin: .5rem -1rem -.25rem 0;
+  padding: 0;
   width: 2.75rem;
   height: 2.75rem;
   fill: rgb(128,128,128);
+  border: none;
+  background: none;
+  cursor: pointer;
   will-change: fill;
   transition: fill .2s ease-in;
+}
+
+.help-icon {
+  width: 100%;
+  height: 100%;
 }
 
 .help:hover,
@@ -242,6 +252,10 @@ p {
 .github,
 .npm {
   margin: 0 .25rem;
+}
+
+.github-icon,
+.npm-icon {
   fill: rgb(52,246,107);
 }
 
@@ -260,10 +274,19 @@ footer {
 }
 
 .jota {
-  margin: .3rem 0 0 .25rem;
+  margin: .25rem 0 0 .25rem;
+}
+
+.jota-icon {
   width: 2rem;
   height: 2rem;
   fill: rgb(92,92,92);
+  will-change: fill;
+  transition: fill .2s ease-in;
+}
+
+.jota:hover .jota-icon {
+  fill: rgb(52,246,107);
 }
 
 @media screen and (min-width: 768px) {
@@ -272,7 +295,7 @@ footer {
   }
 
   .jota {
-    margin: .25rem 0 0 .25rem;
+    margin: .5rem 0 0 .25rem;
     width: 3rem;
     height: 3rem;
   }
