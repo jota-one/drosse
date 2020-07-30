@@ -289,11 +289,10 @@ footer {
 
   .jota {
     margin: .5rem 0 0 .25rem;
+  }
+
+  .jota-icon {
     width: 3rem;
     height: 3rem;
   }
-}
-
-@media screen and (min-width: 1400px) {
-
 }
