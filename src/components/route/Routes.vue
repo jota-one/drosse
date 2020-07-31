@@ -17,6 +17,10 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.Routes {
+  overflow: auto;
+}
+
 .list {
   display: table;
   width: 100%;

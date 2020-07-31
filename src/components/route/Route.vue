@@ -2,7 +2,7 @@
   <div class="Route">
     <div class="col">
       <div class="inner">
-        <div class="level" :style="{ width: `${(route.level + 1 )}rem` }"/>
+        <div class="level" :style="{ width: `${route.level}rem` }"/>
         <Clickable class="collapse" icon="chevron" />
         <Input class="path" :value="route.path" />
         <div class="verbs">
@@ -44,6 +44,7 @@
         <Clickable class="icon" icon="minus" title="Delete route" />
       </div>
     </div>
+    <div class="col end"/>
   </div>
 </template>
 
@@ -144,6 +145,10 @@ export default {
   margin-top: .35rem;
   width: 1.5rem;
   height: 1.5rem;
+}
+
+.end {
+  min-width: 1rem;
 }
 
 /* Colors */

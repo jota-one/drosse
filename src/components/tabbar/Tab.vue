@@ -32,6 +32,7 @@ export default {
 
 .name {
   margin: 0 .5rem;
+  white-space: nowrap;
 }
 
 .close .icon {

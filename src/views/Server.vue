@@ -49,6 +49,7 @@ h2 {
   margin: 0 .25rem 0 0;
   width: 3.5rem;
   height: 3.5rem;
+  flex-shrink: 0;
 }
 
 .port {
