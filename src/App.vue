@@ -24,28 +24,28 @@ export default {
   setup () {
     var sock = new SockJS('/drosse')
 
-    sock.onopen = () => {}
-
     sock.onmessage = async e => {
-      const { event, adv } = JSON.parse(e.data)
-      const { name, proto, host, port, root } = adv
+      const data = JSON.parse(e.data)
 
-      if (event === 'up') {
-        const response = await fetch(`${proto}://${host}:${port}/UI`)
+      if (data.event === 'up') {
+        const { name, proto, hosts, port, root } = data.adv
+        const response = await fetch(`${proto}://${hosts[0]}:${port}/UI`)
         const config = await response.json()
 
-        console.log(`"${name}" [:${port}] is up`)
-        console.log('-> root', root)
-        console.log('-> config', config)
+        console.log(`> ${name} [:${port}] is up`)
+        console.log('  - root', root)
+        console.log('  - config', config)
       }
 
-      if (event === 'down') {
-        console.log(`"${name}" [:${port}] went down`)
+      if (data.event === 'down') {
+        const { name, port } = data.adv
+        console.log(`> "${name}" [:${port}] went down`)
       }
-    }
 
-    sock.onclose = () => {
-      console.log('close')
+      if (data.event === 'request') {
+        const { url, method } = data.req
+        console.log(`>> ${method.toUpperCase()} ${url}`)
+      }
     }
   }
 }
@@ -94,6 +94,8 @@ button {
 }
 
 #app {
+  min-width: 320px;
+
   main {
     position: relative;
     margin: 2rem 3rem;
