@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "Manage your drosses visually.",
   "scripts": {
-    "serve": "concurrently --kill-others --raw \"node server development\" \"vue-cli-service serve\"",
-    "build": "vue-cli-service build && cp server.js dist",
+    "serve": "node prebuild && concurrently --kill-others --raw \"node server development\" \"vue-cli-service serve\"",
+    "build": "node prebuild && vue-cli-service build && cp server.js dist",
     "lint": "vue-cli-service lint"
   },
   "repository": {
@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/jota-one/drosse-ui/issues"
   },
-  "homepage": "https://github.com/jota-one/drosse-ui#readme",
+  "homepage": "https://drosse.dev",
   "dependencies": {
     "concurrently": "^5.2.0",
     "core-js": "^3.6.5",
