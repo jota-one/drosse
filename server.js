@@ -8,7 +8,7 @@ const Discover = require('node-discover')
 const env = process.argv[2] || 'production'
 
 const echo = sockjs.createServer({
-  sockjs_url: 'http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js'
+  sockjs_url: '/sockjs.min.js'
 })
 
 echo.on('connection', conn => {
@@ -57,5 +57,5 @@ getPort({ port: getPort.makeRange(8080, 9999), host: '0.0.0.0' }).then(port => {
   server.listen(port)
 
   console.log(`Environment ${env}`)
-  console.log(`Serving app on port ${port}`)
+  console.log(`Drosse UI running at http://localhost:${port}`)
 })
