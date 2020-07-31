@@ -1,5 +1,4 @@
 const styleVariables = require('./src/styles/variables.json')
-const Discover = require('node-discover')
 
 module.exports = {
   css: {
@@ -17,7 +16,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/drosse': {
-        target: 'http://localhost:9999'
+        target: `http://localhost:${process.env.VUE_APP_PORT}`
       }
     }
   }

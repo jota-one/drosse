@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "description": "Manage your drosses visually.",
   "scripts": {
-    "start": "concurrently --kill-others --raw \"node server\" \"npm run serve\"",
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "concurrently --kill-others --raw \"node server development\" \"vue-cli-service serve\"",
+    "build": "vue-cli-service build && cp server.js dist",
     "lint": "vue-cli-service lint"
   },
   "repository": {
@@ -22,6 +21,7 @@
   "dependencies": {
     "concurrently": "^5.2.0",
     "core-js": "^3.6.5",
+    "get-port": "^5.1.1",
     "node-discover": "^1.1.3",
     "sockjs": "^0.3.20",
     "sockjs-client": "^1.4.0",
