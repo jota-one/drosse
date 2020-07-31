@@ -17,6 +17,10 @@ export default {
 .icon {
   width: 1.25rem;
   height: 1.25rem;
+}
+
+/* Colors */
+.icon {
   fill: var(--c-green);
 }
 </style>

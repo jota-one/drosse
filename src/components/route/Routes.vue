@@ -3,16 +3,16 @@
     <div class="list">
       <slot />
     </div>
-    <AddRoute />
+    <Add class="add-route" label="Add route" />
   </div>
 </template>
 
 <script>
-import AddRoute from './AddRoute'
+import Add from '@/components/common/Add'
 
 export default {
   name: 'Routes',
-  components: { AddRoute }
+  components: { Add }
 }
 </script>
 
@@ -24,5 +24,9 @@ export default {
 .list {
   display: table;
   width: 100%;
+}
+
+.add-route {
+  margin: 2rem 0 0 .5rem;
 }
 </style>

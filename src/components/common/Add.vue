@@ -1,7 +1,7 @@
 <template>
-  <button class="AddRoute">
+  <button class="Add">
     <Icon class="icon" name="plus" />
-    Add route
+    {{ label }}
   </button>
 </template>
 
@@ -9,18 +9,20 @@
 import Icon from '@/components/common/Icon'
 
 export default {
-  name: 'AddRoute',
-  components: { Icon }
+  name: 'Add',
+  components: { Icon },
+  props: {
+    label: String
+  }
 }
 </script>
 
 <style lang="postcss" scoped>
-.AddRoute {
+.Add {
   display: flex;
   align-items: center;
-  margin: 1rem 0 0 1.25rem;
   padding: .5rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .icon {
@@ -30,7 +32,7 @@ export default {
 }
 
 /* Colors */
-.AddRoute {
+.Add {
   color: var(--c-gray-active);
 
   .icon {

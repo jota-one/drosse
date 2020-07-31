@@ -2,7 +2,7 @@
   <div class="Server">
     <h2><Input value="cool-app" /></h2>
     <section class="config">
-      <Drosse />
+      <Drosse up />
       <div class="port">
         :<Input class="input" value="8000" />
       </div>
@@ -39,7 +39,6 @@ h2 {
 .config {
   display: flex;
   align-items: center;
-  padding-bottom: .75rem;
   margin-bottom: 1.5rem;
   font-size: 1.25rem;
   border-bottom: 1px dashed;
@@ -47,8 +46,8 @@ h2 {
 
 .drosse {
   margin: 0 .25rem 0 0;
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 5rem;
+  height: 5rem;
   flex-shrink: 0;
 }
 

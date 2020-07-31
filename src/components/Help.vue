@@ -23,7 +23,13 @@ export default {
 .icon {
   width: 2.25rem;
   height: 2.25rem;
+}
+
+/* Colors */
+.icon {
   fill: var(--c-gray-inactive);
+  will-change: fill;
+  transition: fill .2s ease-in;
 
   &:hover {
     fill: var(--c-help);

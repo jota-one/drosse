@@ -87,7 +87,6 @@ input {
 .mask {
   position: absolute;
   font-family: inherit;
-  outline: 1px solid red;
   top: 0;
   left: 0;
   visibility: hidden;

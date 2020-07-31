@@ -26,8 +26,6 @@ export default {
   padding: 0 .5rem;
   align-items: center;
   height: 2.5rem;
-  color: var(--c-white);
-  background-color: var(--c-app-bg);
 }
 
 .name {
@@ -38,6 +36,20 @@ export default {
 .close .icon {
   width: 1.25rem;
   height: 1.25rem;
-  fill: var(--c-gray-inactive);
 }
+
+/* Colors */
+.Tab {
+  color: var(--c-white);
+  background-color: var(--c-app-bg);
+  will-change: color, background-color;
+  transition: color .2s ease-in-out, background-color .2s ease-in-out;
+}
+
+.close .icon {
+  fill: var(--c-gray-inactive);
+  will-change: fill;
+  transition: fill .2s ease-in-out;
+}
+
 </style>
