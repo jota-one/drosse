@@ -1,6 +1,10 @@
 const proxy = require('http-proxy-middleware')
+const useState = require('./use/state')
 const { loadService, loadStatic } = require('./io')
+
+const state = useState()
 const proxies = []
+
 const parse = (app, routes, root = []) => {
   Object.entries(routes)
     .filter(([path]) => path !== 'DROSSE')
@@ -8,6 +12,11 @@ const parse = (app, routes, root = []) => {
       return a[0] > b[0] || !a[0].indexOf(':') ? 1 : -1
     })
     .map(([path, content]) => {
+      const fullPath = `/${root.join('/')}`
+      if (Object.values(state.get('reservedRoutes')).includes(fullPath)) {
+        throw new Error(`Route "${fullPath}" is reserved`)
+      }
+
       if (path !== 'DROSSE') {
         parse(app, content, root.concat(path))
       }

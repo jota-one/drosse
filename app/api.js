@@ -1,4 +1,4 @@
-const useDb = require('./use/useDb')
+const useDb = require('./use/db')
 const db = useDb()
 
 module.exports = function (req) {

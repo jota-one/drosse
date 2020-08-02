@@ -1,5 +1,6 @@
 const config = require('../config')
 const _ = require('lodash')
+
 let state = JSON.parse(JSON.stringify(config.state))
 
 module.exports = function () {

@@ -1,7 +1,7 @@
 const Loki = require('lokijs')
 const lodash = require('lodash')
 const path = require('path')
-const useState = require('./useState')
+const useState = require('./state')
 const logger = require('../logger')
 
 let db

@@ -5,6 +5,7 @@ module.exports = {
     collectionsPath: 'collections',
     servicesPath: 'services',
     staticPath: 'static',
-    database: 'mocks.db'
+    database: 'mocks.db',
+    reservedRoutes: { ui: '/UI' }
   }
 }

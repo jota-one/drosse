@@ -1,26 +1,41 @@
 const fs = require('fs')
 const path = require('path')
 const { isEmpty } = require('lodash')
+const { v4: uuidv4 } = require('uuid')
 const { resolveExpress } = require('./strings')
-const useState = require('./use/useState')
+const useState = require('./use/state')
 const state = useState()
 
 const checkRootFile = () => {
-  return fs.existsSync(path.join(state.get('root'), state.get('routesFile') + '.js')) || fs.existsSync(path.join(state.get('root'), state.get('routesFile') + '.json'))
+  const getRootFile = ext => path.join(
+    state.get('root'), `${state.get('routesFile')}.${ext}`
+  )
+
+  return fs.existsSync(getRootFile('js')) || fs.existsSync(getRootFile('json'))
 }
 
 const loadRcFile = () => {
-  if (fs.existsSync(path.join(state.get('root'), '.drosserc.js')) || fs.existsSync(path.join(state.get('root'), '.drosserc'))) {
-    const userConfig = require(path.join(state.get('root'), '.drosserc'))
+  const rcFile = path.join(state.get('root'), '.drosserc.js')
+
+  if (fs.existsSync(rcFile) || fs.existsSync(rcFile)) {
+    const userConfig = require(rcFile)
     state.merge(userConfig)
   }
 }
 
 const loadService = (routePath) => {
-  const serviceFile = path.join(state.get('root'), state.get('servicesPath'), routePath.filter(el => el[0] !== ':').join('.'))
+  const serviceFile = path.join(
+    state.get('root'),
+    state.get('servicesPath'),
+    routePath.filter(el => el[0] !== ':').join('.')
+  )
+
   if (!fs.existsSync(serviceFile + '.js')) {
-    return function (api) { console.log(`service [${serviceFile}.js] not found`) }
+    return function (api) {
+      console.log(`service [${serviceFile}.js] not found`)
+    }
   }
+
   return require(serviceFile)
 }
 
@@ -43,12 +58,25 @@ const loadStatic = (routePath, params = {}, verb = null) => {
   return require(staticFile)
 }
 
-const routes = () => require(path.join(state.get('root'), state.get('routesFile')))
+const loadUuid = () => {
+  const uuidFile = path.join(state.get('root'), '.uuid')
+
+  if (!fs.existsSync(uuidFile)) {
+    fs.writeFileSync(uuidFile, uuidv4(), 'utf8')
+  }
+
+  state.merge({ uuid: fs.readFileSync(uuidFile, 'utf8') })
+}
+
+const routes = () => require(
+  path.join(state.get('root'), state.get('routesFile'))
+)
 
 module.exports = {
   checkRootFile,
   loadRcFile,
   loadService,
   loadStatic,
+  loadUuid,
   routes
 }
