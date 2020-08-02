@@ -19,6 +19,7 @@
   },
   "homepage": "https://drosse.dev",
   "dependencies": {
+    "@jota-one/drosse": "^0.1.9",
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
     "date-fns": "^2.15.0",

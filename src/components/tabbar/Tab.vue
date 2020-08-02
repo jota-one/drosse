@@ -63,8 +63,8 @@ export default {
 .Tab {
   color: var(--c-white);
   background-color: var(--c-app-bg);
-  will-change: opacity;
-  transition: opacity .2s ease-in-out;
+  will-change: background-color, opacity;
+  transition: background-color .2s ease-in-out, opacity .2s ease-in-out;
   opacity: .5;
 
   &:hover {

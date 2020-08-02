@@ -1,5 +1,8 @@
 import * as SockJS from 'sockjs-client'
 import { computed, ref } from 'vue'
+import useRoutes from '@/modules/routes'
+
+const { getRoutes } = useRoutes()
 
 const endpoint = '/drosses'
 const sock = new SockJS('/drosse')
@@ -27,7 +30,8 @@ sock.onmessage = async e => {
 
     try {
       const response = await fetch(`${proto}://${hosts[0]}:${port}/UI`)
-      drosses.value[uuid].config = await response.json()
+      const config = await response.json()
+      drosses.value[uuid].routes = getRoutes(config)
     } catch (_e) {
       // fail silently
     }

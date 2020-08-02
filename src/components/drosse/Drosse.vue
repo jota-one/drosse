@@ -76,7 +76,6 @@ export default {
 .name {
   padding: .5rem;
   font-size: 1rem;
-  color: inherit;
 }
 
 .delete-icon {
@@ -105,6 +104,10 @@ export default {
 
 .col {
   border-bottom-color: rgba(128,128,128, .2);
+}
+
+.name {
+  color: inherit;
 }
 
 .delete-icon {

@@ -11,7 +11,7 @@
     </section>
     <Routes>
       <Route
-        v-for="route in routes"
+        v-for="route in drosse.routes"
         :key="route.path"
         :route="route"
       />
@@ -22,7 +22,6 @@
 <script>
 import { computed } from 'vue'
 import useDrosses from '@/modules/drosses'
-import useRoutes from '@/modules/routes'
 import DrosseIcon from '@/components/common/DrosseIcon'
 import Input from '@/components/common/Input'
 import Routes from '@/components/route/Routes'
@@ -33,14 +32,11 @@ export default {
   components: { DrosseIcon, Input, Routes, Route },
   setup () {
     const { drosses } = useDrosses()
-    const { getRoutes } = useRoutes()
 
     const drosse = computed(() => Object.values(drosses.value)
       .find(drosse => drosse.selected))
 
-    const routes = getRoutes(drosse)
-
-    return { drosse, routes }
+    return { drosse }
   }
 }
 </script>
