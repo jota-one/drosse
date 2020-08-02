@@ -6,7 +6,7 @@ const Discover = require('node-discover')
 const useState = require('./use/state')
 const useDb = require('./use/db')
 const { checkRootFile, loadUuid, loadRcFile, routes } = require('./io')
-const { parse, createProxies } = require('./parser')
+const { createRoutes } = require('./builder')
 
 const d = new Discover()
 const app = express()
@@ -64,8 +64,7 @@ module.exports = async args => {
   // if everything is well configured, load database and create the routes
   const ioRoutes = routes()
   await db.loadDb()
-  parse(app, ioRoutes)
-  createProxies(app)
+  createRoutes(app, ioRoutes)
 
   // start server and display drosse infos in console
   const getAdress = (proto, host, port) => `${proto}://${host}:${port}`
