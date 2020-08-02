@@ -48,12 +48,14 @@ export default {
 
 <style lang="postcss" scoped>
 footer {
-  margin: 3rem;
+  height: 8rem;
+  padding: 2rem 3rem;
 }
 
 .container {
   justify-content: space-between;
 }
+
 .container,
 .theme-switch,
 .credits {
@@ -62,8 +64,9 @@ footer {
 }
 
 .theme-icon {
-  width: 3rem;
-  height: 3rem;
+  padding: .5rem;
+  width: 3.25rem;
+  height: 3.25rem;
 }
 
 .dev-by {
@@ -85,6 +88,10 @@ a {
   fill: var(--c-gray-active);
   will-change: fill;
   transition: fill .2s ease-in-out;
+
+  &:hover {
+    fill: var(--c-green);
+  }
 }
 
 .dev-by {

@@ -4,7 +4,7 @@
   "description": "Manage your drosses visually.",
   "scripts": {
     "serve": "node prebuild && concurrently --kill-others --raw \"node server development\" \"vue-cli-service serve\"",
-    "build": "node prebuild && vue-cli-service build && cp server.js dist",
+    "build": "node prebuild && vue-cli-service build && cp -r server dist",
     "lint": "vue-cli-service lint"
   },
   "repository": {
@@ -19,9 +19,11 @@
   },
   "homepage": "https://drosse.dev",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
     "date-fns": "^2.15.0",
     "get-port": "^5.1.1",
+    "ip": "^1.1.5",
     "node-discover": "^1.1.3",
     "sockjs": "^0.3.20",
     "sockjs-client": "^1.4.0",

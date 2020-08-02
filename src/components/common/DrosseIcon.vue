@@ -1,9 +1,6 @@
 <template>
-  <button :class="['drosse', { up }]">
-    <svg
-      class="container"
-      viewBox="0 0 27 25"
-    >
+  <button :class="['DrosseIcon', { available, up, small, big }]">
+    <svg v-if="available" class="drosse" viewBox="0 0 27 25" >
       <path
         class="inner-wheel"
         d="M17.7156 11.7796L14.1453 11.7796C12.0891 11.7796 12.0891 14.5212 14.1453 14.5212L17.7164 14.5212C17.5228 15.0588 17.211 15.5631 16.7807 15.9934C15.2092 17.5648 12.6521 17.5556 11.0807 15.9841C9.50922 14.4127 9.49998 11.8556 11.0714 10.2842C12.6429 8.7127 15.2 8.72194 16.7714 10.2934C17.2055 10.7274 17.5203 11.2367 17.7156 11.7796Z"
@@ -23,26 +20,85 @@
         d="M20.7347 13.6801L21.5319 13.6801C21.875 14.3145 22.5462 14.7455 23.3181 14.7455C24.4388 14.7455 25.3474 13.8369 25.3474 12.7161C25.3474 11.7023 24.6039 10.8621 23.6325 10.711C23.53 10.6951 23.425 10.6868 23.3181 10.6868L23.3181 11.6525C23.9055 11.6525 24.3817 12.1287 24.3817 12.7161C24.3817 13.3036 23.9055 13.7798 23.3181 13.7798C22.7582 13.7798 22.2994 13.3472 22.2576 12.7981L22.2576 12.7161L20.7347 12.7033L20.7347 13.6801Z"
       />
     </svg>
+    <svg v-else class="skull" viewBox="0 0 24 25">
+      <path d="M12 2.13879C9.61305 2.13879 7.32387 3.08701 5.63604 4.77483C3.94821 6.46266 3 8.75185 3 11.1388C3 14.1688 4.53 16.9588 7 18.6088V22.1388H9V19.1388H11V22.1388H13V19.1388H15V22.1388H17V18.5988C19.47 16.9488 21 14.1388 21 11.1388C21 8.75185 20.0518 6.46266 18.364 4.77483C16.6761 3.08701 14.3869 2.13879 12 2.13879V2.13879ZM8 11.1388C8.53043 11.1388 9.03914 11.3495 9.41421 11.7246C9.78929 12.0997 10 12.6084 10 13.1388C10 13.6692 9.78929 14.1779 9.41421 14.553C9.03914 14.9281 8.53043 15.1388 8 15.1388C7.46957 15.1388 6.96086 14.9281 6.58579 14.553C6.21071 14.1779 6 13.6692 6 13.1388C6 12.6084 6.21071 12.0997 6.58579 11.7246C6.96086 11.3495 7.46957 11.1388 8 11.1388V11.1388ZM16 11.1388C16.5304 11.1388 17.0391 11.3495 17.4142 11.7246C17.7893 12.0997 18 12.6084 18 13.1388C18 13.6692 17.7893 14.1779 17.4142 14.553C17.0391 14.9281 16.5304 15.1388 16 15.1388C15.4696 15.1388 14.9609 14.9281 14.5858 14.553C14.2107 14.1779 14 13.6692 14 13.1388C14 12.6084 14.2107 12.0997 14.5858 11.7246C14.9609 11.3495 15.4696 11.1388 16 11.1388V11.1388ZM12 14.1388L13.5 17.1388H10.5L12 14.1388Z"/>
+    </svg>
   </button>
 </template>
 
 <script>
 export default {
-  name: 'Drosse',
+  name: 'DrosseIcon',
   props: {
-    up: Boolean
+    available: Boolean,
+    up: Boolean,
+    small: Boolean,
+    big: Boolean
   }
 }
 </script>
 
 <style lang="postcss" scoped>
-.container {
+.DrosseIcon {
+  display: block;
+  min-width: 3rem;
+  max-width: 3rem;
+  min-height: 3rem;
+  max-height: 3rem;
+
+  &.big {
+    min-width: 4.5rem;
+    max-width: 4.5rem;
+    min-height: 4.5rem;
+    max-height: 4.5rem;
+  }
+
+  &.small {
+    min-width: 2rem;
+    max-width: 2rem;
+    min-height: 2rem;
+    max-height: 2rem;
+  }
+}
+
+.drosse {
+  width: 4rem;
+  height: 4rem;
+  margin: -.5rem 0 0 -1rem;
   transform: rotate(-45deg);
   will-change: fill, transform;
   transition: fill .2s ease-in-out, transform .2s ease-in-out;
 
+  .big & {
+    width: 5.5rem;
+    height: 5.5rem;
+    margin: -.75rem 0 0 -1.5rem;
+  }
+
+  .small & {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: -.35rem 0 0 -.5rem;
+  }
+
   .up & {
     transform: rotate(0);
+  }
+}
+
+.skull {
+  margin-top: .25rem;
+  width: 2rem;
+  height: 2rem;
+
+  .big & {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .small & {
+    width: 1.25rem;
+    height: 1.25rem;
   }
 }
 
@@ -65,5 +121,9 @@ export default {
     fill: var(--c-green-light);
     opacity: 1;
   }
+}
+
+.skull {
+  fill: var(--c-red);
 }
 </style>

@@ -1,10 +1,12 @@
 <template>
   <div id="drosse-ui">
-    <TabBar />
+    <Suspense>
+      <TabBar />
+    </Suspense>
     <main>
       <div class="container">
-        <Server v-if="showServer" />
-        <Home v-else />
+        <Home v-if="viewHome" />
+        <Detail v-else />
         <Help />
       </div>
     </main>
@@ -15,44 +17,19 @@
 <script>
 import '../public/fonts/FiraCode/fontface.css'
 import '../public/fonts/Oswald/fontface.css'
-import * as SockJS from 'sockjs-client'
+import useDrosses from '@/modules/drosses'
 import TabBar from '@/components/tabbar/TabBar'
 import Home from '@/views/Home'
-import Server from '@/views/Server'
+import Detail from '@/views/Detail'
 import Help from '@/components/Help'
 import Footer from '@/components/Footer'
 
 export default {
   name: 'App',
-  components: { TabBar, Home, Server, Help, Footer },
+  components: { TabBar, Home, Detail, Help, Footer },
   setup () {
-    var sock = new SockJS('/drosse')
-
-    sock.onmessage = async e => {
-      const data = JSON.parse(e.data)
-
-      if (data.event === 'up') {
-        const { name, proto, hosts, port, root } = data.adv
-        const response = await fetch(`${proto}://${hosts[0]}:${port}/UI`)
-        const config = await response.json()
-
-        console.log(`> ${name} [:${port}] is up`)
-        console.log('  - root', root)
-        console.log('  - config', config)
-      }
-
-      if (data.event === 'down') {
-        const { name, port } = data.adv
-        console.log(`> "${name}" [:${port}] went down`)
-      }
-
-      if (data.event === 'request') {
-        const { url, method } = data.req
-        console.log(`>> ${method.toUpperCase()} ${url}`)
-      }
-    }
-
-    return { showServer: false }
+    const { viewHome } = useDrosses()
+    return { viewHome }
   }
 }
 </script>
@@ -84,6 +61,17 @@ body {
     letter-spacing: -0.5px;
   }
 
+  --c-unavailable-bg: linear-gradient(
+    135deg,
+    transparent 25%,
+    rgba(255,77,0, .1) 25%,
+    rgba(255,77,0, .1) 50%,
+    transparent 50%,
+    transparent 75%,
+    rgba(255,77,0, .1) 75%,
+    rgba(255,77,0, .1) 100%
+  );
+
   &.dark {
     --c-app-bg: rgb(50,50,50);
     --c-black: rgb(0,0,0);
@@ -106,7 +94,7 @@ body {
     --c-blue: rgb(52,212,246);
     --c-gray-active: rgb(115,115,115);
     --c-gray-inactive: rgb(170,170,170);
-    --c-green: rgb(52,246,107);
+    --c-green: rgb(21,222,78);
     --c-green-light: rgb(164,252,188);
     --c-help: rgb(44,147,241);
     --c-pink: rgba(203,93,205, .75);
@@ -126,14 +114,16 @@ button {
   cursor: pointer;
   outline: none;
   border-radius: .25rem;
+  will-change: color, background-color;
+  transition: color .2s ease-in-out, background-color .2s ease-in-out;
 }
 
 #drosse-ui {
   min-width: 423px;
 
   main {
-    margin: 2rem 3rem;
-    min-height: calc(100vh - 14rem);
+    padding: 2rem 3rem;
+    min-height: calc(100vh - 11rem);
   }
 
   .container {

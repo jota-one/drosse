@@ -1,49 +1,51 @@
 <template>
   <div class="Home">
     <div class="header">
-      <h2>Latest <em>Drosse</em> instances</h2>
-      <Add
-        v-if="servers.length"
-        class="new-server"
-        label="New server"
+      <h2>Your <em>drosses</em></h2>
+      <Button
+        v-if="allDrosses.length"
+        class="btn"
+        label="New"
+      />
+      <Button
+        v-if="allDrosses.length"
+        class="btn"
+        label="Import"
       />
     </div>
-    <Servers v-if="servers.length">
-      <Server
-        v-for="(server, i) in servers"
-        :key="`server-${i}`"
-        :server="server"
+    <Drosses v-if="allDrosses.length">
+      <Drosse
+        v-for="drosse in allDrosses"
+        :key="drosse.uuid"
+        :drosse="drosse"
       />
-    </Servers>
+    </Drosses>
     <div class="empty" v-else>
-      <p>No server found...</p>
-      <Add label="Create server"/>
+      <p class="not-found">
+        No drosse found...
+      </p>
+      <p class="actions">
+        <Button class="btn" label="New"/>
+        <Button class="btn" label="Import"/>
+      </p>
     </div>
   </div>
 </template>
 
 <script>
-import Add from '@/components/common/Add'
-import Servers from '@/components/server/Servers'
-import Server from '@/components/server/Server'
+import { computed } from 'vue'
+import useDrosses from '@/modules/drosses'
+import Button from '@/components/common/Button'
+import Drosses from '@/components/drosse/Drosses'
+import Drosse from '@/components/drosse/Drosse'
 
 export default {
   name: 'Home',
-  components: { Add, Servers, Server },
+  components: { Button, Drosses, Drosse },
   setup () {
-    return {
-      servers: [
-        {
-          up: true,
-          port: 8000,
-          name: 'cool-app',
-          root: '/Users/tadai/dev/cool-app',
-          bin: '/Users/tadai/dev/cool-app/node_modules/drosse/bin/drosse.js',
-          version: '0.1.9',
-          lastSeen: new Date()
-        }
-      ]
-    }
+    const { drosses } = useDrosses()
+    const allDrosses = computed(() => Object.values(drosses.value))
+    return { allDrosses }
   }
 }
 </script>
@@ -52,13 +54,13 @@ export default {
 .header {
   display: flex;
   align-items: center;
-  padding: 2rem 0 1rem;
+  padding: 2rem 0 1.25rem;
   border-bottom: 1px dashed;
 }
 
 h2 {
-  margin: 0 1rem 1rem 0;
-  font-weight: 400;
+  margin: 0 2rem 0 0;
+  font-weight: 200;
   font-size: 1.2rem;
 }
 
@@ -70,8 +72,8 @@ em {
   text-transform: uppercase;
 }
 
-.new-server {
-  margin-bottom: .75rem;
+.btn {
+  margin-right: 1rem;
 }
 
 .empty {
@@ -80,6 +82,10 @@ em {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
+}
+
+.actions {
+  margin-top: 1.5rem;
 }
 
 /* Colors */

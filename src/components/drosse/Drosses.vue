@@ -1,5 +1,5 @@
 <template>
-  <div class="Servers">
+  <div class="Drosses">
     <div class="container">
       <div class="header">
         <div class="col">
@@ -20,22 +20,20 @@
             name
           </label>
         </div>
-        <div class="col root"><label class="label">
+        <div class="col root">
+          <label class="label">
             <Clickable class="sort" icon="sort-up"/>
             root
           </label>
         </div>
-        <div class="col"><label class="label">
+        <div class="col">
+          <label class="label">
             <Clickable class="sort" icon="sort-up"/>
-            version
+            protocol
           </label>
         </div>
-        <div class="col"><label class="label">
-            <Clickable class="sort" icon="sort-up"/>
-            bin path
-          </label>
-        </div>
-        <div class="col"><label class="label">
+        <div class="col">
+          <label class="label">
             <Clickable class="sort" icon="sort-up"/>
             last seen
           </label>
@@ -51,13 +49,13 @@
 import Clickable from '@/components/common/Clickable'
 
 export default {
-  name: 'Servers',
+  name: 'Drosses',
   components: { Clickable }
 }
 </script>
 
 <style lang="postcss" scoped>
-.Servers {
+.Drosses {
   overflow: auto;
   width: 100%;
 }

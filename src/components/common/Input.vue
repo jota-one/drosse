@@ -20,7 +20,7 @@ import { ref, reactive, watchEffect, nextTick } from 'vue'
 export default {
   name: 'Input',
   props: {
-    value: String
+    value: [String, Number]
   },
   setup (props) {
     const state = reactive({
@@ -34,7 +34,7 @@ export default {
 
     const updateValue = value => {
       state.v = value
-      state.vMask = value.replace(/\s/g, '_')
+      state.vMask = value.toString().replace(/\s/g, '_')
     }
 
     const onInput = event => {
@@ -68,7 +68,6 @@ export default {
   &:hover,
   &.focus {
     border-color: var(--c-gray-inactive);
-    background-color: rgba(0,0,0, .1);
   }
 }
 

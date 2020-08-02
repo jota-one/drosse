@@ -1,22 +1,34 @@
 <template>
-  <div class="Tab">
-    <Status />
-    <div class="name">
-      cool-app
-    </div>
-    <button class="close">
+  <div :class="['Tab', { selected, unavailable: !available }]">
+    <DrosseIcon small :up="up" :available="available" />
+    <button class="name" @click="$emit('select')">
+      {{ name }}
+    </button>
+    <button class="close" @click="$emit('close')">
       <Icon class="icon" name="close" />
     </button>
   </div>
 </template>
 
 <script>
+import useDrosses from '@/modules/drosses'
 import Icon from '@/components/common/Icon'
-import Status from '@/components/common/Status'
+import DrosseIcon from '@/components/common/DrosseIcon'
 
 export default {
   name: 'Tab',
-  components: { Icon, Status }
+  components: { Icon, DrosseIcon },
+  props: {
+    name: String,
+    uuid: String,
+    up: Boolean,
+    available: Boolean,
+    selected: Boolean
+  },
+  setup () {
+    const { closeDrosse } = useDrosses()
+    return { closeDrosse }
+  }
 }
 </script>
 
@@ -24,13 +36,22 @@ export default {
 .Tab {
   display: flex;
   padding: 0 .5rem;
+  margin: 0 .125rem;
   align-items: center;
   height: 2.5rem;
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+
+  &.unavailable {
+    background-size: 1rem 1rem;
+  }
 }
 
 .name {
   margin: 0 .5rem;
   white-space: nowrap;
+  user-select: none;
+  font-size: .75rem;
 }
 
 .close .icon {
@@ -42,8 +63,25 @@ export default {
 .Tab {
   color: var(--c-white);
   background-color: var(--c-app-bg);
-  will-change: color, background-color;
-  transition: color .2s ease-in-out, background-color .2s ease-in-out;
+  will-change: opacity;
+  transition: opacity .2s ease-in-out;
+  opacity: .5;
+
+  &:hover {
+    opacity: .8;
+  }
+
+  &.selected {
+    opacity: 1;
+  }
+
+  &.unavailable {
+    background-image: var(--c-unavailable-bg);
+  }
+}
+
+.name {
+  color: inherit;
 }
 
 .close .icon {
