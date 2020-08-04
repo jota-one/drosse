@@ -32,8 +32,8 @@ sock.onmessage = async e => {
       const response = await fetch(`${proto}://${hosts[0]}:${port}/UI`)
       const config = await response.json()
       drosses.value[uuid].routes = getRoutes(config)
-    } catch (_e) {
-      // fail silently
+    } catch (e) {
+      console.error(e)
     }
   }
 

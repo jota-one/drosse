@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import useTheme from '@/modules/theme'
 import Clickable from '@/components/common/Clickable'
 import Icon from '@/components/common/Icon'
 
@@ -29,18 +29,7 @@ export default {
   name: 'Footer',
   components: { Clickable, Icon },
   setup () {
-    const theme = ref(document.body.classList.contains('dark')
-      ? 'dark'
-      : 'light'
-    )
-
-    const switchTheme = () => {
-      const newTheme = theme.value === 'dark' ? 'light' : 'dark'
-      document.body.classList.remove('dark', 'light')
-      document.body.classList.add(newTheme)
-      theme.value = newTheme
-    }
-
+    const { theme, switchTheme } = useTheme()
     return { theme, switchTheme }
   }
 }

@@ -54,7 +54,6 @@ html, body {
 
 body {
   font-family: FiraCode, monospace;
-  font-size: 1rem;
   font-weight: 100;
 
   &, input {
@@ -118,11 +117,15 @@ button {
   transition: color .2s ease-in-out, background-color .2s ease-in-out;
 }
 
+.spacer {
+  flex: 1;
+}
+
 #drosse-ui {
   min-width: 423px;
 
   main {
-    padding: 2rem 3rem;
+    padding: 2rem 3rem 4rem;
     min-height: calc(100vh - 11rem);
   }
 

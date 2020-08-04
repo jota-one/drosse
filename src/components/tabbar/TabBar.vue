@@ -46,7 +46,18 @@ export default {
     const openedDrosses = computed(() => Object.values(drosses.value)
       .filter(drosse => drosse.open))
 
-    return { openedDrosses, openDrosse, closeDrosse, openHome, viewHome }
+    const switchPrev = () => {}
+    const switchNext = () => {}
+
+    return {
+      viewHome,
+      openedDrosses,
+      openHome,
+      openDrosse,
+      closeDrosse,
+      switchPrev,
+      switchNext
+    }
   }
 }
 </script>
@@ -60,8 +71,7 @@ export default {
 .scrollbar {
   display: flex;
   align-items: center;
-  height: 3rem;
-  margin: .65rem 3rem 0 5rem;
+  margin: 0 3rem 0 5rem;
   padding: .5rem 0 1rem;
   overflow: auto;
 }
@@ -71,7 +81,7 @@ h1 {
 }
 
 .drosse {
-  margin: 0 1rem 0 0;
+  margin: .375rem 1rem .125rem 0;
   padding: .25rem;
   font-family: Oswald, sans-serif;
   font-weight: 500;

@@ -14,7 +14,6 @@ const getDrosses = () => {
   const uuids = Object.keys(drosses)
 
   for (const uuid of uuids) {
-    console.log('available', drosses[uuid].root, fs.existsSync(drosses[uuid].root))
     drosses[uuid].available = fs.existsSync(drosses[uuid].root)
     drosses[uuid].up = false
   }
@@ -89,7 +88,7 @@ echo.on('connection', conn => {
   })
 })
 
-app.get('/drosses', (req, res) => {
+app.get('/drosses', (_req, res) => {
   res.send(drosses)
 })
 
@@ -97,6 +96,12 @@ app.put('/drosses', (req, res) => {
   drosses = req.body
   updateDrosses()
   res.send(drosses)
+})
+
+app.post('/file', (req, res) => {
+  const filePath = path.join(drosses[req.body.uuid].root, req.body.file)
+  const content = fs.readFileSync(filePath, 'utf8')
+  res.send({ content })
 })
 
 if (env === 'production') {
