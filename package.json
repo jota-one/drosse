@@ -4,6 +4,7 @@
   "description": "Manage your drosses visually.",
   "scripts": {
     "drosse": "npx drosse serve",
+    "start": "node dist/server",
     "serve": "node prebuild && concurrently --kill-others --raw \"node server development\" \"vue-cli-service serve\"",
     "build": "node prebuild && vue-cli-service build && cp -r server dist",
     "lint": "vue-cli-service lint"
