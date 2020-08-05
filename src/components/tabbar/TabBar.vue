@@ -71,7 +71,7 @@ export default {
 .scrollbar {
   display: flex;
   align-items: center;
-  margin: 0 3rem 0 5rem;
+  margin: 0 3rem 0;
   padding: .5rem 0 1rem;
   overflow: auto;
 }
