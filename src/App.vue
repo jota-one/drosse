@@ -6,7 +6,18 @@
     <main>
       <div class="container">
         <Home v-if="viewHome" />
-        <Detail v-else />
+        <Detail v-else
+          :editor-opened="editorOpened"
+          @open-editor="openEditor($event)"
+          @close-editor="editorOpened = -1"
+          @update-top="editorTop = $event"
+        />
+        <Editor
+          :hidden="hideEditor"
+          :opened="editorOpened > -1"
+          :top="editorTop"
+          @close="editorOpened = -1"
+        />
         <Help />
       </div>
     </main>
@@ -17,19 +28,52 @@
 <script>
 import '../public/fonts/FiraCode/fontface.css'
 import '../public/fonts/Oswald/fontface.css'
+import { computed, ref } from 'vue'
 import useDrosses from '@/modules/drosses'
 import TabBar from '@/components/tabbar/TabBar'
 import Home from '@/views/Home'
 import Detail from '@/views/Detail'
+import Editor from '@/components/Editor'
 import Help from '@/components/Help'
 import Footer from '@/components/Footer'
 
 export default {
   name: 'App',
-  components: { TabBar, Home, Detail, Help, Footer },
+  components: { TabBar, Home, Detail, Editor, Help, Footer },
   setup () {
-    const { viewHome } = useDrosses()
-    return { viewHome }
+    const { drosses, viewHome } = useDrosses()
+    const editorOpened = ref(-1)
+    const editorTop = ref(0)
+    const _drosseEditing = ref({})
+    const _hideEditor = ref(false)
+
+    const openEditor = ({ index, top, hide, drosse, delay }) => {
+      const open = () => {
+        editorOpened.value = index
+        editorTop.value = top
+        _hideEditor.value = hide
+        _drosseEditing.value = drosse
+      }
+
+      console.log({delay})
+
+      if (delay) {
+        setTimeout(() => { open() }, 200)
+      } else {
+        open()
+      }
+    }
+
+    const hideEditor = computed(() => {
+      const selectedDrosse = Object.values(drosses.value)
+        .find(drosse => drosse.selected)
+
+      return _hideEditor.value ||
+        viewHome.value ||
+        _drosseEditing.value.uuid !== selectedDrosse.uuid
+    })
+
+    return { viewHome, editorOpened, editorTop, openEditor, hideEditor }
   }
 }
 </script>
@@ -70,6 +114,7 @@ body {
     rgba(255,77,0, .1) 75%,
     rgba(255,77,0, .1) 100%
   );
+  --s-editor-height: calc(75vh);
 
   &.dark {
     --c-app-bg: rgb(50,50,50);
@@ -125,7 +170,7 @@ button {
   min-width: 423px;
 
   main {
-    padding: 2rem 3rem 4rem;
+    padding: 2rem 3rem;
     min-height: calc(100vh - 11rem);
   }
 

@@ -5,7 +5,7 @@ const VERBS = ['get', 'post', 'put', 'patch', 'delete']
 const isVerb = type => VERBS.includes(type.toLowerCase())
 
 export default function useRoutes () {
-  const getRoutes = drosseConfig => {
+  const getRoutes = (drosseConfig, savedRoutes) => {
     const { parse } = useParser()
     const routes = []
 
@@ -31,14 +31,22 @@ export default function useRoutes () {
       .reduce((routes, route, i) => {
         let level = 0
         let fullPath = ''
+        let savedRoute
 
         if (!route.paths.length) {
-          routes.push({ level, path: '/', fullPath: '/' })
+          savedRoute = savedRoutes.find(r => r.fullPath === '/')
+          routes.push({
+            level, path: '/',
+            fullPath: '/',
+            opened: savedRoute?.opened
+          })
         }
 
         for (const path of route.paths) {
           level++
           fullPath += `/${path}`
+
+          savedRoute = savedRoutes.find(r => r.fullPath === fullPath)
 
           if (!routes.find(r => r.fullPath === fullPath)) {
             routes.push({
@@ -47,7 +55,7 @@ export default function useRoutes () {
               path: `/${path}`,
               fullPath,
               virtual: true,
-              opened: false
+              opened: savedRoute?.opened
             })
           }
         }

@@ -124,7 +124,7 @@ export default {
     isParent: Boolean,
     editing: Boolean
   },
-  setup (props, { $emit }) {
+  setup (props, { emit }) {
     const selectedVerb = computed(() => props.route.selected === 'global'
       ? props.route.global
       : props.route.verbs?.find(verb => verb.type === props.route.selected)
@@ -169,7 +169,7 @@ export default {
 
     const onHandlerClick = type => {
       if (handler.value === type) {
-        $emit('toggle-editor', handlerValue.value)
+        emit('toggle-editor', handlerValue.value)
       }
     }
 

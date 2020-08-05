@@ -21,29 +21,24 @@
     <div class="routes-container">
       <Routes :class="{ showVirtual }">
         <template v-for="(route, i) in routes">
-          <Route
-            v-if="i === 0 ? true : showRoute(route)"
-            :key="route.fullPath"
-            :route="route"
-            :show-virtual="showVirtual"
-            :isParent="isParent(route)"
-            :editing="editorOpened === i"
-            class="route"
-            @toggle="route.opened = !route.opened"
-            @toggle-editor="toggleEditor(i, $event)"
-          />
-          <div
-            :key="`editor.${route.fullPath}`"
-            :class="['editor-offset', { opened: editorOpened === i }]"
-          />
+          <template v-if="i === 0 ? true : showRoute(route)">
+            <Route
+              :key="route.fullPath"
+              :route="route"
+              :show-virtual="showVirtual"
+              :isParent="isParent(route)"
+              :editing="editorOpened === i"
+              class="route"
+              @toggle="toggleRoute(i, route)"
+              @toggle-editor="toggleEditor(i, $event)"
+            />
+            <div
+              :key="`editor.${route.fullPath}`"
+              :class="['editor-placeholder', { opened: editorOpened === i }]"
+            />
+          </template>
         </template>
       </Routes>
-      <Editor
-        :class="['editor', { opened: editorOpened > -1 }]"
-        :style="{ top: `${editorTop}px` }"
-        :opened="editorOpened > -1"
-        @close="closeEditor"
-      />
     </div>
   </div>
 </template>
@@ -51,24 +46,27 @@
 <script>
 import { computed, ref } from 'vue'
 import useDrosses from '@/modules/drosses'
-import useDrosse from '@/modules/drosse'
-import useTheme from '@/modules/theme'
+import useIo from '@/modules/io'
 import useEditor from '@/modules/editor'
 import Clickable from '@/components/common/Clickable'
 import DrosseIcon from '@/components/common/DrosseIcon'
 import Input from '@/components/common/Input'
 import Routes from '@/components/route/Routes'
 import Route from '@/components/route/Route'
-import Editor from '@/components/Editor'
 
 export default {
   name: 'Detail',
-  components: { Clickable, DrosseIcon, Input, Routes, Route, Editor },
-  setup () {
+  components: { Clickable, DrosseIcon, Input, Routes, Route },
+  props: {
+    editorOpened: Number
+  },
+  setup (props, { emit }) {
     const { drosses } = useDrosses()
-    const { theme } = useTheme()
-    const { load, unload } = useEditor()
-    const { loadHandler } = useDrosse()
+    const { fetchHandler, saveDrosses } = useIo()
+    const { setContent } = useEditor()
+
+    let editingIndex = -1
+    const showVirtual = ref(true)
 
     const drosse = computed(() => Object.values(drosses.value)
       .find(drosse => drosse.selected))
@@ -77,63 +75,61 @@ export default {
       .filter(route => showVirtual.value ? route : !route.virtual)
     )
 
-    const showRoute = route => !routes.value
-      .filter(
-        r => r.level < route.level &&
-        route.fullPath.includes(r.fullPath)
-      )
-      .some(parent => !parent.opened)
+    const showRoute = route => !routes.value.filter(
+      r => r.level < route.level &&
+      route.fullPath.includes(r.fullPath)
+    ).some(parent => !parent.opened)
 
     const isParent = route => Boolean(routes.value.find(
       r => r.level > route.level &&
       r.fullPath.includes(route.fullPath)
     ))
 
-    const showVirtual = ref(true)
-    const editorOpened = ref(-1)
-    const editorTop = ref(0)
+    const getRouteTop = index => {
+      return routes.value
+        .filter((route, i) => i < index && showRoute(route)).length
+    }
+
+    const toggleRoute = (index, route) => {
+      route.opened = !route.opened
+      emit('update-top', getRouteTop(editingIndex))
+      saveDrosses(drosses.value)
+    }
 
     const toggleEditor = async (index, handlerValue) => {
-      const toggle = index => {
-        const closedParents = routes.value
-          .filter(r => r.level < index && isParent(r) && !r.opened).length
+      editingIndex = props.editorOpened
 
-        editorOpened.value = editorOpened.value > -1 ? -1 : index
-        editorTop.value = 40 + ((index - closedParents) * 38) // 38 = 2.5rem with 16px base
+      let delay = false
+
+      const toggle = index => {
+        editingIndex = editingIndex > -1 ? -1 : index
       }
 
-      const editing = editorOpened.value
-
-      if (editing > -1 && editing !== index) {
-        toggle(editing)
-        setTimeout(() => { unload() }, 250)
+      if (editingIndex > -1 && editingIndex !== index) {
+        delay = true
+        toggle(editingIndex)
+        emit('close-editor')
       }
 
       toggle(index)
 
-      if (editorOpened.value > -1) {
+      if (editingIndex > -1) {
         const isPath = handlerValue.startsWith('./')
-        const value = isPath
-          ? await loadHandler(drosse.value, handlerValue)
-          : handlerValue
+        const { content, language } = isPath
+          ? await fetchHandler(drosse.value, handlerValue)
+          : { content: handlerValue, language: 'json' }
 
-        const language = isPath && handlerValue.endsWith('.json') || !isPath
-          ? 'json'
-          :'javascript'
-
-        load({
-          container: document.getElementById('editor'),
-          theme: theme.value,
-          value,
-          language
+        setContent(content, language)
+        emit('open-editor', {
+          index: editingIndex,
+          top: getRouteTop(index),
+          drosse: drosse.value,
+          hide: index > -1 && !showRoute(routes.value[index]),
+          delay
         })
       } else {
-        setTimeout(() => { unload() }, 250)
+        emit('close-editor')
       }
-    }
-
-    const closeEditor = () => {
-      editorOpened.value = -1
     }
 
     return {
@@ -142,10 +138,8 @@ export default {
       showRoute,
       isParent,
       showVirtual,
-      editorOpened,
-      editorTop,
-      toggleEditor,
-      closeEditor
+      toggleRoute,
+      toggleEditor
     }
   }
 }
@@ -192,33 +186,14 @@ h2 {
   position: relative;
 }
 
-.editor,
-.editor-offset {
+.editor-placeholder {
+  display: table-row;
   height: 0;
   will-change: height;
   transition: height .2s ease-in-out;
-}
-
-.editor {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 0;
 
   &.opened {
-    margin-top: 1rem;
-    height: calc(100vh - 28rem);
-    min-height: 35rem;
-  }
-}
-
-.editor-offset {
-  display: table-row;
-
-  &.opened {
-    height: calc(100vh - 27rem);
-    min-height: 39rem;
+    height: var(--s-editor-height);
   }
 }
 

@@ -1,21 +1,14 @@
 import * as SockJS from 'sockjs-client'
 import { computed, ref } from 'vue'
-import useRoutes from '@/modules/routes'
+import useRoutes from './routes'
+import useIo from './io'
 
 const { getRoutes } = useRoutes()
+const { fetchDrosses, saveDrosses } = useIo()
 
-const endpoint = '/drosses'
 const sock = new SockJS('/drosse')
 const drosses = ref({})
 const loaded = false
-
-const persist = () => {
-  fetch(endpoint, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(drosses.value)
-  })
-}
 
 sock.onmessage = async e => {
   const data = JSON.parse(e.data)
@@ -31,7 +24,8 @@ sock.onmessage = async e => {
     try {
       const response = await fetch(`${proto}://${hosts[0]}:${port}/UI`)
       const config = await response.json()
-      drosses.value[uuid].routes = getRoutes(config)
+      drosses.value[uuid].routes = getRoutes(config, drosses.value[uuid].routes)
+      // persist()
     } catch (e) {
       console.error(e)
     }
@@ -54,8 +48,7 @@ export default function useDrosses () {
       return drosses
     }
 
-    const response = await fetch(endpoint)
-    drosses.value = await response.json()
+    drosses.value = await fetchDrosses()
 
     return drosses
   }
@@ -67,20 +60,20 @@ export default function useDrosses () {
 
     drosses.value[uuid].open = true
     drosses.value[uuid].selected = true
-    persist()
+    saveDrosses(drosses.value)
   }
 
   const closeDrosse = uuid => {
     drosses.value[uuid].open = false
     drosses.value[uuid].selected = false
-    persist()
+    saveDrosses(drosses.value)
   }
 
   const openHome = () => {
     for (const uuid of Object.keys(drosses.value)) {
       drosses.value[uuid].selected = false
     }
-    persist()
+    saveDrosses(drosses.value)
   }
 
   const viewHome = computed(() => !Object.values(drosses.value)

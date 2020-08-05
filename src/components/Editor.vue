@@ -1,6 +1,9 @@
 <template>
-  <div :class="['Editor', { opened }]">
-    <div v-show="opened" class="container">
+  <div
+    :class="['Editor', { opened, hidden }]"
+    :style="{ top: `${top * 2.5}rem` }"
+  >
+    <div class="container">
       <div class="editor-container">
         <div id="editor" />
       </div>
@@ -21,7 +24,7 @@
 </template>
 
 <script>
-import { ref, watchEffect } from 'vue'
+import { onMounted, onUnmounted, ref, watchEffect } from 'vue'
 import useEditor from '@/modules/editor'
 import useTheme from '@/modules/theme'
 import Button from '@/components/common/Button'
@@ -30,26 +33,53 @@ export default {
   name: 'Editor',
   components: { Button },
   props: {
-    opened: Boolean
+    opened: Boolean,
+    hidden: Boolean,
+    top: Number
   },
   setup () {
-    const editor = ref(null)
-    const { switchTheme } = useEditor()
+    const initialized = ref(false)
+    const { load, switchTheme, unload } = useEditor()
     const { theme } = useTheme()
+
+    onMounted(() => {
+      load(document.getElementById('editor'), theme.value)
+      initialized.value = true
+    })
+
+    onUnmounted(() => { unload() })
 
     watchEffect(() => {
       switchTheme(theme.value)
     })
 
-    return { editor, theme }
+    return { initialized, theme }
   }
 }
 </script>
 
 <style lang="postcss" scoped>
 .Editor {
+  position: absolute;
+  margin: 11.25rem 0 .75rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
   display: flex;
-  z-index: 0;
+  visiblity: visible;
+  pointer-events: all;
+  will-change: height;
+  transition: height .2s ease-in-out;
+
+  &.opened {
+    height: var(--s-editor-height);
+  }
+
+  &.hidden {
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 .container {
@@ -67,7 +97,7 @@ export default {
   top: 0;
   right: 0;
   width: 100%;
-  height: 100%;
+  height: calc(75vh - 4rem);
   font-size: 1rem;
 }
 
@@ -81,12 +111,5 @@ export default {
 
 .cancel {
   margin-right: 1rem;
-}
-
-/* Colors */
-#editor {
-  background-color: var(--c-tabbar-bg);
-  will-change: background-color, border-color;
-  transition: background-color .2s ease-in-out, border-color .2s ease-in-out;
 }
 </style>
