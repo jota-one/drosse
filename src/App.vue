@@ -10,7 +10,7 @@
           :editor-opened="editorOpened"
           @open-editor="openEditor($event)"
           @close-editor="editorOpened = -1"
-          @update-top="editorTop = $event"
+          @update-editor="updateEditor($event)"
         />
         <Editor
           :hidden="hideEditor"
@@ -55,13 +55,16 @@ export default {
         _drosseEditing.value = drosse
       }
 
-      console.log({delay})
-
       if (delay) {
         setTimeout(() => { open() }, 200)
       } else {
         open()
       }
+    }
+
+    const updateEditor = ({ top, hide }) => {
+      editorTop.value = top
+      _hideEditor.value = hide
     }
 
     const hideEditor = computed(() => {
@@ -73,7 +76,14 @@ export default {
         _drosseEditing.value.uuid !== selectedDrosse.uuid
     })
 
-    return { viewHome, editorOpened, editorTop, openEditor, hideEditor }
+    return {
+      viewHome,
+      editorOpened,
+      editorTop,
+      openEditor,
+      updateEditor,
+      hideEditor
+    }
   }
 }
 </script>

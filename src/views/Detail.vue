@@ -85,14 +85,21 @@ export default {
       r.fullPath.includes(route.fullPath)
     ))
 
-    const getRouteTop = index => {
+    const getRouteTop = () => {
       return routes.value
-        .filter((route, i) => i < index && showRoute(route)).length
+        .filter((route, i) => i < editingIndex && showRoute(route)).length
+    }
+
+    const hideEditor = () => {
+      return editingIndex > -1 && !showRoute(routes.value[editingIndex])
     }
 
     const toggleRoute = (index, route) => {
       route.opened = !route.opened
-      emit('update-top', getRouteTop(editingIndex))
+      emit('update-editor', {
+        top: getRouteTop(),
+        hide: hideEditor()
+      })
       saveDrosses(drosses.value)
     }
 
@@ -122,9 +129,9 @@ export default {
         setContent(content, language)
         emit('open-editor', {
           index: editingIndex,
-          top: getRouteTop(index),
+          top: getRouteTop(),
           drosse: drosse.value,
-          hide: index > -1 && !showRoute(routes.value[index]),
+          hide: hideEditor(),
           delay
         })
       } else {
