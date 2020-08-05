@@ -1,21 +1,47 @@
+import endpoints from '@/config/endpoints'
 
 export default function useIo () {
   const fetchDrosses = async () => {
-    const response = await fetch('/drosses')
-    return response.json()
+    try {
+      const response = await fetch(endpoints.drosses)
+      return response.json()
+    } catch (e) {
+      console.error(e)
+    }
+
+    return
+  }
+
+  const fetchConfig = async drosse => {
+    const hosts = drosse.hosts
+    const port = drosse.port
+    const proto = drosse.proto
+
+    try {
+      const response = await fetch(`${proto}://${hosts[0]}:${port}/UI`)
+      return response.json()
+    } catch (e) {
+      console.error(e)
+    }
+
+    return
   }
 
   const saveDrosses = drosses => {
-    fetch('/drosses', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(drosses)
-    })
+    try {
+      fetch(endpoints.drosses, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(drosses)
+      })
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   const fetchHandler = async (drosse, file) => {
     try {
-      const response = await fetch('/file', {
+      const response = await fetch(endpoints.file, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uuid: drosse.uuid, file })
@@ -35,5 +61,5 @@ export default function useIo () {
     }
   }
 
-  return { fetchDrosses, fetchHandler, saveDrosses }
+  return { fetchConfig, fetchDrosses, fetchHandler, saveDrosses }
 }

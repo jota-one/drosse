@@ -1,12 +1,13 @@
 import * as SockJS from 'sockjs-client'
 import { computed, ref } from 'vue'
+import endpoints from '@/config/endpoints'
 import useRoutes from './routes'
 import useIo from './io'
 
 const { getRoutes } = useRoutes()
-const { fetchDrosses, saveDrosses } = useIo()
+const { fetchConfig, fetchDrosses, saveDrosses } = useIo()
 
-const sock = new SockJS('/drosse')
+const sock = new SockJS(endpoints.ws)
 const drosses = ref({})
 const loaded = false
 
@@ -17,17 +18,11 @@ sock.onmessage = async e => {
   if (data.event === 'up') {
     drosses.value[uuid] = data.drosse
 
-    const hosts = data.drosse.hosts
-    const port = data.drosse.port
-    const proto = data.drosse.proto
+    const config = await fetchConfig(data.drosse)
 
-    try {
-      const response = await fetch(`${proto}://${hosts[0]}:${port}/UI`)
-      const config = await response.json()
+    if (config) {
       drosses.value[uuid].routes = getRoutes(config, drosses.value[uuid].routes)
-      // persist()
-    } catch (e) {
-      console.error(e)
+      saveDrosses(drosses.value)
     }
   }
 
@@ -48,7 +43,11 @@ export default function useDrosses () {
       return drosses
     }
 
-    drosses.value = await fetchDrosses()
+    const _drosses = await fetchDrosses()
+
+    if (_drosses) {
+      drosses.value = _drosses
+    }
 
     return drosses
   }
