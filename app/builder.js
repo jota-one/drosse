@@ -11,8 +11,8 @@ const createRoute = function (def, root) {
   if (def.get) {
     app.get('/' + root.join('/'), (req, res, next) => {
       if (def.get.service) {
-        const api = require('./api')(req)
-        const service = loadService(root)
+        const api = require('./api')(req, res)
+        const service = loadService(root, 'get')
         return res.send(service(api))
       }
       if (def.get.static) {
@@ -26,6 +26,11 @@ const createRoute = function (def, root) {
 
   if (def.post) {
     app.post('/' + root.join('/'), (req, res, next) => {
+      if (def.post.service) {
+        const api = require('./api')(req, res)
+        const service = loadService(root, 'post')
+        return res.send(service(api))
+      }
       if (def.post.static) {
         const file = loadStatic(root, req.params, 'post')
         return res.send(file)

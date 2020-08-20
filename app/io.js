@@ -23,16 +23,16 @@ const loadRcFile = () => {
   }
 }
 
-const loadService = (routePath) => {
+const loadService = (routePath, verb) => {
   const serviceFile = path.join(
     state.get('root'),
     state.get('servicesPath'),
     routePath.filter(el => el[0] !== ':').join('.')
-  )
+  ) + `.${verb}.js`
 
-  if (!fs.existsSync(serviceFile + '.js')) {
+  if (!fs.existsSync(serviceFile)) {
     return function (api) {
-      console.log(`service [${serviceFile}.js] not found`)
+      console.log(`service [${serviceFile}] not found`)
     }
   }
 
