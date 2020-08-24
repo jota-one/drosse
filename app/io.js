@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const { isEmpty } = require('lodash')
 const { v4: uuidv4 } = require('uuid')
-const { resolveExpress } = require('./strings')
+const { resolveExpress } = require('@jota-one/replacer')
 const useState = require('./use/state')
 const state = useState()
 
