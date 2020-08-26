@@ -24,7 +24,10 @@ import Clickable from '@/components/common/Clickable'
 
 export default {
   name: 'FilterBar',
-  components: { Clickable }
+  components: { Clickable },
+  props: {
+    showVirtual: Boolean
+  }
 }
 </script>
 

@@ -100,7 +100,7 @@ export default function useRoutes () {
           realRoute.global = route.global
           realRoute.selected = 'global'
         } else {
-          realRoute.selected = savedRoute.selected || realRoute.verbs[0]?.type
+          realRoute.selected = savedRoute?.selected || realRoute.verbs[0]?.type
         }
 
         return routes

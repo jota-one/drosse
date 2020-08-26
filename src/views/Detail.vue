@@ -13,7 +13,7 @@
     </section>
     <div class="routes-container">
       <Routes
-        :class="{ showVirtual }"
+        :show-virtual="showVirtual"
         @toggle-virtual="showVirtual = !showVirtual"
       >
         <template v-for="(route, i) in routes">

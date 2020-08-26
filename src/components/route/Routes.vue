@@ -2,6 +2,7 @@
   <div class="Routes">
     <div class="list">
       <FilterBar
+        :show-virtual="showVirtual"
         @toggle-virtual="$emit('toggle-virtual')"
       />
       <slot />
@@ -16,7 +17,10 @@ import FilterBar from './FilterBar'
 
 export default {
   name: 'Routes',
-  components: { Add, FilterBar }
+  components: { Add, FilterBar },
+  props: {
+    showVirtual: Boolean
+  }
 }
 </script>
 
