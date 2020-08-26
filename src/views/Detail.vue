@@ -5,7 +5,12 @@
   }]">
     <h2><Input :value="drosse.name" /></h2>
     <section class="config">
-      <DrosseIcon big :up="drosse.up" :available="drosse.available" />
+      <DrosseIcon
+        big
+        :up="drosse.up"
+        :available="drosse.available"
+        :uuid="drosse.uuid"
+      />
       <div class="port">
         :<Input class="input" :value="drosse.port" />
       </div>

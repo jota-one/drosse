@@ -61,5 +61,49 @@ export default function useIo () {
     }
   }
 
-  return { fetchConfig, fetchDrosses, fetchHandler, saveDrosses }
+  const start = async uuid => {
+    try {
+      await fetch(endpoints.start, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uuid })
+      })
+    } catch(e) {
+      console.error(e)
+    }
+  }
+
+  const stop = async uuid => {
+    try {
+      await fetch(endpoints.stop, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uuid })
+      })
+    } catch(e) {
+      console.error(e)
+    }
+  }
+
+  const restart = async uuid => {
+    try {
+      await fetch(endpoints.restart, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uuid })
+      })
+    } catch(e) {
+      console.error(e)
+    }
+  }
+
+  return {
+    fetchConfig,
+    fetchDrosses,
+    fetchHandler,
+    saveDrosses,
+    start,
+    stop,
+    restart
+  }
 }

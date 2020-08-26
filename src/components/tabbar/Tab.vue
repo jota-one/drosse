@@ -1,6 +1,11 @@
 <template>
   <div :class="['Tab', { selected, unavailable: !available }]">
-    <DrosseIcon small :up="up" :available="available" />
+    <DrosseIcon
+      small
+      :up="up"
+      :available="available"
+      :uuid="uuid"
+    />
     <button class="name" @click="$emit('select')">
       {{ name }}
     </button>

@@ -1,5 +1,8 @@
 <template>
-  <button :class="['DrosseIcon', { available, up, small, big }]">
+  <button
+    :class="['DrosseIcon', { available, up, small, big }]"
+    @click="onDrosseClick"
+  >
     <svg v-if="available" class="drosse" viewBox="0 0 27 25" >
       <path
         class="inner-wheel"
@@ -27,13 +30,29 @@
 </template>
 
 <script>
+import useIo from '@/modules/io'
+
 export default {
   name: 'DrosseIcon',
   props: {
     available: Boolean,
+    uuid: String,
     up: Boolean,
     small: Boolean,
     big: Boolean
+  },
+  setup (props) {
+    const { start, stop } = useIo()
+
+    const onDrosseClick = () => {
+      if (props.up) {
+        stop(props.uuid)
+      } else {
+        start(props.uuid)
+      }
+    }
+
+    return { onDrosseClick }
   }
 }
 </script>

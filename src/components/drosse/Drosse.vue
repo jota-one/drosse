@@ -1,7 +1,11 @@
 <template>
   <div :class="['Drosse', { up: drosse.up, unavailable: !drosse.available }]">
     <div class="col">
-      <DrosseIcon :up="drosse.up" :available="drosse.available" />
+      <DrosseIcon
+        :up="drosse.up"
+        :available="drosse.available"
+        :uuid="drosse.uuid"
+      />
     </div>
     <div class="col port">{{ drosse.port }}</div>
     <div class="col">

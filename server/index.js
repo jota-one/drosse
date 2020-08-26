@@ -77,7 +77,7 @@ echo.on('connection', conn => {
     const adv = data.advertisement
     if (!adv) return
     if (!adv.isDrosse) return
-    up(adv, conn)
+    // up(adv, conn)
   })
 
   d.join('up', drosse => { up(drosse, conn) })
@@ -102,6 +102,21 @@ app.post('/file', (req, res) => {
   const filePath = path.join(drosses[req.body.uuid].root, req.body.file)
   const content = fs.readFileSync(filePath, 'utf8')
   res.send({ content })
+})
+
+app.put('/start', (req, res) => {
+  d.send('start', req.body.uuid)
+  res.send()
+})
+
+app.put('/stop', (req, res) => {
+  d.send('stop', req.body.uuid)
+  res.send()
+})
+
+app.put('/restart', (req, res) => {
+  d.send('restart', req.body.uuid)
+  res.send()
 })
 
 if (env === 'production') {
