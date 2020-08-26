@@ -3,7 +3,7 @@
     <div class="col">
       <div class="inner">
         <Clickable
-          :class="['flatten-icon', { showVirtual }]"
+          :class="['flatten-icon', { flatten: !showVirtual }]"
           icon="flatten"
           @click="$emit('toggle-virtual')"
         />
@@ -60,11 +60,9 @@ export default {
 
 .flatten-icon {
   fill: var(--c-gray-inactive);
-  will-change: fill;
-  transition: fill .2s ease-in-out;
 
   &:hover,
-  .showVirtual & {
+  &.flatten {
     fill: var(--c-green);
   }
 }
