@@ -61,7 +61,7 @@ export default {
 <style lang="postcss" scoped>
 .Input {
   position: relative;
-  padding: .35rem .25rem;
+  padding: .35rem .5rem .35rem .25rem;
   border: 1px solid transparent;
   border-radius: .25rem;
 

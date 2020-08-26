@@ -1,5 +1,5 @@
 <template>
-  <button :class="['Verb', { selected, all: type === 'all' }]">
+  <button :class="['Verb', { selected, disabled, all: type === 'all' }]">
     {{ type }}
   </button>
 </template>
@@ -15,7 +15,8 @@ export default {
       required: true,
       validator: value => TYPES.includes(value)
     },
-    selected: Boolean
+    selected: Boolean,
+    disabled: Boolean
   }
 }
 </script>
@@ -46,6 +47,7 @@ export default {
     background-color: transparent;
   }
 
+  &:hover,
   &.selected {
     border-color: var(--c-green);
     background-color: var(--c-green);
@@ -54,6 +56,11 @@ export default {
       color: var(--c-green);
       background-color: transparent;
     }
+  }
+
+  &.disabled {
+    background-size: .5rem .5rem;
+    background-image: var(--c-disabled-verb-bg);
   }
 }
 </style>

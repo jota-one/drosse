@@ -1,6 +1,9 @@
 <template>
   <div class="Routes">
     <div class="list">
+      <FilterBar
+        @toggle-virtual="$emit('toggle-virtual')"
+      />
       <slot />
     </div>
     <Add class="add-route" label="Add route" />
@@ -9,10 +12,11 @@
 
 <script>
 import Add from '@/components/common/Add'
+import FilterBar from './FilterBar'
 
 export default {
   name: 'Routes',
-  components: { Add }
+  components: { Add, FilterBar }
 }
 </script>
 

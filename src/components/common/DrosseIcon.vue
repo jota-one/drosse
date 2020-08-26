@@ -66,8 +66,8 @@ export default {
   height: 4rem;
   margin: -.5rem 0 0 -1rem;
   transform: rotate(-45deg);
-  will-change: fill, transform;
-  transition: fill .2s ease-in-out, transform .2s ease-in-out;
+  will-change: transform;
+  transition: transform .2s ease-in-out;
 
   .big & {
     width: 5.5rem;
@@ -107,6 +107,8 @@ export default {
 .bar,
 .handle {
   fill: var(--c-gray-inactive);
+  will-change: fill;
+  transition: fill .2s ease-in-out;
 
   .up & {
     fill: var(--c-green);
@@ -116,6 +118,8 @@ export default {
 .inner-wheel {
   fill: var(--c-gray-active);
   opacity: .5;
+  will-change: fill, opacity;
+  transition: fill .2s ease-in-out, opacity .2s ease-in-out;
 
   .up & {
     fill: var(--c-green-light);

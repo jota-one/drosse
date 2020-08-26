@@ -1,26 +1,57 @@
 import useParser from '@jota-one/drosse/app/use/parser'
 
-const VERBS = ['get', 'post', 'put', 'patch', 'delete']
+const VERBS = ['delete', 'get', 'patch', 'post', 'put']
+const HANDLERS = ['body', 'proxy', 'service', 'static']
 
 const isVerb = type => VERBS.includes(type.toLowerCase())
+const isHandler = type => HANDLERS.includes(type.toLowerCase())
+
+const handleDetail = (detail, { type, handler }) => {
+  if (type === 'disabled') {
+    detail.disabled = handler
+  } else if (type === 'proxy') {
+    detail.type = 'proxy'
+    detail.handler = handler
+  } else {
+    detail[type] = handler
+  }
+  return detail
+}
 
 export default function useRoutes () {
-  const getRoutes = (drosseConfig, savedRoutes) => {
+  const getRoutes = (drosseConfig, savedRoutes = []) => {
     const { parse } = useParser()
     const routes = []
 
     const onRouteDef = (def, root) => {
       const paths = root
+      const defEntries = Object.entries(def)
 
-      const global = Object.entries(def)
+      const global = defEntries
         .filter(([ type ]) => !isVerb(type))
-        .map(([ type, handler ]) => ({ type, handler }))[0]
-
-      const verbs = Object.entries(def)
-        .filter(([ type ]) => isVerb(type))
         .map(([ type, handler ]) => ({ type, handler }))
-        .sort()
+        .reduce(handleDetail, {})
 
+      const verbs = defEntries
+        .filter(([ type ]) => isVerb(type))
+        .map(([ type, verbDef ]) => {
+          const verbEntries = Object.entries(verbDef)
+
+          const handler = verbEntries
+            .filter(([ type ]) => isHandler(type))
+            .reduce((handler, [ type, value ]) => {
+              handler[type] = value
+              return handler
+            }, {})
+
+          const middlewares = verbEntries
+            .filter(([ type ]) => !isHandler(type))
+            .map(([ type, handler]) => ({ type, handler }))
+            .reduce(handleDetail, {})
+
+          return { type, handler, ...middlewares }
+        })
+        .sort()
 
       routes.push({ paths, verbs, global })
     }
@@ -64,10 +95,13 @@ export default function useRoutes () {
 
         realRoute.virtual = false
         realRoute.verbs = route.verbs
-        realRoute.global = route.global
-        realRoute.selected = realRoute.global
-          ? 'global'
-          : realRoute.verbs[0]?.type
+
+        if (route.global && Object.keys(route.global).length) {
+          realRoute.global = route.global
+          realRoute.selected = 'global'
+        } else {
+          realRoute.selected = savedRoute.selected || realRoute.verbs[0]?.type
+        }
 
         return routes
       }, [])

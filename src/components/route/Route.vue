@@ -2,18 +2,20 @@
   <div :class="['Route', {
       isParent,
       virtual: route.virtual,
-      opened: route.opened
+      opened: route.opened,
+      disabled: selectedVerb?.disabled
     }]">
-    <div class="col">
+    <div class="col def">
       <div class="inner">
         <div
           class="level"
-          :style="{ width: `${showVirtual ? route.level : 1}rem` }"
+          :style="{ width: `${(showVirtual ? route.level : 1) * 0.75}rem` }"
         />
         <Clickable
+          v-if="showVirtual"
           class="collapse"
           icon="chevron"
-          @click="$emit('toggle')"
+          @click="$emit('toggle-route')"
         />
         <Input
           class="path"
@@ -24,11 +26,14 @@
             key="all"
             type="all"
             :selected="route.selected === 'global'"
+            @click="$emit('select-verb', 'global')"
           />
           <Verb v-for="verb in route.verbs"
             :key="verb.type"
             :type="verb.type"
             :selected="route.selected === verb.type"
+            :disabled="verb.disabled"
+            @click="$emit('select-verb', verb.type)"
           />
           <Clickable
             v-if="!route.virtual"
@@ -50,7 +55,6 @@
     </div>
     <div class="col handler full">
       <div v-if="!route.virtual" class="inner">
-        <Clickable class="icon fail" icon="fail" title="Randomly fail route" />
         <Clickable
           :class="['icon', 'proxy', { active: handler === 'proxy' }]"
           icon="proxy"
@@ -75,33 +79,54 @@
           @click="onHandlerClick('body')"
         />
         <component
+          v-if="handlerValue"
           :is="inline ? 'Input' : 'button'"
           :class="['input', { inline, editing }]"
           :value="handlerValue"
           @click="!inline && $emit('toggle-editor', handlerValue)"
         >
-          <template v-if="!inline">
+          <template v-if="!inline && handlerValue">
             <Icon class="arrow-icon" name="arrow"/>
-            {{ handlerValue }}
+            {{ handlerValue.replace(/\s/g, '') }}
           </template>
         </component>
       </div>
     </div>
-    <div class="col throttle">
+    <div class="col middleware">
       <div v-if="!route.virtual" class="inner">
-        <Clickable class="icon throttle" icon="throttle" title="Throttle" />
-        <Input class="input" value="0" />
+        <Throttle :verb="selectedVerb"/>
       </div>
     </div>
-    <div class="col headers">
-      <div v-if="!route.virtual"  class="inner">
-        <Clickable class="icon" icon="header" title="Headers" />
-        <Input class="input" :value="JSON.stringify({})" />
+    <div class="col middleware">
+      <div v-if="!route.virtual" class="inner">
+        <Fail :verb="selectedVerb"/>
       </div>
     </div>
-    <div class="col delete">
-      <div v-if="!route.virtual"  class="inner">
-        <Clickable class="icon" icon="minus" title="Delete route" />
+    <div class="col middleware">
+      <div v-if="!route.virtual" class="inner">
+        <Headers :verb="selectedVerb"/>
+      </div>
+    </div>
+    <div class="col actions">
+      <div class="inner">
+        <Clickable
+          :class="['icon', { disabled: !route.virtual }]"
+          icon="plus"
+          title="Create route"
+        />
+        <Clickable
+          :class="['icon', {
+            disabled: route.virtual,
+            active: selectedVerb?.disabled
+          }]"
+          icon="disable"
+          title="Disable route"
+        />
+        <Clickable
+          :class="['icon', { disabled: route.virtual }]"
+          icon="minus"
+          title="Delete route"
+        />
       </div>
     </div>
     <div class="col end"/>
@@ -114,10 +139,13 @@ import Clickable from '@/components/common/Clickable'
 import Input from '@/components/common/Input'
 import Icon from '@/components/common/Icon'
 import Verb from './Verb'
+import Throttle from './Throttle'
+import Fail from './Fail'
+import Headers from './Headers'
 
 export default {
   name: 'Route',
-  components: { Clickable, Input, Icon, Verb },
+  components: { Clickable, Input, Icon, Verb, Throttle, Fail, Headers },
   props: {
     route: Object,
     showVirtual: Boolean,
@@ -159,7 +187,7 @@ export default {
             fileName = props.route.fullPath.split('/').slice(1).join('.')
           return `./static/${fileName}.json`
         case 'body':
-          return JSON.stringify(selectedVerb.value.handler)
+          return JSON.stringify(selectedVerb.value.handler, null, 2)
         default:
           return ''
       }
@@ -173,7 +201,7 @@ export default {
       }
     }
 
-    return { handler, handlerValue, inline, onHandlerClick }
+    return { handler, handlerValue, inline, selectedVerb, onHandlerClick }
   }
 }
 </script>
@@ -241,18 +269,21 @@ export default {
   .icon {
     height: 2rem;
     width: 2rem;
-    margin: 0 3rem;
+    margin: 0 1rem 0 3rem;
+    pointer-events: none;
   }
 }
 
 .icon {
   width: 2rem;
   height: 2rem;
+  flex-shrink: 0;
 }
 
 .input {
   margin: .25rem 0 0 .25rem;
   white-space: nowrap;
+  overflow: auto hidden;
 }
 
 .handler {
@@ -265,12 +296,16 @@ export default {
 
     &:not(.inline) {
       margin-left: .5rem;
+      display: block;
+      /* max-width: 25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; */
     }
 
     .arrow-icon {
       width: .75rem;
       height: .75rem;
-      margin-right: .5rem;
       will-change: transform;
       transition: transform .2s ease-in-out;
     }
@@ -281,17 +316,18 @@ export default {
   }
 }
 
-.throttle,
-.headers {
-  .inner {
-    position: relative;
-  }
-}
+.actions {
+  padding-left: 2rem;
 
-.delete .icon {
-  margin-top: .35rem;
-  width: 1.5rem;
-  height: 1.5rem;
+  .inner {
+    justify-content: flex-end;
+  }
+
+  .icon {
+    margin-left: .5rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
 }
 
 .end {
@@ -307,6 +343,17 @@ export default {
   &.virtual {
     color: var(--c-gray-active);
   }
+
+  &.disabled {
+    background-size: .5rem .5rem;
+    background-image: var(--c-disabled-route-bg);
+  }
+}
+
+.col {
+  .disabled &:not(.actions):not(.def) {
+    opacity: .4;
+  }
 }
 
 .collapse {
@@ -314,6 +361,12 @@ export default {
 
   .virtual & {
     fill: var(--c-gray-inactive);
+  }
+}
+
+.path {
+  .disabled & {
+    opacity: .4;
   }
 }
 
@@ -339,14 +392,6 @@ export default {
     &.proxy {
       fill: var(--c-blue);
     }
-
-    &.fail {
-      fill: var(--c-red);
-    }
-
-    &.throttle {
-      fill: var(--c-yellow);
-    }
   }
 }
 
@@ -361,6 +406,7 @@ export default {
     transition: fill .2s ease-in-out;
   }
 
+  &:not(.inline):hover,
   &.editing {
     color: var(--c-green);
 
@@ -370,12 +416,15 @@ export default {
   }
 }
 
-.throttle,
-.headers {
-  color: var(--c-gray-inactive);
-}
-
-.delete .icon {
+.actions .icon {
   fill: var(--c-gray-active);
+
+  &.disabled {
+    opacity: .175;
+  }
+
+  &.active {
+    fill: var(--c-green);
+  }
 }
 </style>

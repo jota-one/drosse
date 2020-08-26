@@ -10,16 +10,12 @@
         :<Input class="input" :value="drosse.port" />
       </div>
       <Input class="root" :value="drosse.root" />
-      <div class="spacer" />
-      <Clickable
-        class="stairs-icon"
-        icon="stairs"
-        @click="showVirtual = !showVirtual"
-      />
-      <!-- <input placeholder="Search in routes" value="" /> -->
     </section>
     <div class="routes-container">
-      <Routes :class="{ showVirtual }">
+      <Routes
+        :class="{ showVirtual }"
+        @toggle-virtual="showVirtual = !showVirtual"
+      >
         <template v-for="(route, i) in routes">
           <template v-if="i === 0 ? true : showRoute(route)">
             <Route
@@ -28,14 +24,15 @@
               :show-virtual="showVirtual"
               :isParent="isParent(route)"
               :editing="editorOpened === i"
-              class="route"
-              @toggle="toggleRoute(i, route)"
+              :class="['route', { editing: editorOpened === i }]"
+              @toggle-route="toggleRoute(i, route)"
+              @select-verb="selectVerb(route, $event)"
               @toggle-editor="toggleEditor(i, $event)"
             />
             <div
               :key="`editor.${route.fullPath}`"
-              :class="['editor-placeholder', { opened: editorOpened === i }]"
-            />
+              :class="['editor-placeholder', { editing: editorOpened === i }]"
+            ><div v-for="i in [...Array(8).keys()]" :key="i"/></div>
           </template>
         </template>
       </Routes>
@@ -48,7 +45,6 @@ import { computed, ref } from 'vue'
 import useDrosses from '@/modules/drosses'
 import useIo from '@/modules/io'
 import useEditor from '@/modules/editor'
-import Clickable from '@/components/common/Clickable'
 import DrosseIcon from '@/components/common/DrosseIcon'
 import Input from '@/components/common/Input'
 import Routes from '@/components/route/Routes'
@@ -56,7 +52,7 @@ import Route from '@/components/route/Route'
 
 export default {
   name: 'Detail',
-  components: { Clickable, DrosseIcon, Input, Routes, Route },
+  components: { DrosseIcon, Input, Routes, Route },
   props: {
     editorOpened: Number
   },
@@ -65,8 +61,8 @@ export default {
     const { fetchHandler, saveDrosses } = useIo()
     const { setContent } = useEditor()
 
-    let editingIndex = -1
     const showVirtual = ref(true)
+    let editingIndex = -1
 
     const drosse = computed(() => Object.values(drosses.value)
       .find(drosse => drosse.selected))
@@ -100,6 +96,11 @@ export default {
         top: getRouteTop(),
         hide: hideEditor()
       })
+      saveDrosses(drosses.value)
+    }
+
+    const selectVerb = (route, verb) => {
+      route.selected = verb
       saveDrosses(drosses.value)
     }
 
@@ -146,6 +147,7 @@ export default {
       isParent,
       showVirtual,
       toggleRoute,
+      selectVerb,
       toggleEditor
     }
   }
@@ -164,7 +166,6 @@ h2 {
 .config {
   display: flex;
   align-items: center;
-  margin-bottom: 1.5rem;
   font-size: 1.25rem;
   border-bottom: 1px dashed;
 }
@@ -183,12 +184,6 @@ h2 {
   font-size: .9rem;
 }
 
-.stairs-icon {
-  width: 2.25rem;
-  height: 2.25rem;
-  flex-shrink: 0;
-}
-
 .routes-container {
   position: relative;
 }
@@ -199,8 +194,12 @@ h2 {
   will-change: height;
   transition: height .2s ease-in-out;
 
-  &.opened {
+  &.editing {
     height: var(--s-editor-height);
+  }
+
+  div {
+    display: table-cell;
   }
 }
 
@@ -217,14 +216,11 @@ h2 {
   border-bottom-color: var(--c-gray-inactive);
 }
 
-.stairs-icon {
-  fill: var(--c-gray-inactive);
-  will-change: fill;
-  transition: fill .2s ease-in-out;
-
+.route,
+.editor-placeholder {
   &:hover,
-  .showVirtual & {
-    fill: var(--c-green);
+  &.editing {
+    background: var(--c-route-hover);
   }
 }
 </style>

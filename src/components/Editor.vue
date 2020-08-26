@@ -11,11 +11,11 @@
         <Button
           secondary
           class="cancel"
-          label="cancel"
+          label="Cancel"
           @click="$emit('close')"
         />
         <Button
-          label="save"
+          label="Save"
           @click="$emit('close')"
         />
       </div>
@@ -61,10 +61,10 @@ export default {
 <style lang="postcss" scoped>
 .Editor {
   position: absolute;
-  margin: 11.25rem 0 .75rem;
+  margin: 12.5rem 0 .75rem;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: 1rem;
+  width: calc(100% - 2rem);
   height: 0;
   display: flex;
   visiblity: visible;
@@ -102,8 +102,7 @@ export default {
 }
 
 .actions {
-  height: 3.5rem;
-  padding: 1rem;
+  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: flex-end;

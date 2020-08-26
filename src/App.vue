@@ -126,10 +126,44 @@ body {
   );
   --s-editor-height: calc(75vh);
 
+  * {
+    scrollbar-width: thin;
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border-radius: 0;
+    border: 0;
+  }
+
   &.dark {
     --c-app-bg: rgb(50,50,50);
     --c-black: rgb(0,0,0);
     --c-blue: rgb(52,212,246);
+    --c-disabled-route-bg: linear-gradient(
+      135deg,
+      transparent 25%,
+      rgba(0,0,0, .2) 25%,
+      rgba(0,0,0, .2) 50%,
+      transparent 50%,
+      transparent 75%,
+      rgba(0,0,0, .2) 75%,
+      rgba(0,0,0, .2) 100%
+    );
+    --c-disabled-verb-bg: linear-gradient(
+      135deg,
+      transparent 25%,
+      rgba(0,0,0, .35) 25%,
+      rgba(0,0,0, .35) 50%,
+      transparent 50%,
+      transparent 75%,
+      rgba(0,0,0, .35) 75%,
+      rgba(0,0,0, .35) 100%
+    );
     --c-gray-active: rgb(150,150,150);
     --c-gray-inactive: rgb(95,95,95);
     --c-green: rgb(52,246,107);
@@ -137,15 +171,48 @@ body {
     --c-help: rgb(44,147,241);
     --c-pink: rgb(203,93,205);
     --c-red: rgb(255,77,0);
+    --c-route-hover: rgb(0,0,0, .15);
     --c-tabbar-bg: rgb(25,25,25);
     --c-white: rgb(255,255,255);
     --c-yellow: rgb(255,230,0);
+
+    * {
+      scrollbar-color: rgba(255,255,255, .2) rgba(0,0,0, .2);
+    }
+
+    *::-webkit-scrollbar-track {
+      background: rgba(0,0,0, .2);
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: rgba(255,255,255, .2);
+    }
   }
 
   &.light {
     --c-app-bg: rgb(255,255,255);
     --c-black: rgb(255,255,255);
     --c-blue: rgb(52,212,246);
+    --c-disabled-route-bg: linear-gradient(
+      135deg,
+      transparent 25%,
+      rgba(0,0,0, .075) 25%,
+      rgba(0,0,0, .075) 50%,
+      transparent 50%,
+      transparent 75%,
+      rgba(0,0,0, .075) 75%,
+      rgba(0,0,0, .075) 100%
+    );
+    --c-disabled-verb-bg: linear-gradient(
+      135deg,
+      transparent 25%,
+      rgba(255,255,255, .35) 25%,
+      rgba(255,255,255, .35) 50%,
+      transparent 50%,
+      transparent 75%,
+      rgba(255,255,255, .35) 75%,
+      rgba(255,255,255, .35) 100%
+    );
     --c-gray-active: rgb(115,115,115);
     --c-gray-inactive: rgb(170,170,170);
     --c-green: rgb(21,222,78);
@@ -153,9 +220,22 @@ body {
     --c-help: rgb(44,147,241);
     --c-pink: rgba(203,93,205, .75);
     --c-red: rgb(255,77,0);
+    --c-route-hover: rgb(0,0,0, .05);
     --c-tabbar-bg: rgb(230,230,230);
     --c-white: rgb(0,0,0);
     --c-yellow: rgb(255,230,0);
+
+    * {
+      scrollbar-color: rgba(200,200,200, .4) rgba(0,0,0, .05);
+    }
+
+    *::-webkit-scrollbar-track {
+      background: rgba(0,0,0, .05);
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: rgba(200,200,200, .4);
+    }
   }
 }
 

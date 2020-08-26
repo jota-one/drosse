@@ -9,8 +9,11 @@ export default function useEditor () {
     editor = monaco.editor.create(container, {
       automaticLayout: true,
       scrollbar: {
-          vertical: 'auto',
-          horizontal: 'auto'
+        vertical: 'auto',
+        horizontal: 'auto'
+      },
+      minimap: {
+        enabled: false
       },
       fontLigatures: true,
       fontFamily: 'Fira Code',
