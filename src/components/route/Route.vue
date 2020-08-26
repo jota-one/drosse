@@ -172,6 +172,9 @@ export default {
 
     const handlerValue = computed(() => {
       let fileName
+      const verb = selectedVerb.value.type === 'all'
+        ? ''
+        : selectedVerb.value.type
 
       switch (handler.value) {
         case 'proxy':
@@ -181,7 +184,7 @@ export default {
             .split('/')
             .slice(1)
             .filter(p => !p.startsWith(':'))
-            .join('.')
+            .join('.') + `.${verb}`
           return `./services/${fileName}.js`
         case 'static':
             fileName = props.route.fullPath.split('/').slice(1).join('.')
