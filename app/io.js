@@ -6,12 +6,23 @@ const { resolveExpress } = require('@jota-one/replacer')
 const useState = require('./use/state')
 const state = useState()
 
-const checkRootFile = () => {
-  const getRootFile = ext => path.join(
+const checkRoutesFile = () => {
+  const getRoutesFile = ext => path.join(
     state.get('root'), `${state.get('routesFile')}.${ext}`
   )
 
-  return fs.existsSync(getRootFile('js')) || fs.existsSync(getRootFile('json'))
+  const isJs = fs.existsSync(getRoutesFile('js'))
+  const isJson = fs.existsSync(getRoutesFile('json'))
+
+  if (isJs) {
+    state.set('_routesFile', getRoutesFile('js'))
+    return true
+  } else if (isJson) {
+    state.set('_routesFile', getRoutesFile('json'))
+    return true
+  } else {
+    return false
+  }
 }
 
 const loadRcFile = () => {
@@ -68,12 +79,13 @@ const loadUuid = () => {
   state.merge({ uuid: fs.readFileSync(uuidFile, 'utf8') })
 }
 
-const routes = () => require(
-  path.join(state.get('root'), state.get('routesFile'))
-)
+const routes = () => {
+  const content = fs.readFileSync(state.get('_routesFile'), 'utf8')
+  return JSON.parse(content)
+}
 
 module.exports = {
-  checkRootFile,
+  checkRoutesFile,
   loadRcFile,
   loadService,
   loadStatic,

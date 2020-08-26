@@ -3,9 +3,10 @@ const useParser = require('./use/parser')
 const { loadService, loadStatic } = require('./io')
 
 const { parse } = useParser()
-const proxies = []
+let proxies
 
 const createRoute = function (def, root) {
+  proxies = []
   const app = this
 
   if (def.get) {
