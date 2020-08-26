@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const { isEmpty } = require('lodash')
 const { v4: uuidv4 } = require('uuid')
-const { resolveExpress } = require('@jota-one/replacer')
+const { replaceExpress } = require('@jota-one/replacer')
 const useState = require('./use/state')
 const state = useState()
 
@@ -51,17 +51,19 @@ const loadService = (routePath, verb) => {
 }
 
 const loadStatic = (routePath, params = {}, verb = null) => {
-  const staticFile = resolveExpress(path.join(
+  const staticFile = replaceExpress(path.join(
     state.get('root'),
     state.get('staticPath'),
     routePath.join('.').concat((verb ? `.${verb}` : ''))
   ), params)
 
   if (!fs.existsSync(staticFile + '.json')) {
+    console.log(`loadStatic: tried with [${staticFile}]. File not found.`)
     if (verb) {
       return loadStatic(routePath, params)
     }
     if (!isEmpty(params)) {
+      console.log(`loadStatic: tried with [${staticFile}]. File not found.`)
       return loadStatic(routePath)
     }
     return { drosse: `file [${staticFile}.json] not found.` }
