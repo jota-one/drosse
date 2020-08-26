@@ -47,10 +47,12 @@ const loadStatic = (routePath, params = {}, verb = null) => {
   ), params)
 
   if (!fs.existsSync(staticFile + '.json')) {
+    console.log(`loadStatic: tried with [${staticFile}]. File not found.`)
     if (verb) {
       return loadStatic(routePath, params)
     }
     if (!isEmpty(params)) {
+      console.log(`loadStatic: tried with [${staticFile}]. File not found.`)
       return loadStatic(routePath)
     }
     return { drosse: `file [${staticFile}.json] not found.` }
