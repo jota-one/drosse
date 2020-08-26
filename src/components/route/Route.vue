@@ -170,11 +170,12 @@ export default {
         : Object.keys(selectedVerb?.value?.handler)[0]
     })
 
+    const selectedVerbType = computed(() => selectedVerb.value?.type === 'all'
+      ? ''
+      : selectedVerb.value?.type)
+
     const handlerValue = computed(() => {
       let fileName
-      const verb = selectedVerb.value.type === 'all'
-        ? ''
-        : selectedVerb.value.type
 
       switch (handler.value) {
         case 'proxy':
@@ -184,7 +185,7 @@ export default {
             .split('/')
             .slice(1)
             .filter(p => !p.startsWith(':'))
-            .join('.') + `.${verb}`
+            .join('.') + (selectedVerbType.value && `.${selectedVerbType.value}`)
           return `./services/${fileName}.js`
         case 'static':
             fileName = props.route.fullPath.split('/').slice(1).join('.')

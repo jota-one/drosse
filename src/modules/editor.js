@@ -16,7 +16,7 @@ export default function useEditor () {
         enabled: false
       },
       fontLigatures: true,
-      fontFamily: 'Fira Code',
+      fontFamily: 'FiraCode',
       fontSize: 13.5,
       tabSize: 2,
       theme: getTheme(theme),
