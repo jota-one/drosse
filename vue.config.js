@@ -1,3 +1,4 @@
+const endpoints = require('./src/config/endpoints')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 module.exports = {
@@ -16,16 +17,11 @@ module.exports = {
     ])
   },
   devServer: {
-    proxy: {
-      '/drosse': {
-        target: `http://localhost:${process.env.VUE_APP_PORT}`
-      },
-      '/drosses': {
-        target: `http://localhost:${process.env.VUE_APP_PORT}`
-      },
-      '/file': {
+    proxy: Object.values(endpoints).reduce((targets, path) => {
+      targets[path] = {
         target: `http://localhost:${process.env.VUE_APP_PORT}`
       }
-    }
+      return targets
+    }, {})
   }
 }

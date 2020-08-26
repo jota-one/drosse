@@ -1,5 +1,8 @@
-export default {
-  ws: '/drosse',
+module.exports = {
   drosses: '/drosses',
-  file: '/file'
+  file: '/file',
+  restart: '/restart',
+  start: '/start',
+  stop: '/stop',
+  ws: '/drosse'
 }
