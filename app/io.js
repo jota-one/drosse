@@ -4,7 +4,9 @@ const { isEmpty } = require('lodash')
 const { v4: uuidv4 } = require('uuid')
 const { replaceExpress } = require('@jota-one/replacer')
 const useState = require('./use/state')
+const useMiddleware = require('./use/middlewares')
 const state = useState()
+const middlewares = useMiddleware()
 
 const checkRoutesFile = () => {
   const getRoutesFile = ext => path.join(
@@ -30,7 +32,15 @@ const loadRcFile = () => {
 
   if (fs.existsSync(rcFile) || fs.existsSync(rcFile)) {
     const userConfig = require(rcFile)
-    state.merge(userConfig)
+    let userConfigState
+    if (userConfig.state) {
+      userConfigState = { ...userConfig.state }
+
+      if (userConfig.middlewares) {
+        middlewares.set(userConfig.middlewares)
+      }
+    }
+    state.merge(userConfigState || userConfig)
   }
 }
 

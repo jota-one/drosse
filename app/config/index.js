@@ -7,5 +7,9 @@ module.exports = {
     staticPath: 'static',
     database: 'mocks.db',
     reservedRoutes: { ui: '/UI' }
-  }
+  },
+  middlewares: [
+    'body-parser-json',
+    'open-cors'
+  ]
 }

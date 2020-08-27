@@ -1,10 +1,10 @@
 const path = require('path')
 const express = require('express')
 const stoppable = require('stoppable')
-const bodyParser = require('body-parser')
 const ip = require('ip')
 const Discover = require('node-discover')
 const useState = require('./use/state')
+const useMiddlewares = require('./use/middlewares')
 const useDb = require('./use/db')
 const { checkRoutesFile, loadUuid, loadRcFile, routes } = require('./io')
 const { createRoutes } = require('./builder')
@@ -12,34 +12,8 @@ const { createRoutes } = require('./builder')
 const d = new Discover()
 const app = express()
 const state = useState()
+const middlewares = useMiddlewares()
 const db = useDb()
-
-// global middlewares
-app.use(bodyParser.json())
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin)
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, PATCH, DELETE, OPTIONS')
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With')
-  res.header('Access-Control-Allow-Credentials', true)
-
-  // intercept OPTIONS method
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200)
-  } else {
-    next()
-  }
-})
-
-app.use((req, res, next) => {
-  if (!Object.values(state.get('reservedRoutes')).includes(req.url)) {
-    d.send('request', {
-      uuid: state.get('uuid'),
-      url: req.url,
-      method: req.method
-    })
-  }
-  next()
-})
 
 const initServer = async args => {
   state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
@@ -52,6 +26,27 @@ const initServer = async args => {
     console.error(`Please create a "${state.get('routesFile')}.json" or a "${state.get('routesFile')}.js" file in this directory: ${state.get('root')}, and restart.`)
     process.exit()
   }
+
+  // register custom global middlewares
+  console.log(middlewares.list())
+  middlewares.list().forEach(mw => {
+    if (typeof mw !== 'function') {
+      mw = require('./middlewares/' + mw)
+    }
+    app.use(mw)
+  })
+
+  // notify the UI for every request made
+  app.use((req, res, next) => {
+    if (!Object.values(state.get('reservedRoutes')).includes(req.url)) {
+      d.send('request', {
+        uuid: state.get('uuid'),
+        url: req.url,
+        method: req.method
+      })
+    }
+    next()
+  })
 
   // load uuid from the .uuid file (create it if needed), needed for the UI
   loadUuid()
