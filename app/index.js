@@ -128,6 +128,7 @@ module.exports = async args => {
 
   d.join('start', uuid => {
     if (uuid === drosse.uuid) {
+      console.log('Server started by UI')
       start()
     }
   })
