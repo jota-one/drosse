@@ -77,7 +77,11 @@ echo.on('connection', conn => {
     const adv = data.advertisement
     if (!adv) return
     if (!adv.isDrosse) return
-    // up(adv, conn)
+
+    const drosse = drosses[adv.uuid]
+    if (!drosse.up) {
+      up(adv, conn)
+    }
   })
 
   d.join('up', drosse => { up(drosse, conn) })
