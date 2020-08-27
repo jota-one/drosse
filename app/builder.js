@@ -5,41 +5,29 @@ const { loadService, loadStatic } = require('./io')
 const { parse } = useParser()
 let proxies
 
+const setRoute = function (app, def, verb, root) {
+  app.get('/' + root.join('/'), (req, res, next) => {
+    if (def.service) {
+      const api = require('./api')(req, res)
+      const service = loadService(root, verb)
+      return res.send(service(api))
+    }
+    if (def.static) {
+      const file = loadStatic(root, req.params, verb)
+      return res.send(file)
+    }
+    res.send(def.body)
+  })
+  console.log(`created a ${verb.toUpperCase()} route`, '/' + root.join('/'))
+}
+
 const createRoute = function (def, root) {
   proxies = []
   const app = this
 
-  if (def.get) {
-    app.get('/' + root.join('/'), (req, res, next) => {
-      if (def.get.service) {
-        const api = require('./api')(req, res)
-        const service = loadService(root, 'get')
-        return res.send(service(api))
-      }
-      if (def.get.static) {
-        const file = loadStatic(root, req.params, 'get')
-        return res.send(file)
-      }
-      res.send(def.get.body)
-    })
-    console.log('created a GET route', '/' + root.join('/'))
-  }
-
-  if (def.post) {
-    app.post('/' + root.join('/'), (req, res, next) => {
-      if (def.post.service) {
-        const api = require('./api')(req, res)
-        const service = loadService(root, 'post')
-        return res.send(service(api))
-      }
-      if (def.post.static) {
-        const file = loadStatic(root, req.params, 'post')
-        return res.send(file)
-      }
-      res.send(def.post.body)
-    })
-    console.log('created a POST route', '/' + root.join('/'))
-  }
+  ;['get', 'post', 'put', 'delete']
+    .filter(verb => def[verb])
+    .forEach(verb => setRoute(app, def[verb], verb, root))
 
   if (def.proxy) {
     const path = [''].concat(root)
