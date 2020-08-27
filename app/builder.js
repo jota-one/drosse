@@ -41,6 +41,7 @@ const createRoute = function (def, root) {
 const createRoutes = (app, routes) => {
   parse({ routes, onRouteDef: createRoute.bind(app) })
   createProxies(app)
+  return true
 }
 
 const restream = function (proxyReq, req) {

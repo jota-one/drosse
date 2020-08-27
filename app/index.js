@@ -66,7 +66,7 @@ const initServer = async args => {
   // if everything is well configured, load database and create the routes
   const ioRoutes = routes()
   await db.loadDb()
-  createRoutes(app, ioRoutes)
+  return createRoutes(app, ioRoutes)
 }
 
 const initDrosse = args => {
@@ -97,8 +97,8 @@ const onStart = drosse => {
   d.send('up', drosse)
 }
 
-const init = args => {
-  initServer(args)
+const init = async args => {
+  await initServer(args)
   return initDrosse(args)
 }
 
@@ -106,8 +106,8 @@ const init = args => {
 module.exports = async args => {
   let drosse, server
 
-  const start = () => {
-    drosse = init(args)
+  const start = async () => {
+    drosse = await init(args)
     server = app.listen(drosse.port, '0.0.0.0', () => { onStart(drosse) })
     stoppable(server, 100)
   }
@@ -121,7 +121,17 @@ module.exports = async args => {
 
   const restart = () => {
     stop()
-    start()
+    return start()
+  }
+
+  const exitHandler = arg => {
+    d.send('down', drosse)
+    setTimeout(() => {
+      if (typeof arg === 'object') {
+        console.log(arg)
+      }
+      process.exit()
+    }, 0)
   }
 
   start()
@@ -147,16 +157,6 @@ module.exports = async args => {
 
   // handle process exits and tell UI we are down
   process.stdin.resume()
-
-  const exitHandler = arg => {
-    d.send('down', drosse)
-    setTimeout(() => {
-      if (typeof arg === 'object') {
-        console.log(arg)
-      }
-      process.exit()
-    }, 0)
-  }
 
   // app closes
   process.on('exit', exitHandler)
