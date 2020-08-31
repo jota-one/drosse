@@ -6,7 +6,7 @@ const { parse } = useParser()
 let proxies
 
 const setRoute = function (app, def, verb, root) {
-  app.get('/' + root.join('/'), (req, res, next) => {
+  app[verb]('/' + root.join('/'), (req, res, next) => {
     if (def.service) {
       const api = require('./api')(req, res)
       const service = loadService(root, verb)
