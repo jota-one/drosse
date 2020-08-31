@@ -79,7 +79,7 @@ echo.on('connection', conn => {
     if (!adv.isDrosse) return
 
     const drosse = drosses[adv.uuid]
-    if (!drosse.up) {
+    if (!drosse || (drosse && !drosse.up)) {
       up(adv, conn)
     }
   })
