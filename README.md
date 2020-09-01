@@ -1,7 +1,4 @@
-# Drosse
 <img src="./Drosse.svg"/>
-
-The mock server that can
 
 ## Features
 - Cascading Proxies
