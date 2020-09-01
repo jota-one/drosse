@@ -4,17 +4,19 @@
 ## Features
 - Cascading Proxies
 - Fallback to static JSON mocks
-- Skip login/session
+- In-memory db
 - Seamless integration to your project OR
 - Standalone global mode
 
-## Future features
-- In-memory db
-- Persist state (in-memory db dump to JSON file)
-- Hateoas support
+## In progress
 - CLI + UI
+- Persist state (in-memory db dump to JSON file)
+- Anonymize data
+
+## Future features
+- Hateoas support
 - Journey
-- Sync with OpenAPI (Swagger)
+- Sync with OpenAPI (Swagger) ?
 - GraphQL support ?
 
 ## Notes
