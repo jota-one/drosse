@@ -2,6 +2,10 @@
   "api": {
     "users": {
       "DROSSE": {
+        "throttle": {
+          "min": 100,
+          "max": 1000
+        },
         "get": {
           "body": [{
             "id": 1,
@@ -15,6 +19,13 @@
       ":id": {
         "DROSSE": {
           "get": {
+            "static": true,
+            "throttle": {
+              "min": 1,
+              "max": 10
+            }
+          },
+          "delete": {
             "static": true
           }
         },

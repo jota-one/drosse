@@ -1,7 +1,11 @@
 const useState = require('./state')
 const state = useState()
 
-const parse = ({ routes, root = [], onRouteDef }) => {
+const parse = ({ routes, root = [], hierarchy = [], onRouteDef }) => {
+  const localHierarchy = [].concat(hierarchy)
+  if (routes.DROSSE) {
+    localHierarchy.push(routes.DROSSE)
+  }
   Object.entries(routes)
     .filter(([path]) => path !== 'DROSSE')
     .sort((a, b) => {
@@ -13,13 +17,11 @@ const parse = ({ routes, root = [], onRouteDef }) => {
         throw new Error(`Route "${fullPath}" is reserved`)
       }
 
-      if (path !== 'DROSSE') {
-        parse({ routes: content, root: root.concat(path), onRouteDef })
-      }
+      parse({ routes: content, root: root.concat(path), hierarchy: localHierarchy, onRouteDef })
     })
 
   if (routes.DROSSE) {
-    onRouteDef(routes.DROSSE, root)
+    onRouteDef(routes.DROSSE, root, localHierarchy)
   }
 }
 
