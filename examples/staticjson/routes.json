@@ -1,0 +1,63 @@
+{
+  "api": {
+    "users": {
+      "DROSSE": {
+        "throttle": {
+          "min": 100,
+          "max": 1000
+        },
+        "get": {
+          "body": [{
+            "id": 1,
+            "name": "Tadai"
+          }, {
+            "id": 2,
+            "name": "Jorinho"
+          }]
+        }
+      },
+      ":id": {
+        "DROSSE": {
+          "get": {
+            "static": true,
+            "throttle": {
+              "min": 1,
+              "max": 10
+            }
+          },
+          "delete": {
+            "static": true
+          }
+        },
+        "activate": {
+          "DROSSE": {
+            "post": {
+              "service": true,
+              "body": {}
+            }
+          }
+        }
+      },
+      "premiums": {
+        "DROSSE": {
+          "get": {
+            "body": [{
+              "id": 1,
+              "name": "Tadai"
+            }]
+          }
+        }
+      },
+      "aliens": {
+        "DROSSE": {
+          "get": {
+            "body": [{
+              "id": 2,
+              "name": "Jorinho"
+            }]
+          }
+        }
+      }
+    }
+  }
+}

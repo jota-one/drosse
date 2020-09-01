@@ -1,5 +1,4 @@
-# Drosse
-![Drosse](./Drosse.svg "Dynamic js mock server")
+<img src="./Drosse.svg"/>
 
 ## Features
 - Cascading Proxies
@@ -20,7 +19,7 @@
 - GraphQL support ?
 
 ## Notes
-- [on using require inside nodejs modules for testing](https://stackoverflow.com/questions/5747035/how-to-unit-test-a-node-js-module-that-requires-other-modules-and-how-to-mock-th) with [proxyquire](https://www.npmjs.com/package/proxyquire): 
+- [on using require inside nodejs modules for testing](https://stackoverflow.com/questions/5747035/how-to-unit-test-a-node-js-module-that-requires-other-modules-and-how-to-mock-th) with [proxyquire](https://www.npmjs.com/package/proxyquire):
 
 ## Warning
 This project is in an early stage and under active development. API might change without notice.
