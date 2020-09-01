@@ -1,9 +1,7 @@
-<div style="text-align:center">
-  <img src="./Drosse.svg" style="width:235px;height:auto;max-width:100%;"/>
-</div>
-
 # Drosse
-**Dynamic JS mock server**
+<img src="./Drosse.svg"/>
+
+The mock server that can
 
 ## Features
 - Cascading Proxies
