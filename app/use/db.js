@@ -39,15 +39,14 @@ module.exports = function () {
 
       const filesPath = path.join(dirname, name.split('.').join(path.sep))
       return fs.readdir(filesPath)
-        .then(function (filenames) {
-          return Promise.all(filenames.map(function (filename) {
-            return fs.readFile(path.join(filesPath, filename), 'utf-8')
-              .then(function (content) {
-                logger.success('loaded', filename, 'into collection', name)
-                return coll.insert(JSON.parse(content))
-              })
-          }))
-        })
+        .then(filenames => Promise.all(filenames
+          .filter(filename => filename.endsWith('json'))
+          .map(filename => fs.readFile(path.join(filesPath, filename), 'utf-8')
+            .then(content => {
+              logger.success(`loaded ${filename} into collection ${name}`)
+              return coll.insert(JSON.parse(content))
+            })
+          )))
     }))
   }
 
@@ -100,6 +99,16 @@ module.exports = function () {
       find (collection, query) {
         const coll = db.getCollection(collection)
         return coll.find(query)
+      }
+    },
+
+    update: {
+      byId (collection, id, newValue) {
+        const coll = db.getCollection(collection)
+
+        coll.findAndUpdate({ 'drosse.ids': { $contains: id } }, doc => {
+          doc = newValue
+        })
       }
     }
   }
