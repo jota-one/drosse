@@ -78,6 +78,10 @@ const restream = function (proxyReq, req) {
 }
 
 const createProxies = app => {
+  if (!app.proxies) {
+    return
+  }
+
   app.proxies.forEach(({ path, context }) => {
     app.use(
       path || '/',
