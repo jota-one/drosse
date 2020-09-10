@@ -3,6 +3,8 @@ const express = require('express')
 const stoppable = require('stoppable')
 const ip = require('ip')
 const Discover = require('node-discover')
+const chalk = require('chalk')
+const logger = require('./logger')
 const useState = require('./use/state')
 const useMiddlewares = require('./use/middlewares')
 const useDb = require('./use/db')
@@ -23,12 +25,11 @@ const initServer = async args => {
 
   // run some checks
   if (!checkRoutesFile()) {
-    console.error(`Please create a "${state.get('routesFile')}.json" or a "${state.get('routesFile')}.js" file in this directory: ${state.get('root')}, and restart.`)
+    logger.error(`Please create a "${state.get('routesFile')}.json" or a "${state.get('routesFile')}.js" file in this directory: ${state.get('root')}, and restart.`)
     process.exit()
   }
 
   // register custom global middlewares
-  console.log(middlewares.list())
   middlewares.list().forEach(mw => {
     if (typeof mw !== 'function') {
       mw = require('./middlewares/' + mw)
@@ -78,13 +79,16 @@ const initDrosse = args => {
 
 const onStart = drosse => {
   const getAddress = (proto, host, port) => `${proto}://${host}:${port}`
-  const hostsStr = '\n - ' + drosse.hosts
-    .map(host => getAddress(drosse.proto, host, drosse.port)).join('\n - ')
 
   setTimeout(() => {
-    console.log(`App started${drosse.name && ': name -> ' + drosse.name}`)
-    console.log(`Listening to requests on ${hostsStr}`)
-    console.log(`The mocks will be read/written here: ${state.get('root')}`)
+    console.log()
+    logger.debug(`App ${drosse.name ? chalk.green(drosse.name) + ' ' : ''}started`)
+    logger.debug('Listening to requests on:')
+    drosse.hosts.forEach(host => {
+      logger.info('- ', getAddress(drosse.proto, host, drosse.port))
+    })
+    console.log()
+    logger.debug(`Mocks root: ${chalk.cyan(state.get('root'))}`)
   }, 100)
 
   // advertise UI of our presence
