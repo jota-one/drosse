@@ -1,4 +1,5 @@
 const proxy = require('http-proxy-middleware')
+const logger = require('./logger')
 const useParser = require('./use/parser')
 const { loadService, loadStatic } = require('./io')
 
@@ -26,7 +27,8 @@ const setRoute = function (app, def, verb, root) {
     }
     res.send(def.body)
   })
-  console.log(`created a ${verb.toUpperCase()} route`, '/' + root.join('/'))
+
+  logger.success(`-> ${verb.toUpperCase().padEnd(7)} /${root.join('/')}`)
 }
 
 const createRoute = function (def, root, defHierarchy) {
@@ -81,7 +83,8 @@ const createProxies = app => {
       path || '/',
       proxy.createProxyMiddleware({ ...context, logLevel: 'warn' })
     )
-    console.log(`proxy queries on ${path || '/'} to ${context.target}`)
+
+    logger.info(`-> PROXY   ${path || '/'} => ${context.target}`)
   })
 }
 
