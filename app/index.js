@@ -89,7 +89,7 @@ const onStart = drosse => {
     })
     console.log()
     logger.debug(`Mocks root: ${chalk.cyan(state.get('root'))}`)
-  }, 100)
+  }, 200)
 
   // advertise UI of our presence
   d.advertise(drosse)

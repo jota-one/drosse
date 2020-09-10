@@ -32,15 +32,10 @@ const loadRcFile = () => {
 
   if (fs.existsSync(rcFile) || fs.existsSync(rcFile)) {
     const userConfig = require(rcFile)
-    let userConfigState
-    if (userConfig.state) {
-      userConfigState = { ...userConfig.state }
-
-      if (userConfig.middlewares) {
-        middlewares.set(userConfig.middlewares)
-      }
+    if (userConfig.middlewares) {
+      middlewares.append(userConfig.middlewares)
     }
-    state.merge(userConfigState || userConfig)
+    state.merge(userConfig)
   }
 }
 

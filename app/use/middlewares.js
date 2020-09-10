@@ -4,11 +4,7 @@ let state = config.middlewares
 module.exports = function () {
   return {
     append (mw) {
-      state.push(mw)
-    },
-
-    set (mws) {
-      state = [...mws]
+      state = [...state, ...mw]
     },
 
     list () {
