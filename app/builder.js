@@ -3,7 +3,6 @@ const useParser = require('./use/parser')
 const { loadService, loadStatic } = require('./io')
 
 const { parse } = useParser()
-let proxies
 
 const getThrottle = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min
@@ -31,7 +30,6 @@ const setRoute = function (app, def, verb, root) {
 }
 
 const createRoute = function (def, root, defHierarchy) {
-  proxies = []
   const app = this
 
   ;['get', 'post', 'put', 'delete']
@@ -47,8 +45,13 @@ const createRoute = function (def, root, defHierarchy) {
     })
 
   if (def.proxy) {
+    if (!this.proxies) {
+      this.proxies = []
+    }
+
     const path = [''].concat(root)
-    proxies.push({
+
+    this.proxies.push({
       path: path.join('/'),
       context: { target: def.proxy, changeOrigin: true, onProxyReq: restream }
     })
@@ -64,7 +67,7 @@ const createRoutes = (app, routes) => {
 const restream = function (proxyReq, req) {
   if (req.body) {
     const bodyData = JSON.stringify(req.body)
-    // incase if content-type is application/x-www-form-urlencoded -> we need to change to application/json
+    // If content-type is application/x-www-form-urlencoded -> we need to change to application/json
     proxyReq.setHeader('Content-Type', 'application/json')
     proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData))
     // stream the content
@@ -73,8 +76,11 @@ const restream = function (proxyReq, req) {
 }
 
 const createProxies = app => {
-  proxies.forEach(({ path, context }) => {
-    app.use(path || '/', proxy.createProxyMiddleware(context))
+  app.proxies.forEach(({ path, context }) => {
+    app.use(
+      path || '/',
+      proxy.createProxyMiddleware({ ...context, logLevel: 'warn' })
+    )
     console.log(`proxy queries on ${path || '/'} to ${context.target}`)
   })
 }
