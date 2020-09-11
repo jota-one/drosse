@@ -11,7 +11,7 @@ const useDb = require('./use/db')
 const { checkRoutesFile, loadUuid, loadRcFile, routes } = require('./io')
 const { createRoutes } = require('./builder')
 
-const d = new Discover()
+const d = new Discover({ advertisement: {} })
 const app = express()
 const state = useState()
 const middlewares = useMiddlewares()
@@ -30,6 +30,8 @@ const initServer = async args => {
   }
 
   // register custom global middlewares
+  logger.info('-> Middlewares:')
+  console.log(middlewares.list())
   middlewares.list().forEach(mw => {
     if (typeof mw !== 'function') {
       mw = require('./middlewares/' + mw)
@@ -82,17 +84,17 @@ const onStart = drosse => {
 
   setTimeout(() => {
     console.log()
-    logger.debug(`App ${drosse.name ? chalk.green(drosse.name) + ' ' : ''}started`)
-    logger.debug('Listening to requests on:')
+    logger.debug(`App ${drosse.name ? chalk.magenta(drosse.name) + ' ' : ''}running at:`)
     drosse.hosts.forEach(host => {
       logger.info(' -', getAddress(drosse.proto, host, drosse.port))
     })
     console.log()
-    logger.debug(`Mocks root: ${chalk.cyan(state.get('root'))}`)
-  }, 200)
+    logger.debug(`Mocks root: ${chalk.magenta(state.get('root'))}`)
+    console.log()
+  }, 100)
 
   // advertise UI of our presence
-  d.advertise(drosse)
+  d.advertise({ ...drosse })
   d.send('up', drosse)
 }
 
@@ -113,7 +115,7 @@ module.exports = async args => {
 
   const stop = () => {
     server.stop(() => {
-      console.log('Server stopped by UI')
+      logger.warn('Server stopped by UI')
       d.send('down', drosse)
     })
   }
@@ -137,7 +139,7 @@ module.exports = async args => {
 
   d.join('start', uuid => {
     if (uuid === drosse.uuid) {
-      console.log('Server started by UI')
+      logger.warn('Server started by UI')
       start()
     }
   })

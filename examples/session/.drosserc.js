@@ -2,7 +2,8 @@ const session = require('./middlewares/session')
 
 module.exports = {
   name: 'Example session',
-  middlewares: [session, function(req, res, next) {
+  port: 8795,
+  middlewares: ['open-cors', session, function(req, res, next) {
     if (req.url === '/auth' && req.method === 'POST') {
       return next()
     }

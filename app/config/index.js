@@ -10,7 +10,6 @@ module.exports = {
   },
   middlewares: [
     'body-parser-json',
-    'open-cors',
     'log'
   ]
 }

@@ -47,7 +47,7 @@ const loadService = (routePath, verb) => {
   ) + `.${verb}.js`
 
   if (!fs.existsSync(serviceFile)) {
-    return function (api) {
+    return function () {
       console.log(`service [${serviceFile}] not found`)
     }
   }

@@ -7,6 +7,10 @@ module.exports = function () {
       state = [...state, ...mw]
     },
 
+    set (mw) {
+      state = [...mw]
+    },
+
     list () {
       return state
     }
