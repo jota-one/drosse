@@ -1,9 +1,11 @@
 const proxy = require('http-proxy-middleware')
 const logger = require('./logger')
 const useParser = require('./use/parser')
+const useTemplates = require('./use/templates')
 const { loadService, loadStatic } = require('./io')
 
 const { parse } = useParser()
+const templates = useTemplates()
 
 const getThrottle = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min
@@ -16,16 +18,28 @@ const setRoute = function (app, def, verb, root) {
     }
     setTimeout(next, getThrottle(def.throttle.min, def.throttle.max))
   }, (req, res, next) => {
+    let response
+
     if (def.service) {
       const api = require('./api')(req, res)
       const service = loadService(root, verb)
-      return res.send(service(api))
+      response = service(api)
     }
+
     if (def.static) {
       const file = loadStatic(root, req.params, verb)
-      return res.send(file)
+      response = file
     }
-    res.send(def.body)
+
+    if (def.body) {
+      response = def.body
+    }
+
+    if (def.template && Object.keys(def.template).length) {
+      response = templates.list()[def.template](response)
+    }
+
+    return res.send(response)
   })
 
   logger.success(`-> ${verb.toUpperCase().padEnd(7)} /${root.join('/')}`)
@@ -38,9 +52,12 @@ const createRoute = function (def, root, defHierarchy) {
     .filter(verb => def[verb])
     .forEach(verb => {
       // set throttling
-      def[verb].throttle = def[verb].throttle || defHierarchy.reduce((acc, item) => {
-        return item.throttle || acc
-      }, {})
+      def[verb].throttle = def[verb].throttle || defHierarchy
+        .reduce((acc, item) => item.throttle || acc, {})
+
+      // set template
+      def[verb].template = def[verb].template || defHierarchy
+        .reduce((acc, item) => item.template || acc, {})
 
       // create route
       setRoute(app, def[verb], verb, root)

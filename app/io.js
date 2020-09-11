@@ -5,8 +5,11 @@ const { v4: uuidv4 } = require('uuid')
 const { replaceExpress } = require('@jota-one/replacer')
 const useState = require('./use/state')
 const useMiddleware = require('./use/middlewares')
+const useTemplates = require('./use/templates')
+const logger = require('./logger')
 const state = useState()
 const middlewares = useMiddleware()
+const templates = useTemplates()
 
 const checkRoutesFile = () => {
   const getRoutesFile = ext => path.join(
@@ -32,9 +35,15 @@ const loadRcFile = () => {
 
   if (fs.existsSync(rcFile) || fs.existsSync(rcFile)) {
     const userConfig = require(rcFile)
+
     if (userConfig.middlewares) {
       middlewares.append(userConfig.middlewares)
     }
+
+    if (userConfig.templates) {
+      templates.add(userConfig.templates)
+    }
+
     state.merge(userConfig)
   }
 }
@@ -48,7 +57,7 @@ const loadService = (routePath, verb) => {
 
   if (!fs.existsSync(serviceFile)) {
     return function () {
-      console.log(`service [${serviceFile}] not found`)
+      logger.error(`service [${serviceFile}] not found`)
     }
   }
 
@@ -63,12 +72,14 @@ const loadStatic = (routePath, params = {}, verb = null) => {
   ), params)
 
   if (!fs.existsSync(staticFile + '.json')) {
-    console.log(`loadStatic: tried with [${staticFile}]. File not found.`)
+    logger.error(`loadStatic: tried with [${staticFile}]. File not found.`)
+
     if (verb) {
       return loadStatic(routePath, params)
     }
+
     if (!isEmpty(params)) {
-      console.log(`loadStatic: tried with [${staticFile}]. File not found.`)
+      logger.error(`loadStatic: tried with [${staticFile}]. File not found.`)
       return loadStatic(routePath)
     }
     return { drosse: `file [${staticFile}.json] not found.` }

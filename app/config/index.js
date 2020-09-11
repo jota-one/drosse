@@ -11,5 +11,6 @@ module.exports = {
   middlewares: [
     'body-parser-json',
     'log'
-  ]
+  ],
+  templates: {}
 }

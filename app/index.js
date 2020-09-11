@@ -56,15 +56,21 @@ const initServer = async args => {
 
   // add reserved UI route
   app.get(state.get('reservedRoutes').ui, (req, res) => {
-    res.send({
-      routes: ioRoutes
-    })
+    res.send({ routes: ioRoutes })
   })
 
   // if everything is well configured, load database and create the routes
   const ioRoutes = routes()
+  const errorHandler = state.get('errorHandler')
+
   await db.loadDb()
-  return createRoutes(app, ioRoutes)
+  createRoutes(app, ioRoutes)
+
+  if (errorHandler) {
+    app.use(errorHandler)
+  }
+
+  return true
 }
 
 const initDrosse = args => {
