@@ -93,7 +93,19 @@ module.exports = function () {
     query: {
       byId (collection, id) {
         const coll = db.getCollection(collection)
-        return coll.findOne({ 'drosse.ids': { $contains: id } })
+        return coll.findOne({ 'DROSSE.ids': { $contains: id } })
+      },
+
+      byField (collection, field, value) {
+        return this.byFields(collection, [field], value)
+      },
+
+      byFields (collection, fields, value) {
+        return this.find(collection, {
+          $or: fields.map(field => ({
+            [field]: { $contains: value }
+          }))
+        })
       },
 
       find (collection, query) {
@@ -106,7 +118,7 @@ module.exports = function () {
       byId (collection, id, newValue) {
         const coll = db.getCollection(collection)
 
-        coll.findAndUpdate({ 'drosse.ids': { $contains: id } }, doc => {
+        coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
           doc = newValue
         })
       }
