@@ -78,6 +78,7 @@ const createRoute = function (def, root, defHierarchy) {
 }
 
 const createRoutes = (app, routes) => {
+  app.proxies = []
   parse({ routes, onRouteDef: createRoute.bind(app) })
   createProxies(app)
   return true

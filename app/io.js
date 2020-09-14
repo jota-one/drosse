@@ -31,6 +31,7 @@ const checkRoutesFile = () => {
 }
 
 const loadRcFile = () => {
+  templates.set([])
   const rcFile = path.join(state.get('root'), '.drosserc.js')
 
   if (fs.existsSync(rcFile) || fs.existsSync(rcFile)) {

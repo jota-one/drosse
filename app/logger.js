@@ -1,4 +1,5 @@
-const chalk = require('chalk')
+const c = require('ansi-colors')
+let d, uuid
 
 module.exports = new Logger()
 
@@ -22,6 +23,11 @@ function Logger () {
   this.error = function (...args) {
     log('red', args)
   }
+
+  this._setD = function (discover, drosseUuid) {
+    d = discover
+    uuid = drosseUuid
+  }
 }
 
 function getTime () {
@@ -35,5 +41,12 @@ function log (color, args) {
     }
     return arg
   })
-  console.log(chalk.gray(getTime()), chalk[color](args.join(' ')))
+
+  const msg = [c.gray(getTime()), c[color](args.join(' '))]
+
+  if (d && d.channels.length) {
+    d.send('log', { uuid, msg })
+  }
+
+  console.log(...msg)
 }

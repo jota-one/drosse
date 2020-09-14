@@ -1,5 +1,4 @@
-const config = require('../config')
-let state = config.middlewares
+let state = []
 
 module.exports = function () {
   return {

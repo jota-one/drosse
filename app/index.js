@@ -1,9 +1,10 @@
 const path = require('path')
+const c = require('ansi-colors')
+const ip = require('ip')
 const express = require('express')
 const stoppable = require('stoppable')
-const ip = require('ip')
 const Discover = require('node-discover')
-const chalk = require('chalk')
+const config = require('./config')
 const logger = require('./logger')
 const useState = require('./use/state')
 const useMiddlewares = require('./use/middlewares')
@@ -19,6 +20,7 @@ const db = useDb()
 
 const initServer = async args => {
   state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
+  middlewares.set(config.middlewares)
 
   // check for some users configuration in a .drosserc(.js) file
   loadRcFile()
@@ -90,17 +92,18 @@ const onStart = drosse => {
 
   setTimeout(() => {
     console.log()
-    logger.debug(`App ${drosse.name ? chalk.magenta(drosse.name) + ' ' : ''}running at:`)
+    logger.debug(`App ${drosse.name ? c.magenta(drosse.name) + ' ' : ''}running at:`)
     drosse.hosts.forEach(host => {
       logger.info(' -', getAddress(drosse.proto, host, drosse.port))
     })
     console.log()
-    logger.debug(`Mocks root: ${chalk.magenta(state.get('root'))}`)
+    logger.debug(`Mocks root: ${c.magenta(state.get('root'))}`)
     console.log()
   }, 100)
 
   // advertise UI of our presence
   d.advertise({ ...drosse })
+  logger._setD(d, state.get('uuid'))
   d.send('up', drosse)
 }
 
