@@ -40,6 +40,8 @@ const start = () => {
   app.on('message', ({ event, data }) => {
     if (event === 'uuid') {
       uuid = data
+    } else if (event === 'advertise') {
+      d.advertise(data)
     } else {
       d.send(event, data)
     }
@@ -49,6 +51,10 @@ const start = () => {
 }
 
 forked = start()
+
+d.on('added', data => {
+  console.log('added', data)
+})
 
 d.join('start', duuid => {
   if (duuid === uuid) {
