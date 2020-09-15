@@ -71,7 +71,7 @@ let drosses = getDrosses()
 const echo = sockjs.createServer({ sockjs_url: '/sockjs.min.js' })
 
 echo.on('connection', conn => {
-  d = new Discover()
+  d = new Discover({ advertisement: {} })
 
   d.on('added', data => {
     const adv = data.advertisement
@@ -86,7 +86,9 @@ echo.on('connection', conn => {
 
   d.join('up', drosse => { up(drosse, conn) })
   d.join('down', drosse => { down(drosse, conn) })
-
+  d.join('log', ({ uuid, msg }) => {
+    conn.write(JSON.stringify({ event: 'log', uuid, msg }))
+  })
   d.join('request', request => {
     conn.write(JSON.stringify({ event: 'request', request }))
   })

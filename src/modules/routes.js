@@ -58,7 +58,7 @@ export default function useRoutes () {
 
     parse({ routes: drosseConfig.routes, onRouteDef })
 
-    return routes.reverse()
+    return routes
       .reduce((routes, route, i) => {
         let level = 0
         let fullPath = ''

@@ -1,6 +1,7 @@
 <template>
   <div :class="['Route', {
       isParent,
+      hit,
       virtual: route.virtual,
       opened: route.opened,
       disabled: selectedVerb?.disabled
@@ -22,12 +23,12 @@
           :value="showVirtual ? route.path : route.fullPath"
         />
         <div class="verbs">
-          <Verb v-if="route.global"
+          <!-- <Verb v-if="route.global"
             key="all"
             type="all"
             :selected="route.selected === 'global'"
             @click="$emit('select-verb', 'global')"
-          />
+          /> -->
           <Verb v-for="verb in route.verbs"
             :key="verb.type"
             :type="verb.type"
@@ -150,7 +151,8 @@ export default {
     route: Object,
     showVirtual: Boolean,
     isParent: Boolean,
-    editing: Boolean
+    editing: Boolean,
+    hit: Boolean
   },
   setup (props, { emit }) {
     const selectedVerb = computed(() => props.route.selected === 'global'
@@ -170,9 +172,11 @@ export default {
         : Object.keys(selectedVerb?.value?.handler)[0]
     })
 
-    const selectedVerbType = computed(() => selectedVerb.value?.type === 'all'
-      ? ''
-      : selectedVerb.value?.type)
+    // const selectedVerbType = computed(() => selectedVerb.value?.type === 'all'
+    //   ? ''
+    //   : selectedVerb.value?.type)
+
+    const selectedVerbType = computed(() => selectedVerb.value?.type)
 
     const handlerValue = computed(() => {
       let fileName
@@ -341,8 +345,8 @@ export default {
 /* Colors */
 .Route {
   color: var(--c-white);
-  will-change: color;
-  transition: color .2s ease-in-out;
+  will-change: color, background-color;
+  transition: color .2s ease-in-out, background-color .5s ease-in-out;
 
   &.virtual {
     color: var(--c-gray-active);
@@ -351,6 +355,10 @@ export default {
   &.disabled {
     background-size: .5rem .5rem;
     background-image: var(--c-disabled-route-bg);
+  }
+
+  &.hit {
+    background-color: var(--c-green);
   }
 }
 

@@ -1,6 +1,7 @@
 import * as SockJS from 'sockjs-client'
 import { computed, ref } from 'vue'
 import endpoints from '@/config/endpoints'
+import bus from '@/bus'
 import useRoutes from './routes'
 import useIo from './io'
 
@@ -13,15 +14,16 @@ const loaded = false
 
 sock.onmessage = async e => {
   const data = JSON.parse(e.data)
-  const uuid = data.drosse.uuid
 
   if (data.event === 'up') {
+    const uuid = data.drosse.uuid
     drosses.value[uuid] = data.drosse
 
     const config = await fetchConfig(data.drosse)
 
     if (config) {
       drosses.value[uuid].routes = getRoutes(config, drosses.value[uuid].routes)
+      console.log(drosses.value[uuid].routes)
       saveDrosses(drosses.value)
     }
   }
@@ -33,7 +35,12 @@ sock.onmessage = async e => {
 
   if (data.event === 'request') {
     const { method, url, uuid } = data.request
-    console.log(`>> ${method.toUpperCase()} ${url} (${uuid})`)
+    bus.emit('request', { uuid, method, url })
+  }
+
+  if (data.event === 'log') {
+    const { uuid, msg } = data
+    bus.emit('log', { uuid, msg })
   }
 }
 

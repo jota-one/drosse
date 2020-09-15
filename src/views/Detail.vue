@@ -26,6 +26,7 @@
             <Route
               :key="route.fullPath"
               :route="route"
+              :hit="hit.includes(i)"
               :show-virtual="showVirtual"
               :isParent="isParent(route)"
               :editing="editorOpened === i"
@@ -41,6 +42,7 @@
           </template>
         </template>
       </Routes>
+      <Logger :logs="logs" />
     </div>
   </div>
 </template>
@@ -50,6 +52,8 @@ import { computed, ref } from 'vue'
 import useDrosses from '@/modules/drosses'
 import useIo from '@/modules/io'
 import useEditor from '@/modules/editor'
+import bus from '@/bus'
+import Logger from '@/components/Logger'
 import DrosseIcon from '@/components/common/DrosseIcon'
 import Input from '@/components/common/Input'
 import Routes from '@/components/route/Routes'
@@ -57,7 +61,7 @@ import Route from '@/components/route/Route'
 
 export default {
   name: 'Detail',
-  components: { DrosseIcon, Input, Routes, Route },
+  components: { Logger, DrosseIcon, Input, Routes, Route },
   props: {
     editorOpened: Number
   },
@@ -67,6 +71,8 @@ export default {
     const { setContent } = useEditor()
 
     const showVirtual = ref(true)
+    const hit = ref([])
+    const logs = ref([])
     let editingIndex = -1
 
     const drosse = computed(() => Object.values(drosses.value)
@@ -145,6 +151,29 @@ export default {
       }
     }
 
+    bus.on('request', ({ uuid, url }) => {
+      if (uuid !== drosse.value.uuid) {
+        return
+      }
+
+      const index = routes.value.findIndex(route => route.fullPath === url)
+
+      if (index > -1 && !hit.value.includes(index)) {
+        hit.value.push(index)
+        setTimeout(() => {
+          hit.value = hit.value.filter(i => i !== index)
+        }, 250)
+      }
+    })
+
+    bus.on('log', ({ uuid, msg }) => {
+      if (uuid !== drosse.value.uuid) {
+        return
+      }
+
+      logs.value.push(msg)
+    })
+
     return {
       drosse,
       routes,
@@ -153,7 +182,9 @@ export default {
       showVirtual,
       toggleRoute,
       selectVerb,
-      toggleEditor
+      toggleEditor,
+      hit,
+      logs
     }
   }
 }
@@ -223,7 +254,7 @@ h2 {
 
 .route,
 .editor-placeholder {
-  &:hover,
+  &:not(.hit):hover,
   &.editing {
     background: var(--c-route-hover);
   }

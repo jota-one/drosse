@@ -169,6 +169,8 @@ body {
     --c-green: rgb(52,246,107);
     --c-green-light: rgb(164,252,188);
     --c-help: rgb(44,147,241);
+    --c-logger-bg: rgba(0,0,0, .9);
+    --c-logger-txt: rgba(255,255,255, .9);
     --c-pink: rgb(203,93,205);
     --c-red: rgb(255,77,0);
     --c-route-hover: rgb(0,0,0, .15);
@@ -218,6 +220,8 @@ body {
     --c-green: rgb(21,222,78);
     --c-green-light: rgb(164,252,188);
     --c-help: rgb(44,147,241);
+    --c-logger-bg: rgba(200,200,200, .2);
+    --c-logger-txt: rgba(0,0,0, .9);
     --c-pink: rgba(203,93,205, .75);
     --c-red: rgb(255,77,0);
     --c-route-hover: rgb(0,0,0, .05);
