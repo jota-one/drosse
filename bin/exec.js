@@ -27,13 +27,15 @@ const start = () => {
   })
 
   app.stderr.on('data', data => {
-    d.send('log', { uuid, msg: `${data}` })
+    `${data}`.split('\n').forEach(msg => {
+      d.send('log', { uuid, msg })
+    })
     process.stderr.write(`${data}`)
   })
 
   app.on('close', code => {
     if (code !== 0) {
-      const msg = `child process exited with code ${code}`
+      const msg = `Drosse process exited with code ${code}`
       d.send('log', { uuid, msg })
       console.log(msg)
     }
