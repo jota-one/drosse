@@ -7,7 +7,7 @@
     "drosse": "./bin/drosse.js"
   },
   "scripts": {
-    "serve": "./bin/drosse.js serve"
+    "serve": "./bin/exec.js serve"
   },
   "repository": {
     "type": "git",

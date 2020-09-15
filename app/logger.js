@@ -1,5 +1,4 @@
 const c = require('ansi-colors')
-let d, uuid
 
 module.exports = new Logger()
 
@@ -23,11 +22,6 @@ function Logger () {
   this.error = function (...args) {
     log('red', args)
   }
-
-  this._setD = function (discover, drosseUuid) {
-    d = discover
-    uuid = drosseUuid
-  }
 }
 
 function getTime () {
@@ -42,11 +36,5 @@ function log (color, args) {
     return arg
   })
 
-  const msg = [c.gray(getTime()), c[color](args.join(' '))]
-
-  if (d && d.channels.length) {
-    d.send('log', { uuid, msg })
-  }
-
-  console.log(...msg)
+  console.log(c.gray(getTime()), c[color](args.join(' ')))
 }

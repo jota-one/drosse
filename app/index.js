@@ -3,7 +3,6 @@ const c = require('ansi-colors')
 const ip = require('ip')
 const express = require('express')
 const stoppable = require('stoppable')
-const Discover = require('node-discover')
 const config = require('./config')
 const logger = require('./logger')
 const useState = require('./use/state')
@@ -12,7 +11,6 @@ const useDb = require('./use/db')
 const { checkRoutesFile, loadUuid, loadRcFile, routes } = require('./io')
 const { createRoutes } = require('./builder')
 
-const d = new Discover({ advertisement: {} })
 const app = express()
 const state = useState()
 const middlewares = useMiddlewares()
@@ -24,6 +22,10 @@ const initServer = async args => {
 
   // check for some users configuration in a .drosserc(.js) file
   loadRcFile()
+
+  // load uuid from the .uuid file (create it if needed), needed for the UI
+  loadUuid()
+  process.send({ event: 'uuid', data: state.get('uuid') })
 
   // run some checks
   if (!checkRoutesFile()) {
@@ -44,17 +46,17 @@ const initServer = async args => {
   // notify the UI for every request made
   app.use((req, res, next) => {
     if (!Object.values(state.get('reservedRoutes')).includes(req.url)) {
-      d.send('request', {
-        uuid: state.get('uuid'),
-        url: req.url,
-        method: req.method
+      process.send({
+        event: 'request',
+        data: {
+          uuid: state.get('uuid'),
+          url: req.url,
+          method: req.method
+        }
       })
     }
     next()
   })
-
-  // load uuid from the .uuid file (create it if needed), needed for the UI
-  loadUuid()
 
   // add reserved UI route
   app.get(state.get('reservedRoutes').ui, (req, res) => {
@@ -102,9 +104,8 @@ const onStart = drosse => {
   }, 100)
 
   // advertise UI of our presence
-  d.advertise({ ...drosse })
-  logger._setD(d, state.get('uuid'))
-  d.send('up', drosse)
+  process.send({ event: 'advertise', data: drosse })
+  process.send({ event: 'up', data: drosse })
 }
 
 const init = async args => {
@@ -125,17 +126,12 @@ module.exports = async args => {
   const stop = () => {
     server.stop(() => {
       logger.warn('Server stopped by UI')
-      d.send('down', drosse)
+      process.send({ event: 'down', data: drosse })
     })
   }
 
-  const restart = () => {
-    stop()
-    return start()
-  }
-
   const exitHandler = arg => {
-    d.send('down', drosse)
+    process.send({ event: 'down', data: drosse })
     setTimeout(() => {
       if (typeof arg === 'object') {
         console.log(arg)
@@ -146,22 +142,13 @@ module.exports = async args => {
 
   start()
 
-  d.join('start', uuid => {
-    if (uuid === drosse.uuid) {
+  process.on('message', ({ event, data }) => {
+    if (event === 'start') {
       logger.warn('Server started by UI')
-      start()
     }
-  })
 
-  d.join('stop', uuid => {
-    if (uuid === drosse.uuid) {
+    if (event === 'stop') {
       stop()
-    }
-  })
-
-  d.join('restart', uuid => {
-    if (uuid === drosse.uuid) {
-      restart()
     }
   })
 
