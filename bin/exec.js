@@ -20,7 +20,9 @@ const start = () => {
   )
 
   app.stdout.on('data', data => {
-    d.send('log', { uuid, msg: `${data}` })
+    `${data}`.split('\n').forEach(msg => {
+      d.send('log', { uuid, msg })
+    })
     process.stdout.write(`${data}`)
   })
 
