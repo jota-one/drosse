@@ -52,10 +52,6 @@ const start = () => {
 
 forked = start()
 
-d.on('added', data => {
-  console.log('added', data)
-})
-
 d.join('start', duuid => {
   if (duuid === uuid) {
     forked = start()
