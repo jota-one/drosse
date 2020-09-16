@@ -1,4 +1,7 @@
 module.exports = {
+  db: {
+    reservedFields: ['DROSSE', 'meta', '$loki']
+  },
   state: {
     port: 8000,
     routesFile: 'routes',

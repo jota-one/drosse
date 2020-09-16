@@ -3,11 +3,13 @@ const lodash = require('lodash')
 const path = require('path')
 const useState = require('./state')
 const logger = require('../logger')
+const config = require('../config')
 
 let db
 
 module.exports = function () {
   const state = useState()
+
   const defineCollectionsList = () => {
     const readdirp = require('readdirp')
     const streamToPromise = require('stream-to-promise')
@@ -50,6 +52,11 @@ module.exports = function () {
     }))
   }
 
+  const clean = (...fields) => result => lodash.omit(
+    result,
+    config.db.reservedFields.concat(fields || [])
+  )
+
   return {
     loadDb: function () {
       return new Promise((resolve, reject) => {
@@ -91,9 +98,14 @@ module.exports = function () {
     },
 
     query: {
+      getRef (refObj) {
+        const { collection, id } = refObj.DROSSE
+        return this.byId(collection, id)
+      },
+
       byId (collection, id) {
         const coll = db.getCollection(collection)
-        return coll.findOne({ 'DROSSE.ids': { $contains: id } })
+        return clean()(coll.findOne({ 'DROSSE.ids': { $contains: id } }))
       },
 
       byField (collection, field, value) {
@@ -110,7 +122,11 @@ module.exports = function () {
 
       find (collection, query) {
         const coll = db.getCollection(collection)
-        return coll.find(query)
+        return coll
+          .chain()
+          .find(query)
+          .data()
+          .map(clean())
       }
     },
 
