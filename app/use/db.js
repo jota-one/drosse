@@ -99,7 +99,7 @@ module.exports = function () {
 
     query: {
       getRef (refObj) {
-        const { collection, id } = refObj.DROSSE
+        const { collection, id } = refObj
         return this.byId(collection, id)
       },
 
