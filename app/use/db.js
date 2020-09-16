@@ -135,7 +135,9 @@ module.exports = function () {
         const coll = db.getCollection(collection)
 
         coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
-          doc = newValue
+          Object.entries(newValue).forEach(([ key, value ]) => {
+            doc[key] = value
+          })
         })
       }
     }
