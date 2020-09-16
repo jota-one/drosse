@@ -7,7 +7,7 @@
     "drosse": "./bin/drosse.js"
   },
   "scripts": {
-    "serve": "./bin/drosse.js serve"
+    "serve": "./bin/exec.js serve"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   "homepage": "https://drosse.dev",
   "dependencies": {
     "@jota-one/replacer": "^0.3.0",
+    "ansi-colors": "^4.1.1",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",

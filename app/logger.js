@@ -1,4 +1,4 @@
-const chalk = require('chalk')
+const c = require('ansi-colors')
 
 module.exports = new Logger()
 
@@ -35,5 +35,6 @@ function log (color, args) {
     }
     return arg
   })
-  console.log(chalk.gray(getTime()), chalk[color](args.join(' ')))
+
+  console.log(c.gray(getTime()), c[color](args.join(' ')))
 }
