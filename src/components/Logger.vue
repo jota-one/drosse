@@ -19,10 +19,7 @@ export default {
     logs: Array
   },
   setup () {
-    const toHtml = log => {
-      console.log(log)
-      return convert.toHtml(log)
-    }
+    const toHtml = log => convert.toHtml(log)
     return { toHtml }
   }
 }
@@ -35,7 +32,6 @@ export default {
   max-height: 30rem;
   overflow: auto;
   white-space: nowrap;
-  font-size: .9rem;
 }
 
 /* Colors */
