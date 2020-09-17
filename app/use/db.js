@@ -100,7 +100,10 @@ module.exports = function () {
     query: {
       getRef (refObj) {
         const { collection, id } = refObj
-        return this.byId(collection, id)
+        return {
+          ...lodash.omit(refObj, ['collection', 'id']),
+          ...this.byId(collection, id)
+        }
       },
 
       byId (collection, id) {
@@ -135,7 +138,7 @@ module.exports = function () {
         const coll = db.getCollection(collection)
 
         coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
-          Object.entries(newValue).forEach(([ key, value ]) => {
+          Object.entries(newValue).forEach(([key, value]) => {
             doc[key] = value
           })
         })
