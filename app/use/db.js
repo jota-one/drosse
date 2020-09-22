@@ -98,8 +98,9 @@ module.exports = function () {
     },
 
     query: {
-      getRef (refObj) {
-        const { collection, id } = refObj
+      getRef (refObj, dynamicId) {
+        const { collection, id: refId } = refObj
+        const id = dynamicId || refId
         return {
           ...lodash.omit(refObj, ['collection', 'id']),
           ...this.byId(collection, id)
