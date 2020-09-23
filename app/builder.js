@@ -84,7 +84,8 @@ const createRoutes = (app, routes) => {
   return true
 }
 
-const restream = function (proxyReq, req) {
+const restream = function (proxyReq, req, res) {
+  res.set('x-proxied', true)
   if (req.body) {
     const bodyData = JSON.stringify(req.body)
     // If content-type is application/x-www-form-urlencoded -> we need to change to application/json

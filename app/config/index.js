@@ -13,7 +13,7 @@ module.exports = {
   },
   middlewares: [
     'body-parser-json',
-    'log'
+    'morgan'
   ],
   templates: {}
 }
