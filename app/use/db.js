@@ -131,6 +131,10 @@ module.exports = function () {
           .find(query)
           .data()
           .map(clean())
+      },
+
+      chain (collection) {
+        return db.getCollection(collection).chain()
       }
     },
 

@@ -35,7 +35,7 @@
     "express-session": "^1.17.1",
     "http-proxy-middleware": "^1.0.4",
     "ip": "^1.1.5",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "lokijs": "^1.5.9",
     "morgan": "^1.10.0",
     "node-discover": "^1.1.3",
