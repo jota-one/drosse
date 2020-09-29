@@ -135,7 +135,9 @@ module.exports = function () {
 
       chain (collection) {
         return db.getCollection(collection).chain()
-      }
+      },
+
+      clean
     },
 
     update: {
