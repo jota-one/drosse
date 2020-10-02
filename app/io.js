@@ -65,24 +65,26 @@ const loadService = (routePath, verb) => {
   return require(serviceFile)
 }
 
-const loadStatic = (routePath, params = {}, verb = null) => {
+const loadStatic = (routePath, params = {}, verb = null, skipVerb = false) => {
   let staticFile = replaceExpress(path.join(
     state.get('root'),
     state.get('staticPath'),
-    routePath.join('.').concat((verb ? `.${verb}` : ''))
+    routePath.join('.').concat((verb && !skipVerb ? `.${verb}` : ''))
   ), params)
   staticFile = staticFile.concat(staticFile.slice(-5) === '.json' ? '' : '.json')
 
   if (!fs.existsSync(staticFile)) {
     logger.error(`loadStatic: tried with [${staticFile}]. File not found.`)
 
-    if (verb) {
-      return loadStatic(routePath, params)
+    if (verb && !skipVerb) {
+      return loadStatic(routePath, params, verb, true)
     }
 
+    // retry by removing the first param of the list
     if (!isEmpty(params)) {
       logger.error(`loadStatic: tried with [${staticFile}]. File not found.`)
-      return loadStatic(routePath)
+      const newParams = Object.keys(params).slice(1).reduce((acc, name) => ({ ...acc, [name]: params[name] }), {})
+      return loadStatic(routePath, newParams, verb)
     }
     return { drosse: `file [${staticFile}] not found.` }
   }
