@@ -1,11 +1,6 @@
 <template>
   <div class="Logger">
-    <div
-      v-for="(log, i) in logs"
-      :key="`log-${i}`"
-      v-html="toHtml(log)"
-    >
-    </div>
+    <div v-for="(log, i) in logs" :key="`log-${i}`" v-html="toHtml(log)"></div>
   </div>
 </template>
 
@@ -16,12 +11,15 @@ const convert = new Convert()
 export default {
   name: 'Logger',
   props: {
-    logs: Array
+    logs: {
+      type: Array,
+      default: () => [],
+    },
   },
-  setup () {
+  setup() {
     const toHtml = log => convert.toHtml(log)
     return { toHtml }
-  }
+  },
 }
 </script>
 

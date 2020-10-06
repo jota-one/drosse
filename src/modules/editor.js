@@ -2,18 +2,18 @@ import * as monaco from 'monaco-editor'
 
 let editor
 
-const getTheme = theme => theme === 'light' ? 'vs' : 'vs-dark'
+const getTheme = theme => (theme === 'light' ? 'vs' : 'vs-dark')
 
-export default function useEditor () {
+export default function useEditor() {
   const load = (container, theme) => {
     editor = monaco.editor.create(container, {
       automaticLayout: true,
       scrollbar: {
         vertical: 'auto',
-        horizontal: 'auto'
+        horizontal: 'auto',
       },
       minimap: {
-        enabled: false
+        enabled: false,
       },
       fontLigatures: true,
       fontFamily: 'FiraCode',
@@ -21,7 +21,7 @@ export default function useEditor () {
       tabSize: 2,
       theme: getTheme(theme),
       language: 'text',
-      value: ''
+      value: '',
     })
   }
 

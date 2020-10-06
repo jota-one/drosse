@@ -8,20 +8,23 @@
 export default {
   name: 'Button',
   props: {
-    label: String,
-    secondary: Boolean
-  }
+    label: {
+      type: String,
+      default: '',
+    },
+    secondary: Boolean,
+  },
 }
 </script>
 
 <style lang="postcss" scoped>
 .Button {
-  padding: .3rem .6rem .25rem;
-  font-size: .8rem;
+  padding: 0.3rem 0.6rem 0.25rem;
+  font-size: 0.8rem;
   font-weight: 600;
   line-height: 1rem;
   border: 1px solid;
-  border-radius: .3rem;
+  border-radius: 0.3rem;
 }
 
 /* Colors */

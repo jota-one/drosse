@@ -31,20 +31,21 @@ import Clickable from '@/components/common/Clickable'
 export default {
   name: 'TabBar',
   components: { Tab, Clickable },
-  async setup () {
+  async setup() {
     const {
       drosses,
       loadDrosses,
       openDrosse,
       closeDrosse,
       openHome,
-      viewHome
+      viewHome,
     } = useDrosses()
 
     await loadDrosses()
 
-    const openedDrosses = computed(() => Object.values(drosses.value)
-      .filter(drosse => drosse.open))
+    const openedDrosses = computed(() =>
+      Object.values(drosses.value).filter(drosse => drosse.open)
+    )
 
     const switchPrev = () => {}
     const switchNext = () => {}
@@ -56,9 +57,9 @@ export default {
       openDrosse,
       closeDrosse,
       switchPrev,
-      switchNext
+      switchNext,
     }
-  }
+  },
 }
 </script>
 
@@ -72,17 +73,17 @@ export default {
   display: flex;
   align-items: center;
   margin: 0 3rem 0;
-  padding: .5rem 0 1rem;
+  padding: 0.5rem 0 1rem;
   overflow: auto;
 }
 
 h1 {
-  margin: -.35rem 0 0 0;
+  margin: -0.35rem 0 0 0;
 }
 
 .drosse {
-  margin: .375rem 1rem .125rem 0;
-  padding: .25rem;
+  margin: 0.375rem 1rem 0.125rem 0;
+  padding: 0.25rem;
   font-family: Oswald, sans-serif;
   font-weight: 500;
   font-size: 1.2rem;
@@ -93,7 +94,7 @@ h1 {
 
 .add {
   flex-shrink: 0;
-  margin: 0 1rem .25rem .5rem;
+  margin: 0 1rem 0.25rem 0.5rem;
   width: 1.125rem;
   height: 1.125rem;
 }
@@ -102,13 +103,13 @@ h1 {
 .TabBar {
   background-color: var(--c-tabbar-bg);
   will-change: background-color;
-  transition: background-color .2s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .drosse {
-  color: rgb(128,128,128);
+  color: rgb(128, 128, 128);
   will-change: color;
-  transition: color .2s ease-in-out;
+  transition: color 0.2s ease-in-out;
 
   .viewHome & {
     color: var(--c-green);
@@ -118,6 +119,6 @@ h1 {
 .add {
   fill: var(--c-gray-inactive);
   will-change: fill;
-  transition: fill .2s ease-in-out;
+  transition: fill 0.2s ease-in-out;
 }
 </style>

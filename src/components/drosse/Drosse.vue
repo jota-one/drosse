@@ -17,7 +17,7 @@
     <div class="col">{{ drosse.proto }}</div>
     <div class="col last-seen">{{ lastSeen }}</div>
     <div class="col delete">
-      <Clickable class="delete-icon" icon="minus"/>
+      <Clickable class="delete-icon" icon="minus" />
     </div>
   </div>
 </template>
@@ -33,16 +33,19 @@ export default {
   name: 'Drosse',
   components: { DrosseIcon, Clickable },
   props: {
-    drosse: Object
+    drosse: {
+      type: Object,
+      default: () => ({}),
+    },
   },
-  setup (props) {
+  setup(props) {
     const { openDrosse } = useDrosses()
     const lastSeen = computed(() =>
       formatDistanceToNowStrict(new Date(props.drosse.lastSeen))
     )
 
     return { lastSeen, openDrosse }
-  }
+  },
 }
 </script>
 
@@ -60,7 +63,7 @@ export default {
   display: table-cell;
   vertical-align: middle;
   white-space: nowrap;
-  padding: .75rem .5rem .75rem 1.25rem;
+  padding: 0.75rem 0.5rem 0.75rem 1.25rem;
   border-bottom: 1px solid;
 
   &.port,
@@ -69,7 +72,7 @@ export default {
   }
 
   &.root {
-    font-size: .8rem;
+    font-size: 0.8rem;
   }
 
   &.delete {
@@ -78,7 +81,7 @@ export default {
 }
 
 .name {
-  padding: .5rem;
+  padding: 0.5rem;
   font-size: 1rem;
 }
 
@@ -107,7 +110,7 @@ export default {
 }
 
 .col {
-  border-bottom-color: rgba(128,128,128, .2);
+  border-bottom-color: rgba(128, 128, 128, 0.2);
 }
 
 .name {

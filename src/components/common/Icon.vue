@@ -1,9 +1,5 @@
 <template>
-  <svg
-    class="icon"
-    viewBox="0 0 25 25"
-    :style="color ? `fill:${color}`: ''"
-  >
+  <svg class="icon" viewBox="0 0 25 25" :style="color ? `fill:${color}` : ''">
     <path
       v-for="(path, i) of paths"
       :key="`path-${i}`"
@@ -23,15 +19,15 @@ export default {
   props: {
     name: {
       type: String,
-      default: ''
+      default: '',
     },
     color: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
 
-  setup (props) {
+  setup(props) {
     const paths = computed(() => {
       const icon = icons[props.name]
 
@@ -45,13 +41,13 @@ export default {
     })
 
     return { paths }
-  }
+  },
 }
 </script>
 
 <style lang="postcss" scoped>
 .icon {
   will-change: fill;
-  transition: fill .2s ease-in-out;
+  transition: fill 0.2s ease-in-out;
 }
 </style>

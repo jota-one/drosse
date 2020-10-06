@@ -44,7 +44,7 @@ sock.onmessage = async e => {
   }
 }
 
-export default function useDrosses () {
+export default function useDrosses() {
   const loadDrosses = async () => {
     if (loaded) {
       return drosses
@@ -82,8 +82,9 @@ export default function useDrosses () {
     saveDrosses(drosses.value)
   }
 
-  const viewHome = computed(() => !Object.values(drosses.value)
-    .some(drosse => drosse.selected))
+  const viewHome = computed(
+    () => !Object.values(drosses.value).some(drosse => drosse.selected)
+  )
 
   return {
     drosses,
@@ -91,8 +92,6 @@ export default function useDrosses () {
     openDrosse,
     closeDrosse,
     openHome,
-    viewHome
+    viewHome,
   }
 }
-
-

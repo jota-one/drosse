@@ -1,12 +1,8 @@
 <template>
   <div :class="['Middleware', { active }]">
-    <Clickable
-      :class="['icon', { active }]"
-      :icon="icon"
-      :title="title"
-    />
+    <Clickable :class="['icon', { active }]" :icon="icon" :title="title" />
     <div v-if="active" class="handler">
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>
@@ -18,10 +14,16 @@ export default {
   name: 'Middleware',
   components: { Clickable },
   props: {
-    title: String,
-    icon: String,
-    active: Boolean
-  }
+    title: {
+      type: String,
+      default: '',
+    },
+    icon: {
+      type: String,
+      default: '',
+    },
+    active: Boolean,
+  },
 }
 </script>
 
@@ -37,7 +39,7 @@ export default {
     content: '';
     height: 1.5rem;
     border-left: 1px dashed;
-    opacity: .75;
+    opacity: 0.75;
   }
 }
 
@@ -45,13 +47,13 @@ export default {
   flex-shrink: 0;
   width: 2rem;
   height: 2rem;
-  margin: 0 .5rem;
+  margin: 0 0.5rem;
 }
 
 .handler {
   display: flex;
   align-items: center;
-  margin-top: .125rem;
+  margin-top: 0.125rem;
   display: none;
 }
 

@@ -12,9 +12,12 @@ export default {
   name: 'Add',
   components: { Icon },
   props: {
-    label: String,
-    small: Boolean
-  }
+    label: {
+      type: String,
+      default: '',
+    },
+    small: Boolean,
+  },
 }
 </script>
 
@@ -22,23 +25,23 @@ export default {
 .Add {
   display: flex;
   align-items: center;
-  padding: .5rem;
+  padding: 0.5rem;
   font-size: 1rem;
 
   &.small {
-    padding: .25rem;
-    font-size: .8rem;
+    padding: 0.25rem;
+    font-size: 0.8rem;
   }
 }
 
 .icon {
-  margin: 0 .5rem .25rem 0;
+  margin: 0 0.5rem 0.25rem 0;
   width: 1rem;
   height: 1rem;
 
   .small & {
-    width: .8rem;
-    height: .8rem;
+    width: 0.8rem;
+    height: 0.8rem;
   }
 }
 
@@ -49,7 +52,7 @@ export default {
   .icon {
     fill: var(--c-gray-active);
     will-change: fill;
-    transition: fill .2s ease-in-out;
+    transition: fill 0.2s ease-in-out;
   }
 
   &:hover {

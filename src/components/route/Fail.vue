@@ -19,8 +19,11 @@ export default {
   name: 'Fail',
   components: { Middleware, Input },
   props: {
-    verb: Object
-  }
+    verb: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
 }
 </script>
 

@@ -2,16 +2,8 @@
   <div class="Home">
     <div class="header">
       <h2>Your <em>drosses</em></h2>
-      <Button
-        v-if="allDrosses.length"
-        class="btn"
-        label="New"
-      />
-      <Button
-        v-if="allDrosses.length"
-        class="btn"
-        label="Import"
-      />
+      <Button v-if="allDrosses.length" class="btn" label="New" />
+      <Button v-if="allDrosses.length" class="btn" label="Import" />
     </div>
     <Drosses v-if="allDrosses.length">
       <Drosse
@@ -20,13 +12,11 @@
         :drosse="drosse"
       />
     </Drosses>
-    <div class="empty" v-else>
-      <p class="not-found">
-        No drosse found...
-      </p>
+    <div v-else class="empty">
+      <p class="not-found">No drosse found...</p>
       <p class="actions">
-        <Button class="btn" label="New"/>
-        <Button class="btn" label="Import"/>
+        <Button class="btn" label="New" />
+        <Button class="btn" label="Import" />
       </p>
     </div>
   </div>
@@ -42,11 +32,11 @@ import Drosse from '@/components/drosse/Drosse'
 export default {
   name: 'Home',
   components: { Button, Drosses, Drosse },
-  setup () {
+  setup() {
     const { drosses } = useDrosses()
     const allDrosses = computed(() => Object.values(drosses.value))
     return { allDrosses }
-  }
+  },
 }
 </script>
 

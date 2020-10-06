@@ -1,6 +1,6 @@
 <template>
   <button class="Clickable" @click="$emit('clilck')">
-    <Icon class="icon" :name="icon"/>
+    <Icon class="icon" :name="icon" />
   </button>
 </template>
 
@@ -10,7 +10,12 @@ import Icon from '@/components/common/Icon'
 export default {
   name: 'Clickable',
   components: { Icon },
-  props: { icon: String }
+  props: {
+    icon: {
+      type: String,
+      default: '',
+    },
+  },
 }
 </script>
 

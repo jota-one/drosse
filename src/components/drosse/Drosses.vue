@@ -4,43 +4,43 @@
       <div class="header">
         <div class="col">
           <label class="label">
-            <Clickable class="sort" icon="sort-up"/>
+            <Clickable class="sort" icon="sort-up" />
             status
           </label>
         </div>
         <div class="col">
           <label class="label">
-            <Clickable class="sort" icon="sort-up"/>
+            <Clickable class="sort" icon="sort-up" />
             port
           </label>
         </div>
         <div class="col">
           <label class="label">
-            <Clickable class="sort" icon="sort-up"/>
+            <Clickable class="sort" icon="sort-up" />
             name
           </label>
         </div>
         <div class="col root">
           <label class="label">
-            <Clickable class="sort" icon="sort-up"/>
+            <Clickable class="sort" icon="sort-up" />
             root
           </label>
         </div>
         <div class="col">
           <label class="label">
-            <Clickable class="sort" icon="sort-up"/>
+            <Clickable class="sort" icon="sort-up" />
             protocol
           </label>
         </div>
         <div class="col">
           <label class="label">
-            <Clickable class="sort" icon="sort-up"/>
+            <Clickable class="sort" icon="sort-up" />
             last seen
           </label>
         </div>
         <div class="col">delete</div>
       </div>
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>
@@ -50,7 +50,7 @@ import Clickable from '@/components/common/Clickable'
 
 export default {
   name: 'Drosses',
-  components: { Clickable }
+  components: { Clickable },
 }
 </script>
 
@@ -74,7 +74,7 @@ export default {
   padding: 1rem 1rem 1rem.5rem;
   vertical-align: middle;
   white-space: nowrap;
-  font-size: .9rem;
+  font-size: 0.9rem;
 
   &.root {
     width: 100%;
@@ -88,14 +88,14 @@ export default {
 }
 
 .sort {
-  margin-right: .25rem;
+  margin-right: 0.25rem;
   width: 1.5rem;
   height: 1.5rem;
 }
 
 /* Colors */
 .header {
-  background-color: rgba(128,128,128, .1);
+  background-color: rgba(128, 128, 128, 0.1);
 }
 
 .sort {

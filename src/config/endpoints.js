@@ -4,5 +4,5 @@ module.exports = {
   restart: '/restart',
   start: '/start',
   stop: '/stop',
-  ws: '/drosse'
+  ws: '/drosse',
 }

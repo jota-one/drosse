@@ -19,8 +19,8 @@ export default {
   name: 'Routes',
   components: { Add, FilterBar },
   props: {
-    showVirtual: Boolean
-  }
+    showVirtual: Boolean,
+  },
 }
 </script>
 
@@ -35,6 +35,6 @@ export default {
 }
 
 .add-route {
-  margin: 2rem 0 0 .5rem;
+  margin: 2rem 0 0 0.5rem;
 }
 </style>

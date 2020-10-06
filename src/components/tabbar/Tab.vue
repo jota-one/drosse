@@ -1,11 +1,6 @@
 <template>
   <div :class="['Tab', { selected, unavailable: !available }]">
-    <DrosseIcon
-      small
-      :up="up"
-      :available="available"
-      :uuid="uuid"
-    />
+    <DrosseIcon small :up="up" :available="available" :uuid="uuid" />
     <button class="name" @click="$emit('select')">
       {{ name }}
     </button>
@@ -24,28 +19,34 @@ export default {
   name: 'Tab',
   components: { Icon, DrosseIcon },
   props: {
-    name: String,
-    uuid: String,
+    name: {
+      type: String,
+      default: '',
+    },
+    uuid: {
+      type: String,
+      default: '',
+    },
     up: Boolean,
     available: Boolean,
-    selected: Boolean
+    selected: Boolean,
   },
-  setup () {
+  setup() {
     const { closeDrosse } = useDrosses()
     return { closeDrosse }
-  }
+  },
 }
 </script>
 
 <style lang="postcss" scoped>
 .Tab {
   display: flex;
-  padding: 0 .5rem;
-  margin: 0 .125rem;
+  padding: 0 0.5rem;
+  margin: 0 0.125rem;
   align-items: center;
   height: 2.5rem;
-  border-top-left-radius: .25rem;
-  border-top-right-radius: .25rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
 
   &.unavailable {
     background-size: 1rem 1rem;
@@ -53,10 +54,10 @@ export default {
 }
 
 .name {
-  margin: 0 .5rem;
+  margin: 0 0.5rem;
   white-space: nowrap;
   user-select: none;
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 
 .close .icon {
@@ -69,11 +70,11 @@ export default {
   color: var(--c-white);
   background-color: var(--c-app-bg);
   will-change: background-color, opacity;
-  transition: background-color .2s ease-in-out, opacity .2s ease-in-out;
-  opacity: .5;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  opacity: 0.5;
 
   &:hover {
-    opacity: .8;
+    opacity: 0.8;
   }
 
   &.selected {
@@ -92,7 +93,6 @@ export default {
 .close .icon {
   fill: var(--c-gray-inactive);
   will-change: fill;
-  transition: fill .2s ease-in-out;
+  transition: fill 0.2s ease-in-out;
 }
-
 </style>

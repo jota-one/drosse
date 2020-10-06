@@ -9,7 +9,7 @@ import Clickable from '@/components/common/Clickable'
 
 export default {
   name: 'Help',
-  components: { Clickable }
+  components: { Clickable },
 }
 </script>
 
@@ -29,7 +29,7 @@ export default {
 .icon {
   fill: var(--c-gray-inactive);
   will-change: fill;
-  transition: fill .2s ease-in;
+  transition: fill 0.2s ease-in;
 
   &:hover {
     fill: var(--c-help);

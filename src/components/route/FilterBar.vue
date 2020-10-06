@@ -9,13 +9,13 @@
         />
       </div>
     </div>
-    <div class="col"/>
-    <div class="col"/>
-    <div class="col"/>
-    <div class="col"/>
-    <div class="col"/>
-    <div class="col"/>
-    <div class="col"/>
+    <div class="col" />
+    <div class="col" />
+    <div class="col" />
+    <div class="col" />
+    <div class="col" />
+    <div class="col" />
+    <div class="col" />
   </div>
 </template>
 
@@ -26,8 +26,8 @@ export default {
   name: 'FilterBar',
   components: { Clickable },
   props: {
-    showVirtual: Boolean
-  }
+    showVirtual: Boolean,
+  },
 }
 </script>
 
@@ -45,7 +45,7 @@ export default {
 .inner {
   display: flex;
   algn-items: center;
-  padding: 0 .5rem;
+  padding: 0 0.5rem;
 }
 
 .flatten-icon {
@@ -55,7 +55,7 @@ export default {
 
 /* Colors */
 .col {
-  background-color: rgba(0,0,0, .075);
+  background-color: rgba(0, 0, 0, 0.075);
 }
 
 .flatten-icon {

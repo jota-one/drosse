@@ -1,6 +1,6 @@
 import endpoints from '@/config/endpoints'
 
-export default function useIo () {
+export default function useIo() {
   const fetchDrosses = async () => {
     try {
       const response = await fetch(endpoints.drosses)
@@ -8,8 +8,6 @@ export default function useIo () {
     } catch (e) {
       console.error(e)
     }
-
-    return
   }
 
   const fetchConfig = async drosse => {
@@ -23,8 +21,6 @@ export default function useIo () {
     } catch (e) {
       console.error(e)
     }
-
-    return
   }
 
   const saveDrosses = drosses => {
@@ -32,7 +28,7 @@ export default function useIo () {
       fetch(endpoints.drosses, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(drosses)
+        body: JSON.stringify(drosses),
       })
     } catch (e) {
       console.log(e)
@@ -44,20 +40,20 @@ export default function useIo () {
       const response = await fetch(endpoints.file, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uuid: drosse.uuid, file })
+        body: JSON.stringify({ uuid: drosse.uuid, file }),
       })
       const json = await response.json()
       return {
         content: json.content,
-        language: file.endsWith('.json') ? 'json' : 'javascript'
+        language: file.endsWith('.json') ? 'json' : 'javascript',
       }
-    } catch(e) {
+    } catch (e) {
       console.error(e)
     }
 
     return {
       language: 'text',
-      content: `Failed loading file ${file}`
+      content: `Failed loading file ${file}`,
     }
   }
 
@@ -66,9 +62,9 @@ export default function useIo () {
       await fetch(endpoints.start, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uuid })
+        body: JSON.stringify({ uuid }),
       })
-    } catch(e) {
+    } catch (e) {
       console.error(e)
     }
   }
@@ -78,9 +74,9 @@ export default function useIo () {
       await fetch(endpoints.stop, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uuid })
+        body: JSON.stringify({ uuid }),
       })
-    } catch(e) {
+    } catch (e) {
       console.error(e)
     }
   }
@@ -90,9 +86,9 @@ export default function useIo () {
       await fetch(endpoints.restart, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uuid })
+        body: JSON.stringify({ uuid }),
       })
-    } catch(e) {
+    } catch (e) {
       console.error(e)
     }
   }
@@ -104,6 +100,6 @@ export default function useIo () {
     saveDrosses,
     start,
     stop,
-    restart
+    restart,
   }
 }

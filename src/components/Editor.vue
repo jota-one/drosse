@@ -14,10 +14,7 @@
           label="Cancel"
           @click="$emit('close')"
         />
-        <Button
-          label="Save"
-          @click="$emit('close')"
-        />
+        <Button label="Save" @click="$emit('close')" />
       </div>
     </div>
   </div>
@@ -35,9 +32,12 @@ export default {
   props: {
     opened: Boolean,
     hidden: Boolean,
-    top: Number
+    top: {
+      type: Number,
+      default: 0,
+    },
   },
-  setup () {
+  setup() {
     const initialized = ref(false)
     const { load, switchTheme, unload } = useEditor()
     const { theme } = useTheme()
@@ -47,21 +47,23 @@ export default {
       initialized.value = true
     })
 
-    onUnmounted(() => { unload() })
+    onUnmounted(() => {
+      unload()
+    })
 
     watchEffect(() => {
       switchTheme(theme.value)
     })
 
     return { initialized, theme }
-  }
+  },
 }
 </script>
 
 <style lang="postcss" scoped>
 .Editor {
   position: absolute;
-  margin: 12.5rem 0 .75rem;
+  margin: 12.5rem 0 0.75rem;
   top: 0;
   left: 1rem;
   width: calc(100% - 2rem);
@@ -70,7 +72,7 @@ export default {
   visiblity: visible;
   pointer-events: all;
   will-change: height;
-  transition: height .2s ease-in-out;
+  transition: height 0.2s ease-in-out;
 
   &.opened {
     height: var(--s-editor-height);

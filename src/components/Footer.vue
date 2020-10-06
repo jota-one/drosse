@@ -9,9 +9,7 @@
         />
       </div>
       <div class="credits">
-        <span class="dev-by">
-          A product developed by
-        </span>
+        <span class="dev-by"> A product developed by </span>
         <a href="https://jota.one" target="_blank">
           <Icon class="icon" name="jota" />
         </a>
@@ -28,10 +26,10 @@ import Icon from '@/components/common/Icon'
 export default {
   name: 'Footer',
   components: { Clickable, Icon },
-  setup () {
+  setup() {
     const { theme, switchTheme } = useTheme()
     return { theme, switchTheme }
-  }
+  },
 }
 </script>
 
@@ -53,7 +51,7 @@ footer {
 }
 
 .theme-icon {
-  padding: .5rem;
+  padding: 0.5rem;
   width: 3.25rem;
   height: 3.25rem;
 }
@@ -76,7 +74,7 @@ a {
 .theme-icon {
   fill: var(--c-gray-active);
   will-change: fill;
-  transition: fill .2s ease-in-out;
+  transition: fill 0.2s ease-in-out;
 
   &:hover {
     fill: var(--c-green);
@@ -84,7 +82,7 @@ a {
 }
 
 .dev-by {
-  opacity: .75;
+  opacity: 0.75;
   color: var(--c-gray-active);
 }
 

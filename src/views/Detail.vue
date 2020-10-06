@@ -1,8 +1,13 @@
 <template>
-  <div :class="['Detail', {
-    unavailable: !drosse.available,
-    showVirtual
-  }]">
+  <div
+    :class="[
+      'Detail',
+      {
+        unavailable: !drosse.available,
+        showVirtual,
+      },
+    ]"
+  >
     <h2><Input :value="drosse.name" /></h2>
     <section class="config">
       <DrosseIcon
@@ -11,9 +16,7 @@
         :available="drosse.available"
         :uuid="drosse.uuid"
       />
-      <div class="port">
-        :<Input class="input" :value="drosse.port" />
-      </div>
+      <div class="port">:<Input class="input" :value="drosse.port" /></div>
       <Input class="root" :value="drosse.root" />
     </section>
     <div class="routes-container">
@@ -28,7 +31,7 @@
               :route="route"
               :hit="hit.includes(i)"
               :show-virtual="showVirtual"
-              :isParent="isParent(route)"
+              :is-parent="isParent(route)"
               :editing="editorOpened === i"
               :class="['route', { editing: editorOpened === i }]"
               @toggle-route="toggleRoute(i, route)"
@@ -38,7 +41,9 @@
             <div
               :key="`editor.${route.fullPath}`"
               :class="['editor-placeholder', { editing: editorOpened === i }]"
-            ><div v-for="i in [...Array(8).keys()]" :key="i"/></div>
+            >
+              <div v-for="j in [...Array(8).keys()]" :key="j" />
+            </div>
           </template>
         </template>
       </Routes>
@@ -63,9 +68,12 @@ export default {
   name: 'Detail',
   components: { Logger, DrosseIcon, Input, Routes, Route },
   props: {
-    editorOpened: Number
+    editorOpened: {
+      type: Number,
+      default: -1,
+    },
   },
-  setup (props, { emit }) {
+  setup(props, { emit }) {
     const { drosses } = useDrosses()
     const { fetchHandler, saveDrosses } = useIo()
     const { setContent } = useEditor()
@@ -75,26 +83,34 @@ export default {
     const logs = ref([])
     let editingIndex = -1
 
-    const drosse = computed(() => Object.values(drosses.value)
-      .find(drosse => drosse.selected))
-
-    const routes = computed(() => drosse.value.routes
-      .filter(route => showVirtual.value ? route : !route.virtual)
+    const drosse = computed(() =>
+      Object.values(drosses.value).find(drosse => drosse.selected)
     )
 
-    const showRoute = route => !routes.value.filter(
-      r => r.level < route.level &&
-      route.fullPath.includes(r.fullPath)
-    ).some(parent => !parent.opened)
+    const routes = computed(() =>
+      drosse.value.routes.filter(route =>
+        showVirtual.value ? route : !route.virtual
+      )
+    )
 
-    const isParent = route => Boolean(routes.value.find(
-      r => r.level > route.level &&
-      r.fullPath.includes(route.fullPath)
-    ))
+    const showRoute = route =>
+      !routes.value
+        .filter(
+          r => r.level < route.level && route.fullPath.includes(r.fullPath)
+        )
+        .some(parent => !parent.opened)
+
+    const isParent = route =>
+      Boolean(
+        routes.value.find(
+          r => r.level > route.level && r.fullPath.includes(route.fullPath)
+        )
+      )
 
     const getRouteTop = () => {
-      return routes.value
-        .filter((route, i) => i < editingIndex && showRoute(route)).length
+      return routes.value.filter(
+        (route, i) => i < editingIndex && showRoute(route)
+      ).length
     }
 
     const hideEditor = () => {
@@ -105,7 +121,7 @@ export default {
       route.opened = !route.opened
       emit('update-editor', {
         top: getRouteTop(),
-        hide: hideEditor()
+        hide: hideEditor(),
       })
       saveDrosses(drosses.value)
     }
@@ -144,7 +160,7 @@ export default {
           top: getRouteTop(),
           drosse: drosse.value,
           hide: hideEditor(),
-          delay
+          delay,
         })
       } else {
         emit('close-editor')
@@ -184,9 +200,9 @@ export default {
       selectVerb,
       toggleEditor,
       hit,
-      logs
+      logs,
     }
-  }
+  },
 }
 </script>
 
@@ -212,12 +228,12 @@ h2 {
   margin-right: 1rem;
 
   .input {
-    margin-left: -.25rem;
+    margin-left: -0.25rem;
   }
 }
 
 .root {
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 
 .routes-container {
@@ -228,7 +244,7 @@ h2 {
   display: table-row;
   height: 0;
   will-change: height;
-  transition: height .2s ease-in-out;
+  transition: height 0.2s ease-in-out;
 
   &.editing {
     height: var(--s-editor-height);

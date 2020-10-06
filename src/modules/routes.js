@@ -18,7 +18,7 @@ const handleDetail = (detail, { type, handler }) => {
   return detail
 }
 
-export default function useRoutes () {
+export default function useRoutes() {
   const getRoutes = (drosseConfig, savedRoutes = []) => {
     const { parse } = useParser()
     const routes = []
@@ -28,25 +28,25 @@ export default function useRoutes () {
       const defEntries = Object.entries(def)
 
       const global = defEntries
-        .filter(([ type ]) => !isVerb(type))
-        .map(([ type, handler ]) => ({ type, handler }))
+        .filter(([type]) => !isVerb(type))
+        .map(([type, handler]) => ({ type, handler }))
         .reduce(handleDetail, {})
 
       const verbs = defEntries
-        .filter(([ type ]) => isVerb(type))
-        .map(([ type, verbDef ]) => {
+        .filter(([type]) => isVerb(type))
+        .map(([type, verbDef]) => {
           const verbEntries = Object.entries(verbDef)
 
           const handler = verbEntries
-            .filter(([ type ]) => isHandler(type))
-            .reduce((handler, [ type, value ]) => {
+            .filter(([type]) => isHandler(type))
+            .reduce((handler, [type, value]) => {
               handler[type] = value
               return handler
             }, {})
 
           const middlewares = verbEntries
-            .filter(([ type ]) => !isHandler(type))
-            .map(([ type, handler]) => ({ type, handler }))
+            .filter(([type]) => !isHandler(type))
+            .map(([type, handler]) => ({ type, handler }))
             .reduce(handleDetail, {})
 
           return { type, handler, ...middlewares }
@@ -58,53 +58,53 @@ export default function useRoutes () {
 
     parse({ routes: drosseConfig.routes, onRouteDef })
 
-    return routes
-      .reduce((routes, route, i) => {
-        let level = 0
-        let fullPath = ''
-        let savedRoute
+    return routes.reduce((routes, route, i) => {
+      let level = 0
+      let fullPath = ''
+      let savedRoute
 
-        if (!route.paths.length) {
-          savedRoute = savedRoutes.find(r => r.fullPath === '/')
+      if (!route.paths.length) {
+        savedRoute = savedRoutes.find(r => r.fullPath === '/')
+        routes.push({
+          level,
+          path: '/',
+          fullPath: '/',
+          opened: savedRoute?.opened,
+        })
+      }
+
+      for (const path of route.paths) {
+        level++
+        fullPath += `/${path}`
+
+        savedRoute = savedRoutes.find(r => r.fullPath === fullPath)
+
+        if (!routes.find(r => r.fullPath === fullPath)) {
           routes.push({
-            level, path: '/',
-            fullPath: '/',
-            opened: savedRoute?.opened
+            level,
+            pos: i + 1,
+            path: `/${path}`,
+            fullPath,
+            virtual: true,
+            opened: savedRoute?.opened,
           })
         }
+      }
 
-        for (const path of route.paths) {
-          level++
-          fullPath += `/${path}`
+      const realRoute = routes[routes.length - 1]
 
-          savedRoute = savedRoutes.find(r => r.fullPath === fullPath)
+      realRoute.virtual = false
+      realRoute.verbs = route.verbs
 
-          if (!routes.find(r => r.fullPath === fullPath)) {
-            routes.push({
-              level,
-              pos: i + 1,
-              path: `/${path}`,
-              fullPath,
-              virtual: true,
-              opened: savedRoute?.opened
-            })
-          }
-        }
+      if (route.global && Object.keys(route.global).length) {
+        realRoute.global = route.global
+        realRoute.selected = 'global'
+      } else {
+        realRoute.selected = savedRoute?.selected || realRoute.verbs[0]?.type
+      }
 
-        const realRoute = routes[routes.length - 1]
-
-        realRoute.virtual = false
-        realRoute.verbs = route.verbs
-
-        if (route.global && Object.keys(route.global).length) {
-          realRoute.global = route.global
-          realRoute.selected = 'global'
-        } else {
-          realRoute.selected = savedRoute?.selected || realRoute.verbs[0]?.type
-        }
-
-        return routes
-      }, [])
+      return routes
+    }, [])
   }
 
   return { getRoutes }

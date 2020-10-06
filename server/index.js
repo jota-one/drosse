@@ -22,8 +22,12 @@ const getDrosses = () => {
   return drosses
 }
 
-const updateDrosses = (_drosses) => {
-  fs.writeFileSync(drossesFile, JSON.stringify(_drosses || drosses, null, 2), 'utf8')
+const updateDrosses = _drosses => {
+  fs.writeFileSync(
+    drossesFile,
+    JSON.stringify(_drosses || drosses, null, 2),
+    'utf8'
+  )
 }
 
 const up = (d, conn) => {
@@ -84,8 +88,12 @@ echo.on('connection', conn => {
     }
   })
 
-  d.join('up', drosse => { up(drosse, conn) })
-  d.join('down', drosse => { down(drosse, conn) })
+  d.join('up', drosse => {
+    up(drosse, conn)
+  })
+  d.join('down', drosse => {
+    down(drosse, conn)
+  })
   d.join('log', ({ uuid, msg }) => {
     conn.write(JSON.stringify({ event: 'log', uuid, msg }))
   })
@@ -129,26 +137,25 @@ if (env === 'production') {
   app.use('/', express.static(path.join(__dirname, '..')))
 }
 
-getPort({ port: getPort.makeRange(5000, 9999), host: '0.0.0.0' })
-  .then(port => {
-    if (env !== 'production') {
-      fs.writeFileSync('.env.local', `VUE_APP_PORT=${port}`, 'utf8')
-    }
+getPort({ port: getPort.makeRange(5000, 9999), host: '0.0.0.0' }).then(port => {
+  if (env !== 'production') {
+    fs.writeFileSync('.env.local', `VUE_APP_PORT=${port}`, 'utf8')
+  }
 
-    const getAdress = (proto, host, port) => `${proto}://${host}:${port}`
-    const ipAddress = ip.address()
-    const proto = 'http'
-    const hosts = ['localhost', ipAddress]
-    const hostsStr = '\n - ' + hosts
-      .map(host => getAdress(proto, host, port)).join('\n - ')
+  const getAdress = (proto, host, port) => `${proto}://${host}:${port}`
+  const ipAddress = ip.address()
+  const proto = 'http'
+  const hosts = ['localhost', ipAddress]
+  const hostsStr =
+    '\n - ' + hosts.map(host => getAdress(proto, host, port)).join('\n - ')
 
-    const server = http.createServer(app)
+  const server = http.createServer(app)
 
-    echo.installHandlers(server, { prefix:'/drosse' })
+  echo.installHandlers(server, { prefix: '/drosse' })
 
-    server.listen(port, '0.0.0.0')
+  server.listen(port, '0.0.0.0')
 
-    console.log(`Environment: ${env}`)
-    console.log(`Settings: ${home}`)
-    console.log(`Drosse UI running at ${hostsStr}`)
-  })
+  console.log(`Environment: ${env}`)
+  console.log(`Settings: ${home}`)
+  console.log(`Drosse UI running at ${hostsStr}`)
+})

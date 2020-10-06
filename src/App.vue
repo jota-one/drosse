@@ -6,7 +6,8 @@
     <main>
       <div class="container">
         <Home v-if="viewHome" />
-        <Detail v-else
+        <Detail
+          v-else
           :editor-opened="editorOpened"
           @open-editor="openEditor($event)"
           @close-editor="editorOpened = -1"
@@ -40,7 +41,7 @@ import Footer from '@/components/Footer'
 export default {
   name: 'App',
   components: { TabBar, Home, Detail, Editor, Help, Footer },
-  setup () {
+  setup() {
     const { drosses, viewHome } = useDrosses()
     const editorOpened = ref(-1)
     const editorTop = ref(0)
@@ -56,7 +57,9 @@ export default {
       }
 
       if (delay) {
-        setTimeout(() => { open() }, 200)
+        setTimeout(() => {
+          open()
+        }, 200)
       } else {
         open()
       }
@@ -68,12 +71,15 @@ export default {
     }
 
     const hideEditor = computed(() => {
-      const selectedDrosse = Object.values(drosses.value)
-        .find(drosse => drosse.selected)
+      const selectedDrosse = Object.values(drosses.value).find(
+        drosse => drosse.selected
+      )
 
-      return _hideEditor.value ||
+      return (
+        _hideEditor.value ||
         viewHome.value ||
         _drosseEditing.value.uuid !== selectedDrosse.uuid
+      )
     })
 
     return {
@@ -82,9 +88,9 @@ export default {
       editorTop,
       openEditor,
       updateEditor,
-      hideEditor
+      hideEditor,
     }
-  }
+  },
 }
 </script>
 
@@ -93,7 +99,8 @@ export default {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -110,19 +117,20 @@ body {
   font-family: FiraCode, monospace;
   font-weight: 100;
 
-  &, input {
+  &,
+  input {
     letter-spacing: -0.5px;
   }
 
   --c-unavailable-bg: linear-gradient(
     135deg,
     transparent 25%,
-    rgba(255,77,0, .1) 25%,
-    rgba(255,77,0, .1) 50%,
+    rgba(255, 77, 0, 0.1) 25%,
+    rgba(255, 77, 0, 0.1) 50%,
     transparent 50%,
     transparent 75%,
-    rgba(255,77,0, .1) 75%,
-    rgba(255,77,0, .1) 100%
+    rgba(255, 77, 0, 0.1) 75%,
+    rgba(255, 77, 0, 0.1) 100%
   );
   --s-editor-height: calc(75vh);
 
@@ -141,104 +149,104 @@ body {
   }
 
   &.dark {
-    --c-app-bg: rgb(50,50,50);
-    --c-black: rgb(0,0,0);
-    --c-blue: rgb(52,212,246);
+    --c-app-bg: rgb(50, 50, 50);
+    --c-black: rgb(0, 0, 0);
+    --c-blue: rgb(52, 212, 246);
     --c-disabled-route-bg: linear-gradient(
       135deg,
       transparent 25%,
-      rgba(0,0,0, .2) 25%,
-      rgba(0,0,0, .2) 50%,
+      rgba(0, 0, 0, 0.2) 25%,
+      rgba(0, 0, 0, 0.2) 50%,
       transparent 50%,
       transparent 75%,
-      rgba(0,0,0, .2) 75%,
-      rgba(0,0,0, .2) 100%
+      rgba(0, 0, 0, 0.2) 75%,
+      rgba(0, 0, 0, 0.2) 100%
     );
     --c-disabled-verb-bg: linear-gradient(
       135deg,
       transparent 25%,
-      rgba(0,0,0, .35) 25%,
-      rgba(0,0,0, .35) 50%,
+      rgba(0, 0, 0, 0.35) 25%,
+      rgba(0, 0, 0, 0.35) 50%,
       transparent 50%,
       transparent 75%,
-      rgba(0,0,0, .35) 75%,
-      rgba(0,0,0, .35) 100%
+      rgba(0, 0, 0, 0.35) 75%,
+      rgba(0, 0, 0, 0.35) 100%
     );
-    --c-gray-active: rgb(150,150,150);
-    --c-gray-inactive: rgb(95,95,95);
-    --c-green: rgb(52,246,107);
-    --c-green-light: rgb(164,252,188);
-    --c-help: rgb(44,147,241);
-    --c-logger-bg: rgba(0,0,0, .9);
-    --c-logger-txt: rgba(255,255,255, .9);
-    --c-pink: rgb(203,93,205);
-    --c-red: rgb(255,77,0);
-    --c-route-hover: rgb(0,0,0, .15);
-    --c-tabbar-bg: rgb(25,25,25);
-    --c-white: rgb(255,255,255);
-    --c-yellow: rgb(255,230,0);
+    --c-gray-active: rgb(150, 150, 150);
+    --c-gray-inactive: rgb(95, 95, 95);
+    --c-green: rgb(52, 246, 107);
+    --c-green-light: rgb(164, 252, 188);
+    --c-help: rgb(44, 147, 241);
+    --c-logger-bg: rgba(0, 0, 0, 0.9);
+    --c-logger-txt: rgba(255, 255, 255, 0.9);
+    --c-pink: rgb(203, 93, 205);
+    --c-red: rgb(255, 77, 0);
+    --c-route-hover: rgb(0, 0, 0, 0.15);
+    --c-tabbar-bg: rgb(25, 25, 25);
+    --c-white: rgb(255, 255, 255);
+    --c-yellow: rgb(255, 230, 0);
 
     * {
-      scrollbar-color: rgba(255,255,255, .2) rgba(0,0,0, .2);
+      scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.2);
     }
 
     *::-webkit-scrollbar-track {
-      background: rgba(0,0,0, .2);
+      background: rgba(0, 0, 0, 0.2);
     }
 
     *::-webkit-scrollbar-thumb {
-      background-color: rgba(255,255,255, .2);
+      background-color: rgba(255, 255, 255, 0.2);
     }
   }
 
   &.light {
-    --c-app-bg: rgb(255,255,255);
-    --c-black: rgb(255,255,255);
-    --c-blue: rgb(52,212,246);
+    --c-app-bg: rgb(255, 255, 255);
+    --c-black: rgb(255, 255, 255);
+    --c-blue: rgb(52, 212, 246);
     --c-disabled-route-bg: linear-gradient(
       135deg,
       transparent 25%,
-      rgba(0,0,0, .075) 25%,
-      rgba(0,0,0, .075) 50%,
+      rgba(0, 0, 0, 0.075) 25%,
+      rgba(0, 0, 0, 0.075) 50%,
       transparent 50%,
       transparent 75%,
-      rgba(0,0,0, .075) 75%,
-      rgba(0,0,0, .075) 100%
+      rgba(0, 0, 0, 0.075) 75%,
+      rgba(0, 0, 0, 0.075) 100%
     );
     --c-disabled-verb-bg: linear-gradient(
       135deg,
       transparent 25%,
-      rgba(255,255,255, .35) 25%,
-      rgba(255,255,255, .35) 50%,
+      rgba(255, 255, 255, 0.35) 25%,
+      rgba(255, 255, 255, 0.35) 50%,
       transparent 50%,
       transparent 75%,
-      rgba(255,255,255, .35) 75%,
-      rgba(255,255,255, .35) 100%
+      rgba(255, 255, 255, 0.35) 75%,
+      rgba(255, 255, 255, 0.35) 100%
     );
-    --c-gray-active: rgb(115,115,115);
-    --c-gray-inactive: rgb(170,170,170);
-    --c-green: rgb(21,222,78);
-    --c-green-light: rgb(164,252,188);
-    --c-help: rgb(44,147,241);
-    --c-logger-bg: rgba(200,200,200, .2);
-    --c-logger-txt: rgba(0,0,0, .9);
-    --c-pink: rgba(203,93,205, .75);
-    --c-red: rgb(255,77,0);
-    --c-route-hover: rgb(0,0,0, .05);
-    --c-tabbar-bg: rgb(230,230,230);
-    --c-white: rgb(0,0,0);
-    --c-yellow: rgb(255,230,0);
+    --c-gray-active: rgb(115, 115, 115);
+    --c-gray-inactive: rgb(170, 170, 170);
+    --c-green: rgb(21, 222, 78);
+    --c-green-light: rgb(164, 252, 188);
+    --c-help: rgb(44, 147, 241);
+    --c-logger-bg: rgba(200, 200, 200, 0.2);
+    --c-logger-txt: rgba(0, 0, 0, 0.9);
+    --c-pink: rgba(203, 93, 205, 0.75);
+    --c-red: rgb(255, 77, 0);
+    --c-route-hover: rgb(0, 0, 0, 0.05);
+    --c-tabbar-bg: rgb(230, 230, 230);
+    --c-white: rgb(0, 0, 0);
+    --c-yellow: rgb(255, 230, 0);
 
     * {
-      scrollbar-color: rgba(200,200,200, .4) rgba(0,0,0, .05);
+      scrollbar-color: rgba(200, 200, 200, 0.4) rgba(0, 0, 0, 0.05);
     }
 
     *::-webkit-scrollbar-track {
-      background: rgba(0,0,0, .05);
+      background: rgba(0, 0, 0, 0.05);
     }
 
     *::-webkit-scrollbar-thumb {
-      background-color: rgba(200,200,200, .4);
+      background-color: rgba(200, 200, 200, 0.4);
     }
   }
 }
@@ -251,9 +259,9 @@ button {
   background: none;
   cursor: pointer;
   outline: none;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   will-change: color, background-color;
-  transition: color .2s ease-in-out, background-color .2s ease-in-out;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 .spacer {
@@ -280,7 +288,7 @@ body {
   color: var(--c-gray-active);
   background-color: var(--c-app-bg);
   will-change: background-color, color;
-  transition: background-color .2s ease-in-out, color .2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 button:focus {

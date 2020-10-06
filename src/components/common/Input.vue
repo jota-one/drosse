@@ -9,7 +9,7 @@
       @input="onInput"
       @focus="state.focus = true"
       @blur="state.focus = false"
-    >
+    />
     <pre ref="mask" class="mask">{{ state.vMask }}</pre>
   </span>
 </template>
@@ -20,14 +20,17 @@ import { ref, reactive, watchEffect, nextTick } from 'vue'
 export default {
   name: 'Input',
   props: {
-    value: [String, Number]
+    value: {
+      type: [String, Number],
+      default: '',
+    },
   },
-  setup (props) {
+  setup(props) {
     const state = reactive({
       v: '',
       vMask: '',
       width: 0,
-      focus: false
+      focus: false,
     })
 
     const mask = ref(null)
@@ -54,16 +57,16 @@ export default {
     })
 
     return { state, onInput, mask }
-  }
+  },
 }
 </script>
 
 <style lang="postcss" scoped>
 .Input {
   position: relative;
-  padding: .35rem .5rem .35rem .25rem;
+  padding: 0.35rem 0.5rem 0.35rem 0.25rem;
   border: 1px solid transparent;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
 
   &:hover,
   &.focus {
