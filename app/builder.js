@@ -27,8 +27,7 @@ const setRoute = function (app, def, verb, root) {
     }
 
     if (def.static) {
-      const file = loadStatic(root, req.params, verb)
-      response = file
+      response = loadStatic(root, req.params, verb)
     }
 
     if (def.body) {
