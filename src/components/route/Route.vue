@@ -53,22 +53,31 @@
         <Icon class="icon" name="route" />
       </div>
     </div>
-    <Handler />
+    <Handler
+      class="col handler full"
+      :route="route"
+      :selected-verb="selectedVerb"
+      :editing="editing"
+      @toggle-editor="$emit('toggle-editor', $event)"
+      @open-file="$emit('open-file', $event)"
+    />
     <div class="col middleware">
       <div v-if="!route.virtual" class="inner">
         <Throttle :verb="selectedVerb" />
       </div>
     </div>
-    <div class="col middleware">
-      <div v-if="!route.virtual" class="inner">
-        <Fail :verb="selectedVerb" />
+    <template v-if="false">
+      <div class="col middleware">
+        <div v-if="!route.virtual" class="inner">
+          <Fail :verb="selectedVerb" />
+        </div>
       </div>
-    </div>
-    <div class="col middleware">
-      <div v-if="!route.virtual" class="inner">
-        <Headers :verb="selectedVerb" />
+      <div class="col middleware">
+        <div v-if="!route.virtual" class="inner">
+          <Headers :verb="selectedVerb" />
+        </div>
       </div>
-    </div>
+    </template>
     <div class="col actions">
       <div class="inner">
         <Clickable
@@ -138,58 +147,7 @@ export default {
         : props.route.verbs?.find(verb => verb.type === props.route.selected)
     )
 
-    const handler = computed(() => {
-      const type = selectedVerb?.value?.type
-
-      if (!type) {
-        return
-      }
-
-      return type === 'proxy'
-        ? 'proxy'
-        : Object.keys(selectedVerb?.value?.handler)[0]
-    })
-
-    // const selectedVerbType = computed(() => selectedVerb.value?.type === 'all'
-    //   ? ''
-    //   : selectedVerb.value?.type)
-
-    const selectedVerbType = computed(() => selectedVerb.value?.type)
-
-    const handlerValue = computed(() => {
-      let fileName
-
-      switch (handler.value) {
-        case 'proxy':
-          return selectedVerb.value.handler
-        case 'service':
-          fileName =
-            props.route.fullPath
-              .split('/')
-              .slice(1)
-              .filter(p => !p.startsWith(':'))
-              .join('.') +
-            (selectedVerbType.value && `.${selectedVerbType.value}`)
-          return `./services/${fileName}.js`
-        case 'static':
-          fileName = props.route.fullPath.split('/').slice(1).join('.')
-          return `./static/${fileName}.json`
-        case 'body':
-          return JSON.stringify(selectedVerb.value.handler, null, 2)
-        default:
-          return ''
-      }
-    })
-
-    const inline = computed(() => ['proxy'].includes(handler.value))
-
-    const onHandlerClick = type => {
-      if (handler.value === type) {
-        emit('toggle-editor', handlerValue.value)
-      }
-    }
-
-    return { handler, handlerValue, inline, selectedVerb, onHandlerClick }
+    return { selectedVerb }
   },
 }
 </script>
@@ -209,7 +167,8 @@ export default {
   }
 }
 
-.inner {
+.inner,
+::v-deep(.inner) {
   display: flex;
   align-items: center;
   padding: 0.25rem 0;
@@ -274,36 +233,6 @@ export default {
   overflow: auto hidden;
 }
 
-.handler {
-  .input {
-    min-width: 10rem;
-    font-size: 0.9rem;
-    margin-right: 1rem;
-    display: flex;
-    align-items: center;
-
-    &:not(.inline) {
-      margin-left: 0.5rem;
-      display: block;
-      /* max-width: 25rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis; */
-    }
-
-    .arrow-icon {
-      width: 0.75rem;
-      height: 0.75rem;
-      will-change: transform;
-      transition: transform 0.2s ease-in-out;
-    }
-
-    &.editing .arrow-icon {
-      transform: rotate(90deg);
-    }
-  }
-}
-
 .actions {
   padding-left: 2rem;
 
@@ -326,7 +255,7 @@ export default {
 .Route {
   color: var(--c-white);
   will-change: color, background-color;
-  transition: color 0.2s ease-in-out, background-color 0.5s ease-in-out;
+  transition: color 0.2s ease-in-out, background-color 0.1s ease-in-out;
 
   &.virtual {
     color: var(--c-gray-active);
@@ -372,40 +301,6 @@ export default {
 
 .to {
   fill: var(--c-gray-inactive);
-}
-
-.icon {
-  fill: var(--c-gray-inactive);
-
-  &:hover,
-  &.active {
-    fill: var(--c-green);
-
-    &.proxy {
-      fill: var(--c-blue);
-    }
-  }
-}
-
-.handler .input {
-  &:not(.inline) {
-    color: var(--c-gray-active);
-  }
-
-  .arrow-icon {
-    fill: var(--c-gray-active);
-    will-change: fill;
-    transition: fill 0.2s ease-in-out;
-  }
-
-  &:not(.inline):hover,
-  &.editing {
-    color: var(--c-green);
-
-    .arrow-icon {
-      fill: var(--c-green);
-    }
-  }
 }
 
 .actions .icon {

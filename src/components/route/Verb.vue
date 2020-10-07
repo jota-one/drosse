@@ -5,7 +5,7 @@
 </template>
 
 <script>
-const TYPES = [/* 'all', */ 'delete', 'get', 'patch', 'post', 'put']
+const TYPES = ['all', 'delete', 'get', 'patch', 'post', 'put']
 
 export default {
   name: 'Verb',

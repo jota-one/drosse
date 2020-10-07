@@ -38,7 +38,6 @@ export default {
   &:before {
     content: '';
     height: 1.5rem;
-    border-left: 1px dashed;
     opacity: 0.75;
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div
     :class="['Editor', { opened, hidden }]"
-    :style="{ top: `${top * 2.5}rem` }"
+    :style="{ top: `${top * 2.535}rem` }"
   >
     <div class="container">
       <div class="editor-container">

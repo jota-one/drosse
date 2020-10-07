@@ -37,6 +37,7 @@
               @toggle-route="toggleRoute(i, route)"
               @select-verb="selectVerb(route, $event)"
               @toggle-editor="toggleEditor(i, $event)"
+              @open-file="openFile(drosse.uuid, $event)"
             />
             <div
               :key="`editor.${route.fullPath}`"
@@ -75,7 +76,7 @@ export default {
   },
   setup(props, { emit }) {
     const { drosses } = useDrosses()
-    const { fetchHandler, saveDrosses } = useIo()
+    const { fetchHandler, openFile, saveDrosses } = useIo()
     const { setContent } = useEditor()
 
     const showVirtual = ref(true)
@@ -192,15 +193,16 @@ export default {
 
     return {
       drosse,
-      routes,
-      showRoute,
-      isParent,
-      showVirtual,
-      toggleRoute,
-      selectVerb,
-      toggleEditor,
       hit,
+      isParent,
       logs,
+      openFile,
+      routes,
+      selectVerb,
+      showRoute,
+      showVirtual,
+      toggleEditor,
+      toggleRoute,
     }
   },
 }

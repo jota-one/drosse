@@ -3,6 +3,7 @@ const os = require('os')
 const path = require('path')
 const http = require('http')
 const ip = require('ip')
+const open = require('open')
 const express = require('express')
 const bodyParser = require('body-parser')
 const sockjs = require('sockjs')
@@ -131,6 +132,11 @@ app.put('/stop', (req, res) => {
 app.put('/restart', (req, res) => {
   d.send('restart', req.body.uuid)
   res.send()
+})
+
+app.put('/open', (req, res) => {
+  const { uuid, file } = req.body
+  open(path.join(drosses[uuid].root, file))
 })
 
 if (env === 'production') {

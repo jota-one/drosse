@@ -93,13 +93,26 @@ export default function useIo() {
     }
   }
 
+  const openFile = async (uuid, file) => {
+    try {
+      await fetch(endpoints.open, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uuid, file }),
+      })
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return {
     fetchConfig,
     fetchDrosses,
     fetchHandler,
+    openFile,
+    restart,
     saveDrosses,
     start,
     stop,
-    restart,
   }
 }
