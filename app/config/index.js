@@ -6,6 +6,7 @@ module.exports = {
     port: 8000,
     routesFile: 'routes',
     collectionsPath: 'collections',
+    shallowCollections: [],
     servicesPath: 'services',
     staticPath: 'static',
     database: 'mocks.db',

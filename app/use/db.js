@@ -22,6 +22,7 @@ module.exports = function () {
   const loadContents = async () => {
     const fs = require('fs').promises
     const dirname = path.join(state.get('root'), state.get('collectionsPath'))
+    const shallowCollections = state.get('shallowCollections')
 
     const res = await defineCollectionsList()
     const collectionList = lodash.chain(res)
@@ -34,8 +35,13 @@ module.exports = function () {
       let coll = db.getCollection(name)
 
       if (coll) {
-        logger.warn('collection:', name, 'already exists.')
-        return false
+        if (!shallowCollections.includes(name)) {
+          logger.warn('collection:', name, "already exists and won't be overriden.")
+          return false
+        } else {
+          logger.warn('collection:', name, 'already exists and will be overriden.')
+          db.removeCollection(name)
+        }
       }
       coll = db.addCollection(name)
 
