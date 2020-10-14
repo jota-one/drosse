@@ -41,7 +41,7 @@ const format = function (tokens, req, res) {
     tokens.method(req, res),
     tokens.status(req, res),
     '-',
-    tokens['response-time'](req, res, 0).concat('ms').padEnd(7),
+    tokens['response-time'](req, res, 0) ? tokens['response-time'](req, res, 0).concat('ms').padEnd(7) : '🚫',
     tokens.url(req, res),
     tokens.proxied(req, res)
   ].join(' ')
