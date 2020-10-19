@@ -30,6 +30,6 @@ const parse = ({ routes, root = [], hierarchy = [], onRouteDef }) => {
   }
 }
 
-module.exports = function useParser () {
+module.exports = function useParser() {
   return { parse }
 }

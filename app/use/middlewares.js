@@ -2,15 +2,15 @@ let state = []
 
 module.exports = function () {
   return {
-    append (mw) {
+    append(mw) {
       state = [...state, ...mw]
     },
 
-    set (mw) {
+    set(mw) {
       state = [...mw]
     },
 
-    list () {
+    list() {
       return state
     },
   }

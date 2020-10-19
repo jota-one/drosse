@@ -121,7 +121,7 @@ module.exports = function () {
     },
 
     query: {
-      getRef (refObj, dynamicId) {
+      getRef(refObj, dynamicId) {
         const { collection, id: refId } = refObj
         const id = dynamicId || refId
         return {
@@ -130,16 +130,16 @@ module.exports = function () {
         }
       },
 
-      byId (collection, id) {
+      byId(collection, id) {
         const coll = db.getCollection(collection)
         return clean()(coll.findOne({ 'DROSSE.ids': { $contains: id } }))
       },
 
-      byField (collection, field, value) {
+      byField(collection, field, value) {
         return this.byFields(collection, [field], value)
       },
 
-      byFields (collection, fields, value) {
+      byFields(collection, fields, value) {
         return this.find(collection, {
           $or: fields.map(field => ({
             [field]: { $contains: value },
@@ -147,12 +147,12 @@ module.exports = function () {
         })
       },
 
-      find (collection, query) {
+      find(collection, query) {
         const coll = db.getCollection(collection)
         return coll.chain().find(query).data().map(clean())
       },
 
-      chain (collection) {
+      chain(collection) {
         return db.getCollection(collection).chain()
       },
 
@@ -160,7 +160,7 @@ module.exports = function () {
     },
 
     update: {
-      byId (collection, id, newValue) {
+      byId(collection, id, newValue) {
         const coll = db.getCollection(collection)
 
         coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {

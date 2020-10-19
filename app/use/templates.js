@@ -3,15 +3,15 @@ let state = config.templates
 
 module.exports = function () {
   return {
-    add (tpl) {
+    add(tpl) {
       state = { ...state, ...tpl }
     },
 
-    set (tpl) {
+    set(tpl) {
       state = tpl
     },
 
-    list () {
+    list() {
       return state
     },
   }

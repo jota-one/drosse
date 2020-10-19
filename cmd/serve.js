@@ -15,7 +15,7 @@ module.exports = {
     },
   },
 
-  handler (yargs) {
+  handler(yargs) {
     const app = require('../app')
     app(yargs)
   },

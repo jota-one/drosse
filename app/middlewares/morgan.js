@@ -1,7 +1,7 @@
 const morgan = require('morgan')
 const c = require('ansi-colors')
 
-morgan.token('time', function getTime () {
+morgan.token('time', function getTime() {
   return c.gray(new Date().toLocaleTimeString())
 })
 

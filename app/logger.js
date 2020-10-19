@@ -2,7 +2,7 @@ const c = require('ansi-colors')
 
 module.exports = new Logger()
 
-function Logger () {
+function Logger() {
   this.debug = function (...args) {
     log('white', args)
   }
@@ -24,11 +24,11 @@ function Logger () {
   }
 }
 
-function getTime () {
+function getTime() {
   return new Date().toLocaleTimeString()
 }
 
-function log (color, args) {
+function log(color, args) {
   args = args.map(arg => {
     if (typeof arg === 'object') {
       return JSON.stringify(arg)
