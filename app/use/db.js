@@ -152,6 +152,17 @@ module.exports = function () {
         return coll.chain().find(query).data().map(clean())
       },
 
+      getIdMap(collection, fieldname, firstOnly = false) {
+        const coll = db.getCollection(collection)
+        return coll.data.reduce(
+          (acc, item) => ({
+            ...acc,
+            [item[fieldname]]: firstOnly ? item.DROSSE.ids[0] : item.DROSSE.ids,
+          }),
+          {}
+        )
+      },
+
       chain(collection) {
         return db.getCollection(collection).chain()
       },
