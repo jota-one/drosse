@@ -12,9 +12,8 @@ const middlewares = useMiddleware()
 const templates = useTemplates()
 
 const checkRoutesFile = () => {
-  const getRoutesFile = ext => path.join(
-    state.get('root'), `${state.get('routesFile')}.${ext}`
-  )
+  const getRoutesFile = ext =>
+    path.join(state.get('root'), `${state.get('routesFile')}.${ext}`)
 
   const isJs = fs.existsSync(getRoutesFile('js'))
   const isJson = fs.existsSync(getRoutesFile('json'))
@@ -50,11 +49,12 @@ const loadRcFile = () => {
 }
 
 const loadService = (routePath, verb) => {
-  const serviceFile = path.join(
-    state.get('root'),
-    state.get('servicesPath'),
-    routePath.filter(el => el[0] !== ':').join('.')
-  ) + `.${verb}.js`
+  const serviceFile =
+    path.join(
+      state.get('root'),
+      state.get('servicesPath'),
+      routePath.filter(el => el[0] !== ':').join('.')
+    ) + `.${verb}.js`
 
   if (!fs.existsSync(serviceFile)) {
     return function () {
@@ -66,12 +66,17 @@ const loadService = (routePath, verb) => {
 }
 
 const loadStatic = (routePath, params = {}, verb = null, skipVerb = false) => {
-  let staticFile = replaceExpress(path.join(
-    state.get('root'),
-    state.get('staticPath'),
-    routePath.join('.').concat((verb && !skipVerb ? `.${verb}` : ''))
-  ), params)
-  staticFile = staticFile.concat(staticFile.slice(-5) === '.json' ? '' : '.json')
+  let staticFile = replaceExpress(
+    path.join(
+      state.get('root'),
+      state.get('staticPath'),
+      routePath.join('.').concat(verb && !skipVerb ? `.${verb}` : '')
+    ),
+    params
+  )
+  staticFile = staticFile.concat(
+    staticFile.slice(-5) === '.json' ? '' : '.json'
+  )
 
   if (!fs.existsSync(staticFile)) {
     logger.error(`loadStatic: tried with [${staticFile}]. File not found.`)
@@ -83,7 +88,9 @@ const loadStatic = (routePath, params = {}, verb = null, skipVerb = false) => {
     // retry by removing the first param of the list
     if (!isEmpty(params)) {
       logger.error(`loadStatic: tried with [${staticFile}]. File not found.`)
-      const newParams = Object.keys(params).slice(1).reduce((acc, name) => ({ ...acc, [name]: params[name] }), {})
+      const newParams = Object.keys(params)
+        .slice(1)
+        .reduce((acc, name) => ({ ...acc, [name]: params[name] }), {})
       return loadStatic(routePath, newParams, verb)
     }
     return { drosse: `file [${staticFile}] not found.` }
@@ -112,5 +119,5 @@ module.exports = {
   loadService,
   loadStatic,
   loadUuid,
-  routes
+  routes,
 }

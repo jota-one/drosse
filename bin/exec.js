@@ -9,15 +9,15 @@ const d = new Discover({ advertisement: {} })
 let forked, uuid
 
 const exitHandler = () => {
-  setTimeout(() => { process.exit() }, 100)
+  setTimeout(() => {
+    process.exit()
+  }, 100)
 }
 
 const start = () => {
-  const app = fork(
-    path.join(__dirname, 'drosse.js'),
-    process.argv.slice(2),
-    { silent: true }
-  )
+  const app = fork(path.join(__dirname, 'drosse.js'), process.argv.slice(2), {
+    silent: true,
+  })
 
   app.stdout.on('data', data => {
     `${data}`.split('\n').forEach(msg => {
@@ -66,7 +66,9 @@ d.join('start', duuid => {
 d.join('stop', duuid => {
   if (duuid === uuid) {
     forked.send({ event: 'stop' })
-    setTimeout(() => { forked.kill('SIGINT') }, 200)
+    setTimeout(() => {
+      forked.kill('SIGINT')
+    }, 200)
   }
 })
 

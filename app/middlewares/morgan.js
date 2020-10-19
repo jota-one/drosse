@@ -2,7 +2,7 @@ const morgan = require('morgan')
 const c = require('ansi-colors')
 
 morgan.token('time', function getTime () {
-  return c.gray((new Date()).toLocaleTimeString())
+  return c.gray(new Date().toLocaleTimeString())
 })
 
 morgan.token('status', function (req, res) {
@@ -41,9 +41,11 @@ const format = function (tokens, req, res) {
     tokens.method(req, res),
     tokens.status(req, res),
     '-',
-    tokens['response-time'](req, res, 0) ? tokens['response-time'](req, res, 0).concat('ms').padEnd(7) : '🚫',
+    tokens['response-time'](req, res, 0)
+      ? tokens['response-time'](req, res, 0).concat('ms').padEnd(7)
+      : '🚫',
     tokens.url(req, res),
-    tokens.proxied(req, res)
+    tokens.proxied(req, res),
   ].join(' ')
 }
 

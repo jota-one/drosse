@@ -17,7 +17,12 @@ const parse = ({ routes, root = [], hierarchy = [], onRouteDef }) => {
         throw new Error(`Route "${fullPath}" is reserved`)
       }
 
-      parse({ routes: content, root: root.concat(path), hierarchy: localHierarchy, onRouteDef })
+      parse({
+        routes: content,
+        root: root.concat(path),
+        hierarchy: localHierarchy,
+        onRouteDef,
+      })
     })
 
   if (routes.DROSSE) {

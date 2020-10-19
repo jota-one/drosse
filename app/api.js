@@ -9,6 +9,6 @@ module.exports = function (req, res) {
     res,
     db,
     logger,
-    io: { loadStatic }
+    io: { loadStatic },
   }
 }

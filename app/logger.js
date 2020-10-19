@@ -25,13 +25,13 @@ function Logger () {
 }
 
 function getTime () {
-  return (new Date()).toLocaleTimeString()
+  return new Date().toLocaleTimeString()
 }
 
 function log (color, args) {
   args = args.map(arg => {
     if (typeof arg === 'object') {
-      return JSON.stringify((arg))
+      return JSON.stringify(arg)
     }
     return arg
   })

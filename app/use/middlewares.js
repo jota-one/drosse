@@ -12,6 +12,6 @@ module.exports = function () {
 
     list () {
       return state
-    }
+    },
   }
 }

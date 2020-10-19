@@ -29,7 +29,11 @@ const initServer = async args => {
 
   // run some checks
   if (!checkRoutesFile()) {
-    logger.error(`Please create a "${state.get('routesFile')}.json" or a "${state.get('routesFile')}.js" file in this directory: ${state.get('root')}, and restart.`)
+    logger.error(
+      `Please create a "${state.get('routesFile')}.json" or a "${state.get(
+        'routesFile'
+      )}.js" file in this directory: ${state.get('root')}, and restart.`
+    )
     process.exit()
   }
 
@@ -51,8 +55,8 @@ const initServer = async args => {
         data: {
           uuid: state.get('uuid'),
           url: req.url,
-          method: req.method
-        }
+          method: req.method,
+        },
       })
     }
     next()
@@ -94,7 +98,9 @@ const onStart = drosse => {
 
   setTimeout(() => {
     console.log()
-    logger.debug(`App ${drosse.name ? c.magenta(drosse.name) + ' ' : ''}running at:`)
+    logger.debug(
+      `App ${drosse.name ? c.magenta(drosse.name) + ' ' : ''}running at:`
+    )
     drosse.hosts.forEach(host => {
       logger.info(' -', getAddress(drosse.proto, host, drosse.port))
     })
@@ -119,7 +125,9 @@ module.exports = async args => {
 
   const start = async () => {
     drosse = await init(args)
-    server = app.listen(drosse.port, '0.0.0.0', () => { onStart(drosse) })
+    server = app.listen(drosse.port, '0.0.0.0', () => {
+      onStart(drosse)
+    })
     stoppable(server, 100)
   }
 

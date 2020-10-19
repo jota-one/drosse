@@ -12,34 +12,38 @@ const getThrottle = function (min, max) {
 }
 
 const setRoute = function (app, def, verb, root) {
-  app[verb]('/' + root.join('/'), (req, res, next) => {
-    if (!def.throttle) {
-      return next()
-    }
-    setTimeout(next, getThrottle(def.throttle.min, def.throttle.max))
-  }, (req, res, next) => {
-    let response
+  app[verb](
+    '/' + root.join('/'),
+    (req, res, next) => {
+      if (!def.throttle) {
+        return next()
+      }
+      setTimeout(next, getThrottle(def.throttle.min, def.throttle.max))
+    },
+    (req, res, next) => {
+      let response
 
-    if (def.service) {
-      const api = require('./api')(req, res)
-      const service = loadService(root, verb)
-      response = service(api)
-    }
+      if (def.service) {
+        const api = require('./api')(req, res)
+        const service = loadService(root, verb)
+        response = service(api)
+      }
 
-    if (def.static) {
-      response = loadStatic(root, req.params, verb)
-    }
+      if (def.static) {
+        response = loadStatic(root, req.params, verb)
+      }
 
-    if (def.body) {
-      response = def.body
-    }
+      if (def.body) {
+        response = def.body
+      }
 
-    if (def.template && Object.keys(def.template).length) {
-      response = templates.list()[def.template](response)
-    }
+      if (def.template && Object.keys(def.template).length) {
+        response = templates.list()[def.template](response)
+      }
 
-    return res.send(response)
-  })
+      return res.send(response)
+    }
+  )
 
   logger.success(`-> ${verb.toUpperCase().padEnd(7)} /${root.join('/')}`)
 }
@@ -51,12 +55,14 @@ const createRoute = function (def, root, defHierarchy) {
     .filter(verb => def[verb])
     .forEach(verb => {
       // set throttling
-      def[verb].throttle = def[verb].throttle || defHierarchy
-        .reduce((acc, item) => item.throttle || acc, {})
+      def[verb].throttle =
+        def[verb].throttle ||
+        defHierarchy.reduce((acc, item) => item.throttle || acc, {})
 
       // set template
-      def[verb].template = def[verb].template || defHierarchy
-        .reduce((acc, item) => item.template || acc, {})
+      def[verb].template =
+        def[verb].template ||
+        defHierarchy.reduce((acc, item) => item.template || acc, {})
 
       // create route
       setRoute(app, def[verb], verb, root)
@@ -71,7 +77,7 @@ const createRoute = function (def, root, defHierarchy) {
 
     this.proxies.push({
       path: path.join('/'),
-      context: { target: def.proxy, changeOrigin: true, onProxyReq: restream }
+      context: { target: def.proxy, changeOrigin: true, onProxyReq: restream },
     })
   }
 }

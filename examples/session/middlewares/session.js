@@ -4,5 +4,5 @@ module.exports = session({
   cookie: { maxAge: 2 * 60 * 60 * 1000 },
   resave: false,
   saveUninitialized: false,
-  httpOnly: false
+  httpOnly: false,
 })

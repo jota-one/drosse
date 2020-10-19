@@ -14,9 +14,11 @@ module.exports = function () {
     const readdirp = require('readdirp')
     const streamToPromise = require('stream-to-promise')
 
-    return streamToPromise(readdirp(path.join(state.get('root'), state.get('collectionsPath')), {
-      fileFilter: ['*.json']
-    }))
+    return streamToPromise(
+      readdirp(path.join(state.get('root'), state.get('collectionsPath')), {
+        fileFilter: ['*.json'],
+      })
+    )
   }
 
   const loadContents = async () => {
@@ -25,43 +27,57 @@ module.exports = function () {
     const shallowCollections = state.get('shallowCollections')
 
     const res = await defineCollectionsList()
-    const collectionList = lodash.chain(res)
+    const collectionList = lodash
+      .chain(res)
       .map(file => file.path.split(path.sep).slice(0, -1).join(path.sep))
       .uniq()
       .map(file => file.split(path.sep).join('.'))
       .value()
 
-    return Promise.all(collectionList.map((name) => {
-      let coll = db.getCollection(name)
+    return Promise.all(
+      collectionList.map(name => {
+        let coll = db.getCollection(name)
 
-      if (coll) {
-        if (!shallowCollections.includes(name)) {
-          logger.warn('collection:', name, "already exists and won't be overriden.")
-          return false
-        } else {
-          logger.warn('collection:', name, 'already exists and will be overriden.')
-          db.removeCollection(name)
+        if (coll) {
+          if (!shallowCollections.includes(name)) {
+            logger.warn(
+              'collection:',
+              name,
+              "already exists and won't be overriden."
+            )
+            return false
+          } else {
+            logger.warn(
+              'collection:',
+              name,
+              'already exists and will be overriden.'
+            )
+            db.removeCollection(name)
+          }
         }
-      }
-      coll = db.addCollection(name)
+        coll = db.addCollection(name)
 
-      const filesPath = path.join(dirname, name.split('.').join(path.sep))
-      return fs.readdir(filesPath)
-        .then(filenames => Promise.all(filenames
-          .filter(filename => filename.endsWith('json'))
-          .map(filename => fs.readFile(path.join(filesPath, filename), 'utf-8')
-            .then(content => {
-              logger.success(`loaded ${filename} into collection ${name}`)
-              return coll.insert(JSON.parse(content))
-            })
-          )))
-    }))
+        const filesPath = path.join(dirname, name.split('.').join(path.sep))
+        return fs.readdir(filesPath).then(filenames =>
+          Promise.all(
+            filenames
+              .filter(filename => filename.endsWith('json'))
+              .map(filename =>
+                fs
+                  .readFile(path.join(filesPath, filename), 'utf-8')
+                  .then(content => {
+                    logger.success(`loaded ${filename} into collection ${name}`)
+                    return coll.insert(JSON.parse(content))
+                  })
+              )
+          )
+        )
+      })
+    )
   }
 
-  const clean = (...fields) => result => lodash.omit(
-    result,
-    config.db.reservedFields.concat(fields || [])
-  )
+  const clean = (...fields) => result =>
+    lodash.omit(result, config.db.reservedFields.concat(fields || []))
 
   return {
     loadDb: function () {
@@ -72,11 +88,12 @@ module.exports = function () {
             autosaveInterval: 4000,
             autoload: true,
             autoloadCallback: () => {
-              loadContents()
-                .then(() => resolve(db))
-            }
+              loadContents().then(() => resolve(db))
+            },
           })
-        } catch (e) { reject(e) }
+        } catch (e) {
+          reject(e)
+        }
       })
     },
 
@@ -109,7 +126,7 @@ module.exports = function () {
         const id = dynamicId || refId
         return {
           ...lodash.omit(refObj, ['collection', 'id']),
-          ...this.byId(collection, id)
+          ...this.byId(collection, id),
         }
       },
 
@@ -125,25 +142,21 @@ module.exports = function () {
       byFields (collection, fields, value) {
         return this.find(collection, {
           $or: fields.map(field => ({
-            [field]: { $contains: value }
-          }))
+            [field]: { $contains: value },
+          })),
         })
       },
 
       find (collection, query) {
         const coll = db.getCollection(collection)
-        return coll
-          .chain()
-          .find(query)
-          .data()
-          .map(clean())
+        return coll.chain().find(query).data().map(clean())
       },
 
       chain (collection) {
         return db.getCollection(collection).chain()
       },
 
-      clean
+      clean,
     },
 
     update: {
@@ -155,7 +168,7 @@ module.exports = function () {
             doc[key] = value
           })
         })
-      }
-    }
+      },
+    },
   }
 }
