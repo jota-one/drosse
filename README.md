@@ -6,8 +6,21 @@
 ## Installation
 via [npm](https://www.npmjs.com/package/@jota-one/drosse)
 
-```bash
-npm install @jota-one/drosse
+1. Simply install it as a dev dependency of the project you want to mock.
+```
+npm install --save-dev @jota-one/drosse
+```
+2. Define a script in your `package.json` file for simpler usage
+```json
+{
+  "name": "my-node-project",
+  "scripts": {
+    "mock-server": "npx drosse serve -r path/to/mocks-directory"
+  },
+  "devDependencies": {
+    "@jota-one/drosse": "^1.0.0"
+  }
+}
 ```
 
 ## Features
