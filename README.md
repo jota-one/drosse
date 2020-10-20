@@ -23,6 +23,28 @@ npm install --save-dev @jota-one/drosse
 }
 ```
 
+## Usage
+You need a directory where you will store all your mocks definitions.
+1. Create a directory anywhere in your project repository (or anywhere else).
+2. Update the package.json script you just added in the Installation phase to target your new mocks directory.
+3. In your mocks directory, create a `.drosserc.js` file. This file will allow you to define all the global configurations for your mock server.
+4. In the same directory, create a `routes.json` file. This file will hold every single mocked route of your server.
+
+> :grimacing: Yes there are a couple of things to do yourself. But you're a developer, right? You know how to edit a JSON file or a JS file. In the upcoming releases, we will add a CLI and a UI, don't worry!
+
+Let's focuse a little bit on these 2 files. These are the only 2 mandatory files to run your mock server.
+
+### The .drosserc.js file
+This file is your mock server general configuration file. It must simply export a configuration object.
+
+Here is a typical example of what it could contain.
+```js
+module.exports = {
+  name: 'My mocks app',
+  port: 8000
+}
+```
+
 ## Features
 - Cascading Proxies
 - Fallback to static JSON mocks
