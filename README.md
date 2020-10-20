@@ -1,5 +1,15 @@
 <img src="./Drosse.svg"/>
 
+## What is it ?
+> Drosse is the last mock server you'll ever need.
+
+## Installation
+via [npm](https://www.npmjs.com/package/@jota-one/drosse)
+
+```bash
+npm install @jota-one/drosse
+```
+
 ## Features
 - Cascading Proxies
 - Fallback to static JSON mocks
