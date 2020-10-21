@@ -30,7 +30,7 @@ You need a directory where you will store all your mocks definitions.
 3. In your mocks directory, create a `routes.json` file. This file will hold every single mocked route of your server.
 4. In the same directory, you can also create a `.drosserc.js` file. This file will allow you to define all the global configurations for your mock server. It's optional but you will very likely need it.
 
-> :grimacing: Yes there are a couple of things to do yourself. But you're a developer, right? You know how to edit a JSON file or a JS file. In the upcoming releases, we will add a CLI and a UI, don't worry!
+Yes there are a couple of things to do yourself. But you're a developer, right? You know how to edit a JSON file or a JS file. In the upcoming releases, we will add a CLI and a UI, don't worry!
 
 Let's focus first on these 2 files.
 
@@ -96,6 +96,8 @@ There we go! You can mock your datas with 3 different ways:
 2. in a static JSON file with a constrainted name
 3. in a dynamic JS service with a constrained name
 
+#### Inline mocks
+
 Let's focus first on the `body` key, by far the simplest but by far the less cool. If you calm down, you'll be allowed to know about the 2 other solutions. Here's how you can mock your routes with inlined mocks.
 
 ```json
@@ -124,6 +126,72 @@ Let's focus first on the `body` key, by far the simplest but by far the less coo
   }
 }
 ```
+
+The above JSON is a fully working `routes.json` file. If you run your mock-server with this file, you will see something like this in your console (amongst other things):
+
+```bash
+4:26:27 PM -> GET     /api/users/:id
+4:26:27 PM -> GET     /api/users
+4:26:27 PM -> POST    /api/users
+
+4:26:27 PM App Example JSON app running at:
+4:26:27 PM  - http://localhost:8000
+```
+
+Note that the routes are defined in the right order to make sure that a less precise route won't take over a more precise one. Let's create a new route to illustrate this better:
+
+```json
+{
+  "api": {
+    "users": {
+      "DROSSE": {
+        "get": {
+          "body": [
+            {"id": 1, "name": "Jorinho", "premium": false},
+            {"id": 2, "name": "Tadai", "premium": true}
+          ]
+        },
+        "post": {
+          "body": {"success": true}
+        }
+      },
+      ":id": {
+        "DROSSE": {
+          "get": {
+            "body": {"id": 1, "name": "Jorinho", "premium": false}
+          }
+        }
+      },
+      "premiums": {
+        "DROSSE": {
+          "get": {
+            "body": [{"id": 2, "name": "Tadai"}]
+          }
+        }
+      }
+    }
+  }
+}
+```
+We defined a new route corresponding to this one `GET /api/users/premiums`. Of course, if Drosse was stupid it would define it in the same order as what we did in the `routes.json` file. Which would have as a consequence to make it unreachable, because it would always be captured by the `GET /api/users/:id`, passing "premiums" as the `:id` parameter. Let's see what happen if we reload our mock server.
+
+```bash
+4:40:59 PM -> GET     /api/users/premiums
+4:40:59 PM -> GET     /api/users/:id
+4:40:59 PM -> GET     /api/users
+4:40:59 PM -> POST    /api/users
+
+4:40:59 PM App Example JSON app running at:
+4:40:59 PM  - http://localhost:8000
+```
+
+:tada::tada::tada: The `/premiums` route was declared before the generic `/:id` route! Conclusion: you don't have to worry about the sorting of your routes when you define them inside `routes.json`.
+
+> :open_mouth: That's awesome. It calmed me down totally. I'm ready to know more about the 2 other ways to mock my stuffs.
+
+#### Static mocks (in separated files)
+
+As you've probably noticed, the inline mocks are not super dynamic... For example, if we take the `GET /api/users/:id` route, you can call it with any value for `:id`, you will always get the same response. Although it can be enough for most usecases, sometimes we want a little bit more.
 
 
 ### The .drosserc.js file
