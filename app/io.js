@@ -12,21 +12,15 @@ const middlewares = useMiddleware()
 const templates = useTemplates()
 
 const checkRoutesFile = () => {
-  const getRoutesFile = ext =>
-    path.join(state.get('root'), `${state.get('routesFile')}.${ext}`)
-
-  const isJs = fs.existsSync(getRoutesFile('js'))
-  const isJson = fs.existsSync(getRoutesFile('json'))
-
-  if (isJs) {
-    state.set('_routesFile', getRoutesFile('js'))
+  const filePath = path.join(
+    state.get('root'),
+    `${state.get('routesFile')}.json`
+  )
+  if (fs.existsSync(filePath)) {
+    state.set('_routesFile', filePath)
     return true
-  } else if (isJson) {
-    state.set('_routesFile', getRoutesFile('json'))
-    return true
-  } else {
-    return false
   }
+  return false
 }
 
 const loadRcFile = () => {

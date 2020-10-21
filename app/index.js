@@ -20,7 +20,7 @@ const initServer = async args => {
   state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
   middlewares.set(config.middlewares)
 
-  // check for some users configuration in a .drosserc(.js) file
+  // check for some users configuration in a .drosserc.js file
   loadRcFile()
 
   // load uuid from the .uuid file (create it if needed), needed for the UI
