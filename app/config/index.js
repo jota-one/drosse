@@ -3,6 +3,7 @@ module.exports = {
     reservedFields: ['DROSSE', 'meta', '$loki'],
   },
   state: {
+    name: 'Drosse mock server',
     port: 8000,
     routesFile: 'routes',
     collectionsPath: 'collections',
