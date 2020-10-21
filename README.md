@@ -45,6 +45,18 @@ module.exports = {
 }
 ```
 
+#### All configuration keys
+|Key    |Default value|Description|
+|-------|-------------|-----------|
+|name   |_(empty)_|The name of your app. Mostly used to recognize it in your console or in [drosse UI](https://github.com/jota-one/drosse-ui).|
+|port   |_8000_|The port on which your mock server will run.|
+|routesFile|_routes_|Name of the routes definition file.|
+|collectionsPath|_collections_|Relative path to the loki collections directory from your mocks directory.|
+|shallowCollections|_[]_|List of collections that should be recreated/overriden on each server restart.|
+|servicesPath|_services_|Relative path to the services directory from your mocks directory.|
+|staticPath|_static_|Relative path to the static files directory from your mocks directory.|
+|database|_mocks.db_|Name of your loki database dump file.|
+
 ## Features
 - Cascading Proxies
 - Fallback to static JSON mocks
