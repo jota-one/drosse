@@ -3,6 +3,7 @@ const c = require('ansi-colors')
 const ip = require('ip')
 const express = require('express')
 const stoppable = require('stoppable')
+const getPort = require('get-port')
 const config = require('./config')
 const logger = require('./logger')
 const useState = require('./use/state')
@@ -81,12 +82,20 @@ const initServer = async args => {
   return true
 }
 
-const initDrosse = args => {
+const initDrosse = async args => {
   const ipAddress = ip.address()
   const proto = 'http'
   const hosts = ['localhost', ipAddress]
   const name = state.get('name')
-  const port = args.port || state.get('port')
+  let port = state.get('port')
+
+  if (port === config.state.port) {
+    port = await getPort({
+      port: getPort.makeRange(port, port + 2000),
+      host: '0.0.0.0',
+    })
+  }
+
   const root = state.get('root')
   const uuid = state.get('uuid')
 
