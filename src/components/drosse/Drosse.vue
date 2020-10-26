@@ -17,7 +17,11 @@
     <div class="col">{{ drosse.proto }}</div>
     <div class="col last-seen">{{ lastSeen }}</div>
     <div class="col delete">
-      <Clickable class="delete-icon" icon="minus" />
+      <Clickable
+        class="delete-icon"
+        icon="minus"
+        @click="removeDrosse(drosse.uuid)"
+      />
     </div>
   </div>
 </template>
@@ -26,6 +30,7 @@
 import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict/index'
 import { computed } from 'vue'
 import useDrosses from '@/modules/drosses'
+import useIo from '@/modules/io'
 import DrosseIcon from '@/components/common/DrosseIcon'
 import Clickable from '@/components/common/Clickable'
 
@@ -39,12 +44,18 @@ export default {
     },
   },
   setup(props) {
-    const { openDrosse } = useDrosses()
+    const { drosses, openDrosse } = useDrosses()
+    const { saveDrosses } = useIo()
     const lastSeen = computed(() =>
       formatDistanceToNowStrict(new Date(props.drosse.lastSeen))
     )
 
-    return { lastSeen, openDrosse }
+    const removeDrosse = uuid => {
+      delete drosses.value[uuid]
+      saveDrosses(drosses.value)
+    }
+
+    return { lastSeen, openDrosse, removeDrosse }
   },
 }
 </script>

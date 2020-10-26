@@ -23,7 +23,6 @@ sock.onmessage = async e => {
 
     if (config) {
       drosses.value[uuid].routes = getRoutes(config, drosses.value[uuid].routes)
-      console.log(drosses.value[uuid].routes)
       saveDrosses(drosses.value)
     }
   }
