@@ -87,6 +87,8 @@ const initDrosse = async args => {
   const proto = 'http'
   const hosts = ['localhost', ipAddress]
   const name = state.get('name')
+  const routesFile = state.get('routesFile')
+  const collectionsPath = state.get('collectionsPath')
   let port = state.get('port')
 
   if (port === config.state.port) {
@@ -99,7 +101,17 @@ const initDrosse = async args => {
   const root = state.get('root')
   const uuid = state.get('uuid')
 
-  return { isDrosse: true, name, proto, hosts, port, root, uuid }
+  return {
+    isDrosse: true,
+    uuid,
+    name,
+    proto,
+    hosts,
+    port,
+    root,
+    routesFile,
+    collectionsPath,
+  }
 }
 
 const onStart = drosse => {
