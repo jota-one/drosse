@@ -2,7 +2,14 @@
   <div class="Handler">
     <div v-if="!route.virtual" class="inner">
       <Clickable
-        :class="['icon', 'proxy', { active: handler === 'proxy' }]"
+        :class="[
+          'icon',
+          'proxy',
+          {
+            active: handler === 'proxy',
+            inherited: selectedVerb.inherited.proxy,
+          },
+        ]"
         icon="proxy"
         title="Proxy route"
       />
@@ -32,7 +39,7 @@
         @click="onHandlerValueClick"
       >
         <template v-if="!inline && handlerValue">
-          <Icon class="arrow-icon" name="arrow" />
+          <Icon v-if="multiple" class="arrow-icon" name="arrow" />
           <span>{{ handlerValue.replace(/\s/g, '') }}</span>
         </template>
       </component>
@@ -41,7 +48,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import Clickable from '@/components/common/Clickable'
 import Icon from '@/components/common/Icon'
 import Input from '@/components/common/Input'
@@ -61,8 +68,7 @@ export default {
     editing: Boolean,
   },
   setup(props, { emit }) {
-    // const { openFile } = useIo()
-
+    const multiple = ref(false)
     const selectedVerbType = computed(() => props.selectedVerb?.type)
 
     const handler = computed(() =>
@@ -125,6 +131,7 @@ export default {
       inline,
       handler,
       handlerValue,
+      multiple,
       onHandlerClick,
       onHandlerValueClick,
     }
@@ -140,7 +147,6 @@ export default {
 
 .input {
   min-width: 10rem;
-  /* max-width: 25rem; */
   font-size: 0.9rem;
   margin: 0 1rem 0 0.5rem;
   display: flex;
@@ -179,6 +185,10 @@ export default {
 
     &.proxy {
       fill: var(--c-blue);
+
+      &.inherited:not(:hover) {
+        opacity: 0.5;
+      }
     }
   }
 }

@@ -6,7 +6,7 @@ const HANDLERS = ['body', 'proxy', 'service', 'static']
 const isVerb = type => VERBS.includes(type.toLowerCase())
 const isHandler = type => HANDLERS.includes(type.toLowerCase())
 
-const handleDetail = (detail, { type, handler }) => {
+const handleDetail = (detail, { type, handler, inherited = {} }) => {
   if (type === 'disabled') {
     detail.disabled = handler
   } else if (type === 'proxy') {
@@ -15,6 +15,9 @@ const handleDetail = (detail, { type, handler }) => {
   } else if (Object.keys(handler).length) {
     detail[type] = handler
   }
+
+  detail.inherited = inherited
+
   return detail
 }
 
@@ -22,6 +25,7 @@ export default function useRoutes() {
   const getRoutes = (drosseConfig, savedRoutes = []) => {
     const { parse } = useParser()
     const routes = []
+    const inherited = drosseConfig?.inherited || {}
 
     const onRouteDef = (def, root) => {
       const paths = root
@@ -36,6 +40,7 @@ export default function useRoutes() {
         .filter(([type]) => isVerb(type))
         .map(([type, verbDef]) => {
           const verbEntries = Object.entries(verbDef)
+          const verb = type
 
           const handler = verbEntries
             .filter(([type]) => isHandler(type))
@@ -46,7 +51,11 @@ export default function useRoutes() {
 
           const middlewares = verbEntries
             .filter(([type]) => !isHandler(type))
-            .map(([type, handler]) => ({ type, handler }))
+            .map(([type, handler]) => ({
+              type,
+              handler,
+              inherited: (inherited[paths.join('/')] || {})[verb],
+            }))
             .reduce(handleDetail, {})
 
           return { type, handler, ...middlewares }

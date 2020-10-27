@@ -29,13 +29,6 @@
         />
         <div class="verbs">
           <Verb
-            v-if="route.global"
-            key="all"
-            type="all"
-            :selected="route.selected === 'global'"
-            @click="$emit('select-verb', 'global')"
-          />
-          <Verb
             v-for="verb in route.verbs"
             :key="verb.type"
             :type="verb.type"
@@ -43,7 +36,11 @@
             :disabled="verb.disabled"
             @click="$emit('select-verb', verb.type)"
           />
-          <Clickable v-if="!route.virtual" class="remove" icon="minus" />
+          <Clickable
+            v-if="!route.virtual && route.verbs.length > 0"
+            class="remove"
+            icon="minus"
+          />
           <Clickable v-if="!route.virtual" class="add" icon="plus" />
         </div>
       </div>

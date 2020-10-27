@@ -235,7 +235,7 @@ body {
     --c-route-hover: rgb(0, 0, 0, 0.05);
     --c-tabbar-bg: rgb(230, 230, 230);
     --c-white: rgb(0, 0, 0);
-    --c-yellow: rgb(255, 230, 0);
+    --c-yellow: rgb(255, 208, 0);
 
     * {
       scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);

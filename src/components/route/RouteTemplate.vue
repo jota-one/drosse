@@ -1,9 +1,11 @@
 <template>
   <Middleware
-    :active="Boolean(verb?.template)"
     class="RouteTemplate"
     icon="template"
+    :active="Boolean(verb?.template)"
+    :inherited="verb.inherited.template"
     :title="`Template: ${verb?.template}`"
+    :tooltip="verb?.template"
   >
     <Input :value="verb.template" />
   </Middleware>
@@ -28,7 +30,6 @@ export default {
 <style lang="postcss" scoped>
 /* Colors */
 .Middleware ::v-deep(.icon) {
-  &:hover,
   &.active {
     fill: var(--c-blue);
   }

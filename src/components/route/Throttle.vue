@@ -1,9 +1,11 @@
 <template>
   <Middleware
-    :active="Boolean(verb?.throttle)"
-    :class="['Throttle', { inheritted }]"
+    class="Throttle"
     icon="throttle"
-    :title="`Throttle request: ${min}${max ? ' - ' + max : ''}`"
+    :active="Boolean(verb?.throttle)"
+    :inherited="verb.inherited.throttle"
+    :title="`Throttle request: ${range}`"
+    :tooltip="range"
   >
     <Input :value="min" />
     <template v-if="verb?.throttle">
@@ -30,30 +32,21 @@ export default {
   setup(props) {
     const min = computed(() => props.verb?.throttle?.min || 0)
     const max = computed(() => props.verb?.throttle?.max || 0)
+    const range = computed(
+      () => `${min.value}${max.value ? ' - ' + max.value : ''}`
+    )
     const inheritted = computed(() => props.verb?.throttle?.inheritted)
 
-    return { inheritted, min, max }
+    return { inheritted, min, max, range }
   },
 }
 </script>
 
 <style lang="postcss" scoped>
 /* Colors */
-.Middleware {
-  &::v-deep(.icon) {
-    &:hover,
-    &.active {
-      fill: var(--c-yellow);
-    }
-  }
-
-  &.inheritted {
-    &::v-deep(.icon) {
-      &:hover,
-      &.active {
-        fill: red;
-      }
-    }
+.Middleware ::v-deep(.icon) {
+  &.active {
+    fill: var(--c-yellow);
   }
 }
 </style>
