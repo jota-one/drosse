@@ -1,11 +1,11 @@
 <template>
-  <button :class="['Verb', { selected, disabled /*, all: type === 'all'*/ }]">
+  <button :class="['Verb', { selected, disabled }]">
     {{ type }}
   </button>
 </template>
 
 <script>
-const TYPES = ['all', 'delete', 'get', 'patch', 'post', 'put']
+const TYPES = ['delete', 'get', 'patch', 'post', 'put']
 
 export default {
   name: 'Verb',
@@ -42,20 +42,10 @@ export default {
   border-color: var(--c-gray-inactive);
   background-color: var(--c-gray-inactive);
 
-  /* &.all {
-    color: var(--c-gray-inactive);
-    background-color: transparent;
-  } */
-
   &:hover,
   &.selected {
     border-color: var(--c-green);
     background-color: var(--c-green);
-
-    /* &.all {
-      color: var(--c-green);
-      background-color: transparent;
-    } */
   }
 
   &.disabled {
