@@ -38,7 +38,7 @@
             last seen
           </label>
         </div>
-        <div class="col">delete</div>
+        <div class="col">remove</div>
       </div>
       <slot />
     </div>
@@ -56,7 +56,6 @@ export default {
 
 <style lang="postcss" scoped>
 .Drosses {
-  overflow: auto;
   width: 100%;
 }
 

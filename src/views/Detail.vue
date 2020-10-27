@@ -199,7 +199,7 @@ export default {
     })
 
     bus.on('log', ({ uuid, msg }) => {
-      if (uuid !== drosse.value.uuid) {
+      if (uuid !== drosse.value?.uuid) {
         return
       }
 

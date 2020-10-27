@@ -1,6 +1,6 @@
 const fs = require('fs')
 const os = require('os')
-const path = require('path')
+const { join } = require('path')
 const http = require('http')
 const ip = require('ip')
 const open = require('open')
@@ -57,8 +57,8 @@ const down = (d, conn) => {
 }
 
 const env = process.argv[2] || 'production'
-const home = path.join(os.homedir(), '.drosse-ui')
-const drossesFile = path.join(home, 'drosses.json')
+const home = join(os.homedir(), '.drosse-ui')
+const drossesFile = join(home, 'drosses.json')
 const app = express()
 let d
 
@@ -114,7 +114,7 @@ app.put('/drosses', (req, res) => {
 })
 
 app.post('/file', (req, res) => {
-  const filePath = path.join(drosses[req.body.uuid].root, req.body.file)
+  const filePath = join(drosses[req.body.uuid].root, req.body.file)
   const content = fs.readFileSync(filePath, 'utf8')
   res.send({ content })
 })
@@ -136,11 +136,41 @@ app.put('/restart', (req, res) => {
 
 app.put('/open', (req, res) => {
   const { uuid, file } = req.body
-  open(path.join(drosses[uuid].root, file))
+  open(join(drosses[uuid].root, file))
+})
+
+app.post('/browse', (req, res) => {
+  const { path } = req.body
+  const filterDirs = file => {
+    try {
+      return fs.lstatSync(join(path, file)).isDirectory()
+    } catch (_) {
+      return false
+    }
+  }
+  const selectable = dir => {
+    try {
+      const files = fs.readdirSync(join(path, dir))
+      return files.includes('.drosserc.js')
+    } catch (_) {
+      return false
+    }
+  }
+
+  res.send(
+    fs
+      .readdirSync(join(path))
+      .filter(filterDirs)
+      .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))
+      .map(file => ({
+        path: join(path, file),
+        selectable: selectable(file),
+      }))
+  )
 })
 
 if (env === 'production') {
-  app.use('/', express.static(path.join(__dirname, '..')))
+  app.use('/', express.static(join(__dirname, '..')))
 }
 
 getPort({ port: getPort.makeRange(5000, 9999), host: '0.0.0.0' }).then(port => {

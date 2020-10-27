@@ -10,6 +10,19 @@ export default function useIo() {
     }
   }
 
+  const browse = async path => {
+    try {
+      const response = await fetch(endpoints.browse, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path }),
+      })
+      return response.json()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   const fetchConfig = async drosse => {
     const hosts = drosse.hosts
     const port = drosse.port
@@ -106,6 +119,7 @@ export default function useIo() {
   }
 
   return {
+    browse,
     fetchConfig,
     fetchDrosses,
     fetchHandler,

@@ -2,9 +2,15 @@
   <div class="Home">
     <div class="header">
       <h2>Your <em>drosses</em></h2>
-      <Button v-if="allDrosses.length" class="btn" label="New" />
-      <Button v-if="allDrosses.length" class="btn" label="Import" />
+      <!-- <Button v-if="allDrosses.length" class="btn" label="New" /> -->
+      <Button
+        v-if="allDrosses.length"
+        class="btn"
+        label="Import"
+        @click="toggleImport"
+      />
     </div>
+    <FileBrowser :class="['file-browser', { opened: browserOpened }]" />
     <Drosses v-if="allDrosses.length">
       <Drosse
         v-for="drosse in allDrosses"
@@ -23,19 +29,26 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import useDrosses from '@/modules/drosses'
 import Button from '@/components/common/Button'
+import FileBrowser from '@/components/common/FileBrowser'
 import Drosses from '@/components/drosse/Drosses'
 import Drosse from '@/components/drosse/Drosse'
 
 export default {
   name: 'Home',
-  components: { Button, Drosses, Drosse },
+  components: { Button, Drosses, Drosse, FileBrowser },
   setup() {
     const { drosses } = useDrosses()
+    const browserOpened = ref(false)
     const allDrosses = computed(() => Object.values(drosses.value))
-    return { allDrosses }
+
+    const toggleImport = () => {
+      browserOpened.value = !browserOpened.value
+    }
+
+    return { allDrosses, browserOpened, toggleImport }
   },
 }
 </script>
@@ -64,6 +77,16 @@ em {
 
 .btn {
   margin-right: 1rem;
+}
+
+.file-browser {
+  height: 0;
+  overflow: hidden;
+
+  &.opened {
+    height: 30vh;
+    overflow: auto;
+  }
 }
 
 .empty {

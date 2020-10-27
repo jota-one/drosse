@@ -19,7 +19,7 @@
           :top="editorTop"
           @close="editorOpened = -1"
         />
-        <Help />
+        <Help v-if="false" />
       </div>
     </main>
     <Footer />
@@ -238,7 +238,7 @@ body {
     --c-yellow: rgb(255, 230, 0);
 
     * {
-      scrollbar-color: rgba(200, 200, 200, 0.4) rgba(0, 0, 0, 0.05);
+      scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
     }
 
     *::-webkit-scrollbar-track {
@@ -246,7 +246,7 @@ body {
     }
 
     *::-webkit-scrollbar-thumb {
-      background-color: rgba(200, 200, 200, 0.4);
+      background-color: rgba(0, 0, 0, 0.2);
     }
   }
 }
