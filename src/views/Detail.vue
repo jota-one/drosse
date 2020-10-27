@@ -97,7 +97,8 @@ export default {
     const showRoute = route =>
       !routes.value
         .filter(
-          r => r.level < route.level && route.fullPath.includes(r.fullPath)
+          r =>
+            r.level < route.level && route.fullPath.includes(r.fullPath + '/')
         )
         .some(parent => !parent.opened)
 

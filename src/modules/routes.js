@@ -58,53 +58,64 @@ export default function useRoutes() {
 
     parse({ routes: drosseConfig.routes, onRouteDef })
 
-    return routes.reduce((routes, route, i) => {
-      let level = 0
-      let fullPath = ''
-      let savedRoute
+    return routes
+      .sort((a, b) => {
+        const format = route => route.paths.join('/').replace(/:/g, 'z')
+        const aFormatted = format(a)
+        const bFormatted = format(b)
+        return aFormatted < bFormatted
+          ? -100
+          : aFormatted > bFormatted
+          ? 100
+          : 0 + (a.paths.length - b.paths.length)
+      })
+      .reduce((routes, route, i) => {
+        let level = 0
+        let fullPath = ''
+        let savedRoute
 
-      if (!route.paths.length) {
-        savedRoute = savedRoutes.find(r => r.fullPath === '/')
-        routes.push({
-          level,
-          path: '/',
-          fullPath: '/',
-          opened: savedRoute?.opened,
-        })
-      }
-
-      for (const path of route.paths) {
-        level++
-        fullPath += `/${path}`
-
-        savedRoute = savedRoutes.find(r => r.fullPath === fullPath)
-
-        if (!routes.find(r => r.fullPath === fullPath)) {
+        if (!route.paths.length) {
+          savedRoute = savedRoutes.find(r => r.fullPath === '/')
           routes.push({
             level,
-            pos: i + 1,
-            path: `/${path}`,
-            fullPath,
-            virtual: true,
+            path: '/',
+            fullPath: '/',
             opened: savedRoute?.opened,
           })
         }
-      }
 
-      const realRoute = routes[routes.length - 1]
+        for (const path of route.paths) {
+          level++
+          fullPath += `/${path}`
 
-      realRoute.virtual = false
-      realRoute.verbs = route.verbs
+          savedRoute = savedRoutes.find(r => r.fullPath === fullPath)
 
-      if (route.global && Object.keys(route.global).length) {
-        realRoute.global = route.global
-        realRoute.selected = 'global'
-      } else {
-        realRoute.selected = savedRoute?.selected || realRoute.verbs[0]?.type
-      }
+          if (!routes.find(r => r.fullPath === fullPath)) {
+            routes.push({
+              level,
+              pos: i + 1,
+              path: `/${path}`,
+              fullPath,
+              virtual: true,
+              opened: savedRoute?.opened,
+            })
+          }
+        }
 
-      return routes
-    }, [])
+        const realRoute = routes[routes.length - 1]
+
+        realRoute.virtual = false
+        realRoute.verbs = route.verbs
+
+        if (route.global && Object.keys(route.global).length) {
+          realRoute.global = route.global
+          realRoute.selected = 'global'
+        } else {
+          realRoute.selected = savedRoute?.selected || realRoute.verbs[0]?.type
+        }
+
+        return routes
+      }, [])
   }
 
   return { getRoutes }
