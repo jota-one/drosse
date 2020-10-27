@@ -1,19 +1,20 @@
 <template>
   <Middleware
     :active="Boolean(verb?.throttle)"
-    class="Throttle"
+    :class="['Throttle', { inheritted }]"
     icon="throttle"
-    title="Throttle request"
+    :title="`Throttle request: ${min}${max ? ' - ' + max : ''}`"
   >
-    <Input :value="verb?.throttle?.min || 0" />
+    <Input :value="min" />
     <template v-if="verb?.throttle">
       -
-      <Input :value="verb?.throttle?.max || 0" />
+      <Input :value="max" />
     </template>
   </Middleware>
 </template>
 
 <script>
+import { computed } from 'vue'
 import Input from '@/components/common/Input'
 import Middleware from './Middleware'
 
@@ -26,15 +27,33 @@ export default {
       default: () => ({}),
     },
   },
+  setup(props) {
+    const min = computed(() => props.verb?.throttle?.min || 0)
+    const max = computed(() => props.verb?.throttle?.max || 0)
+    const inheritted = computed(() => props.verb?.throttle?.inheritted)
+
+    return { inheritted, min, max }
+  },
 }
 </script>
 
 <style lang="postcss" scoped>
 /* Colors */
-.Middleware ::v-deep(.icon) {
-  &:hover,
-  &.active {
-    fill: var(--c-yellow);
+.Middleware {
+  &::v-deep(.icon) {
+    &:hover,
+    &.active {
+      fill: var(--c-yellow);
+    }
+  }
+
+  &.inheritted {
+    &::v-deep(.icon) {
+      &:hover,
+      &.active {
+        fill: red;
+      }
+    }
   }
 }
 </style>

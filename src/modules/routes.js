@@ -12,7 +12,7 @@ const handleDetail = (detail, { type, handler }) => {
   } else if (type === 'proxy') {
     detail.type = 'proxy'
     detail.handler = handler
-  } else {
+  } else if (Object.keys(handler).length) {
     detail[type] = handler
   }
   return detail

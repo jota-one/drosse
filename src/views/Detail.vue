@@ -199,7 +199,6 @@ export default {
     })
 
     bus.on('log', ({ uuid, msg }) => {
-      console.log(drosse, uuid, msg)
       if (uuid !== drosse.value.uuid) {
         return
       }

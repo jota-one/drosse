@@ -63,6 +63,11 @@
     />
     <div class="col middleware">
       <div v-if="!route.virtual" class="inner">
+        <RouteTemplate :verb="selectedVerb" />
+      </div>
+    </div>
+    <div class="col middleware">
+      <div v-if="!route.virtual" class="inner">
         <Throttle :verb="selectedVerb" />
       </div>
     </div>
@@ -113,6 +118,7 @@ import Clickable from '@/components/common/Clickable'
 import Input from '@/components/common/Input'
 import Icon from '@/components/common/Icon'
 import Verb from './Verb'
+import RouteTemplate from './RouteTemplate'
 import Throttle from './Throttle'
 import Fail from './Fail'
 import Headers from './Headers'
@@ -125,6 +131,7 @@ export default {
     Input,
     Icon,
     Verb,
+    RouteTemplate,
     Throttle,
     Fail,
     Headers,
