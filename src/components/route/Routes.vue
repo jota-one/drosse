@@ -7,17 +7,15 @@
       />
       <slot />
     </div>
-    <Add class="add-route" label="Add route" />
   </div>
 </template>
 
 <script>
-import Add from '@/components/common/Add'
 import FilterBar from './FilterBar'
 
 export default {
   name: 'Routes',
-  components: { Add, FilterBar },
+  components: { FilterBar },
   props: {
     showVirtual: Boolean,
   },
