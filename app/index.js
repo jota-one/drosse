@@ -6,6 +6,7 @@ const stoppable = require('stoppable')
 const getPort = require('get-port')
 const config = require('./config')
 const logger = require('./logger')
+const openCors = require('./middlewares/open-cors')
 const useState = require('./use/state')
 const useMiddlewares = require('./use/middlewares')
 const useDb = require('./use/db')
@@ -64,7 +65,7 @@ const initServer = async args => {
   })
 
   // add reserved UI route
-  app.get(state.get('reservedRoutes').ui, (req, res) => {
+  app.get(state.get('reservedRoutes').ui, openCors, (req, res) => {
     res.send({ routes: ioRoutes })
   })
 
