@@ -22,7 +22,7 @@ const initServer = async args => {
   state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
   middlewares.set(config.middlewares)
 
-  // check for some users configuration in a .drosserc.js file
+  // check for some users configuration in a drosserc.js file
   loadRcFile()
 
   // load uuid from the .uuid file (create it if needed), needed for the UI
@@ -37,6 +37,17 @@ const initServer = async args => {
       )}.js" file in this directory: ${state.get('root')}, and restart.`
     )
     process.exit()
+  }
+
+  // if everything is well configured, load database and create the routes
+  const ioRoutes = routes()
+  const errorHandler = state.get('errorHandler')
+
+  await db.loadDb()
+  createRoutes(app, ioRoutes)
+
+  if (errorHandler) {
+    app.use(errorHandler)
   }
 
   // register custom global middlewares
@@ -68,17 +79,6 @@ const initServer = async args => {
   app.get(state.get('reservedRoutes').ui, openCors, (req, res) => {
     res.send({ routes: ioRoutes })
   })
-
-  // if everything is well configured, load database and create the routes
-  const ioRoutes = routes()
-  const errorHandler = state.get('errorHandler')
-
-  await db.loadDb()
-  createRoutes(app, ioRoutes)
-
-  if (errorHandler) {
-    app.use(errorHandler)
-  }
 
   return true
 }
