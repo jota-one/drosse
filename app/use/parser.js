@@ -2,6 +2,7 @@ const useState = require('./state')
 const state = useState()
 
 const parse = ({ routes, root = [], hierarchy = [], onRouteDef }) => {
+  let inherited = []
   const localHierarchy = [].concat(hierarchy)
   if (routes.DROSSE) {
     localHierarchy.push(routes.DROSSE)
@@ -17,17 +18,23 @@ const parse = ({ routes, root = [], hierarchy = [], onRouteDef }) => {
         throw new Error(`Route "${fullPath}" is reserved`)
       }
 
-      parse({
-        routes: content,
-        root: root.concat(path),
-        hierarchy: localHierarchy,
-        onRouteDef,
-      })
+      inherited = inherited.concat(
+        parse({
+          routes: content,
+          root: root.concat(path),
+          hierarchy: localHierarchy,
+          onRouteDef,
+        })
+      )
     })
 
   if (routes.DROSSE) {
-    onRouteDef(routes.DROSSE, root, localHierarchy)
+    inherited = inherited.concat(
+      onRouteDef(routes.DROSSE, root, localHierarchy)
+    )
   }
+
+  return inherited
 }
 
 module.exports = function useParser() {

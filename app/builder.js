@@ -3,6 +3,7 @@ const logger = require('./logger')
 const useParser = require('./use/parser')
 const useTemplates = require('./use/templates')
 const { loadService, loadStatic } = require('./io')
+const { isEmpty } = require('lodash')
 
 const { parse } = useParser()
 const templates = useTemplates()
@@ -50,19 +51,30 @@ const setRoute = function (app, def, verb, root) {
 
 const createRoute = function (def, root, defHierarchy) {
   const app = this
+  const inheritance = []
 
   ;['get', 'post', 'put', 'delete']
     .filter(verb => def[verb])
     .forEach(verb => {
       // set throttling
+      const originalThrottle = !isEmpty(def[verb].throttle)
       def[verb].throttle =
         def[verb].throttle ||
         defHierarchy.reduce((acc, item) => item.throttle || acc, {})
 
+      if (!originalThrottle && !isEmpty(def[verb].throttle)) {
+        inheritance.push({ path: root.join('/'), type: 'throttle', verb })
+      }
+
       // set template
+      const originalTemplate = Boolean(def[verb].template)
       def[verb].template =
         def[verb].template ||
         defHierarchy.reduce((acc, item) => item.template || acc, {})
+
+      if (!originalTemplate && def[verb].template) {
+        inheritance.push({ path: root.join('/'), type: 'template', verb })
+      }
 
       // create route
       setRoute(app, def[verb], verb, root)
@@ -80,13 +92,29 @@ const createRoute = function (def, root, defHierarchy) {
       context: { target: def.proxy, changeOrigin: true, onProxyReq: restream },
     })
   }
+
+  return inheritance
 }
 
 const createRoutes = (app, routes) => {
   app.proxies = []
-  parse({ routes, onRouteDef: createRoute.bind(app) })
+  const inherited = parse({ routes, onRouteDef: createRoute.bind(app) })
+  const result = inherited.reduce((acc, item) => {
+    if (!acc[item.path]) {
+      acc[item.path] = {}
+    }
+    if (!acc[item.path][item.verb]) {
+      acc[item.path][item.verb] = {
+        template: false,
+        throttle: false,
+        proxy: false,
+      }
+    }
+    acc[item.path][item.verb][item.type] = true
+    return acc
+  }, {})
   createProxies(app)
-  return true
+  return result
 }
 
 const restream = function (proxyReq, req, res) {

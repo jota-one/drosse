@@ -44,7 +44,7 @@ const initServer = async args => {
   const errorHandler = state.get('errorHandler')
 
   await db.loadDb()
-  createRoutes(app, ioRoutes)
+  const inherited = createRoutes(app, ioRoutes)
 
   if (errorHandler) {
     app.use(errorHandler)
@@ -77,7 +77,7 @@ const initServer = async args => {
 
   // add reserved UI route
   app.get(state.get('reservedRoutes').ui, openCors, (req, res) => {
-    res.send({ routes: ioRoutes })
+    res.send({ routes: ioRoutes, inherited })
   })
 
   return true
