@@ -17,7 +17,21 @@
         :uuid="drosse.uuid"
       />
       <div class="port">:<Input class="input" :value="drosse.port" /></div>
-      <Input class="root" :value="drosse.root" />
+      <div class="root">
+        {{ drosse.root }}
+      </div>
+      <button
+        class="file rc-file"
+        @click="openFile(drosse.uuid, '.drosserc.js')"
+      >
+        .drosserc.js
+      </button>
+      <button
+        class="file routes-file"
+        @click="openFile(drosse.uuid, `${drosse.routesFile}.json`)"
+      >
+        {{ drosse.routesFile }}.json
+      </button>
     </section>
     <div class="routes-container">
       <Routes
@@ -185,6 +199,7 @@ export default {
     })
 
     bus.on('log', ({ uuid, msg }) => {
+      console.log(drosse, uuid, msg)
       if (uuid !== drosse.value.uuid) {
         return
       }
@@ -236,7 +251,15 @@ h2 {
 }
 
 .root {
+  margin-right: 0.5rem;
   font-size: 0.9rem;
+}
+
+.file {
+  margin: 0 0.5rem;
+  padding: 0.3rem 0.5rem 0.25rem;
+  font-size: 0.9rem;
+  border-radius: 0.25rem;
 }
 
 .routes-container {
@@ -271,11 +294,21 @@ h2 {
   border-bottom-color: var(--c-gray-inactive);
 }
 
+.file {
+  color: var(--c-white);
+  background-color: var(--c-route-hover);
+
+  &:hover {
+    color: var(--c-black);
+    background-color: var(--c-green);
+  }
+}
+
 .route,
 .editor-placeholder {
   &:not(.hit):hover,
   &.editing {
-    background: var(--c-route-hover);
+    background-color: var(--c-route-hover);
   }
 }
 </style>
