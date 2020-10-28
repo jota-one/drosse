@@ -118,12 +118,9 @@ export default {
 
     const inline = computed(() => ['proxy'].includes(handler.value))
 
-    const onHandlerClick = type => {
-      console.log('select', type)
-    }
+    const onHandlerClick = type => {}
 
     const onHandlerValueClick = () => {
-      console.log('open-file', handlerValue.value)
       emit('open-file', handlerValue.value)
     }
 

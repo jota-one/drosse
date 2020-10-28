@@ -21,7 +21,7 @@
   },
   "homepage": "https://drosse.dev",
   "dependencies": {
-    "@jota-one/drosse": "^0.1.13",
+    "@jota-one/drosse": "^1.0.0",
     "ansi-to-html": "^0.6.14",
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",

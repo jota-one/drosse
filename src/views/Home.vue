@@ -2,15 +2,15 @@
   <div class="Home">
     <div class="header">
       <h2>Your <em>drosses</em></h2>
-      <!-- <Button v-if="allDrosses.length" class="btn" label="New" /> -->
-      <Button
-        v-if="allDrosses.length"
-        class="btn"
-        label="Import"
-        @click="toggleImport"
-      />
+      <!-- <Button class="btn" label="New" /> -->
+      <Button class="btn" label="Import" @click="toggleImport" />
     </div>
-    <FileBrowser :class="['file-browser', { opened: browserOpened }]" />
+    <FileBrowser
+      :class="['file-browser', { opened: browserOpened }]"
+      root="/"
+      @close="browserOpened = false"
+      @select="importDrosse"
+    />
     <Drosses v-if="allDrosses.length">
       <Drosse
         v-for="drosse in allDrosses"
@@ -20,16 +20,13 @@
     </Drosses>
     <div v-else class="empty">
       <p class="not-found">No drosse found...</p>
-      <p class="actions">
-        <Button class="btn" label="New" />
-        <Button class="btn" label="Import" />
-      </p>
     </div>
   </div>
 </template>
 
 <script>
 import { computed, ref } from 'vue'
+import useIo from '@/modules/io'
 import useDrosses from '@/modules/drosses'
 import Button from '@/components/common/Button'
 import FileBrowser from '@/components/common/FileBrowser'
@@ -40,7 +37,8 @@ export default {
   name: 'Home',
   components: { Button, Drosses, Drosse, FileBrowser },
   setup() {
-    const { drosses } = useDrosses()
+    const { importFolder } = useIo()
+    const { drosses, loadDrosses } = useDrosses()
     const browserOpened = ref(false)
     const allDrosses = computed(() => Object.values(drosses.value))
 
@@ -48,7 +46,12 @@ export default {
       browserOpened.value = !browserOpened.value
     }
 
-    return { allDrosses, browserOpened, toggleImport }
+    const importDrosse = async path => {
+      await importFolder(path)
+      await loadDrosses()
+    }
+
+    return { allDrosses, browserOpened, importDrosse, toggleImport }
   },
 }
 </script>
@@ -81,11 +84,9 @@ em {
 
 .file-browser {
   height: 0;
-  overflow: hidden;
 
   &.opened {
     height: 30vh;
-    overflow: auto;
   }
 }
 

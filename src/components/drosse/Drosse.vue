@@ -18,6 +18,7 @@
     <div class="col last-seen">{{ lastSeen }}</div>
     <div class="col delete">
       <Clickable
+        v-if="!drosse.up"
         class="delete-icon"
         icon="minus"
         @click="removeDrosse(drosse.uuid)"

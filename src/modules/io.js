@@ -6,6 +6,7 @@ export default function useIo() {
       const response = await fetch(endpoints.drosses)
       return response.json()
     } catch (e) {
+      // eslint-disable-next-line
       console.error(e)
     }
   }
@@ -19,6 +20,20 @@ export default function useIo() {
       })
       return response.json()
     } catch (e) {
+      // eslint-disable-next-line
+      console.error(e)
+    }
+  }
+
+  const importFolder = async path => {
+    try {
+      await fetch(endpoints.import, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path }),
+      })
+    } catch (e) {
+      // eslint-disable-next-line
       console.error(e)
     }
   }
@@ -32,6 +47,7 @@ export default function useIo() {
       const response = await fetch(`${proto}://${hosts[0]}:${port}/UI`)
       return response.json()
     } catch (e) {
+      // eslint-disable-next-line
       console.error(e)
     }
   }
@@ -44,6 +60,7 @@ export default function useIo() {
         body: JSON.stringify(drosses),
       })
     } catch (e) {
+      // eslint-disable-next-line
       console.log(e)
     }
   }
@@ -61,6 +78,7 @@ export default function useIo() {
         language: file.endsWith('.json') ? 'json' : 'javascript',
       }
     } catch (e) {
+      // eslint-disable-next-line
       console.error(e)
     }
 
@@ -73,11 +91,12 @@ export default function useIo() {
   const start = async uuid => {
     try {
       await fetch(endpoints.start, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uuid }),
       })
     } catch (e) {
+      // eslint-disable-next-line
       console.error(e)
     }
   }
@@ -85,11 +104,12 @@ export default function useIo() {
   const stop = async uuid => {
     try {
       await fetch(endpoints.stop, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uuid }),
       })
     } catch (e) {
+      // eslint-disable-next-line
       console.error(e)
     }
   }
@@ -97,11 +117,12 @@ export default function useIo() {
   const restart = async uuid => {
     try {
       await fetch(endpoints.restart, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uuid }),
       })
     } catch (e) {
+      // eslint-disable-next-line
       console.error(e)
     }
   }
@@ -109,11 +130,12 @@ export default function useIo() {
   const openFile = async (uuid, file) => {
     try {
       await fetch(endpoints.open, {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uuid, file }),
       })
     } catch (e) {
+      // eslint-disable-next-line
       console.error(e)
     }
   }
@@ -123,6 +145,7 @@ export default function useIo() {
     fetchConfig,
     fetchDrosses,
     fetchHandler,
+    importFolder,
     openFile,
     restart,
     saveDrosses,

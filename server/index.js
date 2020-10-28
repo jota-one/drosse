@@ -1,6 +1,7 @@
 const fs = require('fs')
 const os = require('os')
 const { join } = require('path')
+const { fork } = require('child_process')
 const http = require('http')
 const ip = require('ip')
 const open = require('open')
@@ -9,6 +10,15 @@ const bodyParser = require('body-parser')
 const sockjs = require('sockjs')
 const getPort = require('get-port')
 const Discover = require('node-discover')
+
+const drosseBin = join(
+  __dirname,
+  '..',
+  'node_modules',
+  '@jota-one',
+  'drosse',
+  'bin'
+)
 
 const getDrosses = () => {
   const drosses = JSON.parse(fs.readFileSync(drossesFile, 'utf8'))
@@ -36,6 +46,7 @@ const up = (d, conn) => {
 
   const drosse = drosses[d.uuid]
 
+  drosse.online = true
   drosse.up = true
   drosse.lastSeen = drosse.lastSeen || new Date()
   drosses[drosse.uuid].available = fs.existsSync(drosses[drosse.uuid].root)
@@ -44,10 +55,11 @@ const up = (d, conn) => {
   conn.write(JSON.stringify({ event: 'up', drosse }))
 }
 
-const down = (d, conn) => {
+const down = (d, conn, downFromUI) => {
   const drosse = drosses[d.uuid]
 
   if (drosse) {
+    drosse.online = downFromUI === true
     drosse.up = false
     drosse.lastSeen = new Date()
   }
@@ -92,12 +104,19 @@ echo.on('connection', conn => {
   d.join('up', drosse => {
     up(drosse, conn)
   })
+
   d.join('down', drosse => {
     down(drosse, conn)
   })
+
+  d.join('downUI', drosse => {
+    down(drosse, conn, true)
+  })
+
   d.join('log', ({ uuid, msg }) => {
     conn.write(JSON.stringify({ event: 'log', uuid, msg }))
   })
+
   d.join('request', request => {
     conn.write(JSON.stringify({ event: 'request', request }))
   })
@@ -119,22 +138,32 @@ app.post('/file', (req, res) => {
   res.send({ content })
 })
 
-app.put('/start', (req, res) => {
-  d.send('start', req.body.uuid)
+app.post('/start', (req, res) => {
+  const { uuid } = req.body
+  const drosse = drosses[uuid]
+
+  if (drosse.online) {
+    d.send('start', uuid)
+  } else {
+    fork(join(drosseBin, 'serve.js'), ['-r', drosse.root], { silent: true })
+  }
+
   res.send()
 })
 
-app.put('/stop', (req, res) => {
-  d.send('stop', req.body.uuid)
+app.post('/stop', (req, res) => {
+  const { uuid } = req.body
+  d.send('stop', uuid)
   res.send()
 })
 
-app.put('/restart', (req, res) => {
-  d.send('restart', req.body.uuid)
+app.post('/restart', (req, res) => {
+  const { uuid } = req.body
+  d.send('restart', uuid)
   res.send()
 })
 
-app.put('/open', (req, res) => {
+app.post('/open', (req, res) => {
   const { uuid, file } = req.body
   open(join(drosses[uuid].root, file))
 })
@@ -161,12 +190,41 @@ app.post('/browse', (req, res) => {
     fs
       .readdirSync(join(path))
       .filter(filterDirs)
-      .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))
+      .sort((a, b) =>
+        (a.path || '').toLowerCase() < (b.path || '').toLowerCase()
+          ? -1
+          : (a.path || '').toLowerCase() > (b.path || '').toLowerCase()
+          ? 1
+          : 0
+      )
       .map(file => ({
         path: join(path, file),
         selectable: selectable(file),
       }))
   )
+})
+
+app.post('/import', async (req, res) => {
+  const description = await new Promise((resolve, reject) => {
+    const { path } = req.body
+    const args = ['describe', '-r', path]
+
+    const app = fork(join(drosseBin, 'drosse.js'), args, { silent: false })
+
+    app.on('message', ({ event, data }) => {
+      if (event === 'describe') {
+        resolve(data)
+      }
+    })
+  })
+
+  drosses[description.drosse.uuid] = {
+    ...description.drosse,
+    lastSeen: new Date(),
+    available: true,
+  }
+  updateDrosses()
+  res.send()
 })
 
 if (env === 'production') {

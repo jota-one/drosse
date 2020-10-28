@@ -13,29 +13,34 @@
         {{ dir.path }}
       </button>
     </div>
+    <div class="actions">
+      <Button secondary class="cancel" label="Close" @click="$emit('close')" />
+    </div>
   </div>
 </template>
 
 <script>
 import { onMounted, ref } from 'vue'
 import useIo from '@/modules/io'
+import Button from '@/components/common/Button'
 
 export default {
   name: 'FileBrowser',
+  components: { Button },
   props: {
     root: {
       type: String,
       default: '/',
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { browse } = useIo()
     const dirs = ref([])
     const path = ref(props.root)
 
     const open = async dir => {
       if (dir.selectable) {
-        confirm(`Import ${dir.path}?`)
+        emit('select', dir.path)
         return
       }
 
@@ -62,13 +67,18 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.FileBrowser {
+  overflow: hidden;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: 1rem;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 3rem);
+  overflow: auto;
 }
 
 .parent,
@@ -80,6 +90,16 @@ export default {
   &.selectable {
     font-weight: 500;
     cursor: pointer;
+  }
+}
+
+.actions {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+
+  .cancel {
+    margin: 0 1rem;
   }
 }
 
@@ -101,5 +121,9 @@ export default {
 
 .dir.selectable {
   color: var(--c-green);
+}
+
+.actions {
+  background-color: rgba(0, 0, 0, 0.2);
 }
 </style>
