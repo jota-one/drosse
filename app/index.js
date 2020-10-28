@@ -41,6 +41,16 @@ const initServer = async args => {
     process.exit()
   }
 
+  // register custom global middlewares
+  logger.info('-> Middlewares:')
+  console.log(middlewares.list())
+  middlewares.list().forEach(mw => {
+    if (typeof mw !== 'function') {
+      mw = require('./middlewares/' + mw)
+    }
+    app.use(mw)
+  })
+
   // if everything is well configured, load database and create the routes
   const ioRoutes = routes()
   const errorHandler = state.get('errorHandler')
@@ -51,16 +61,6 @@ const initServer = async args => {
   if (errorHandler) {
     app.use(errorHandler)
   }
-
-  // register custom global middlewares
-  logger.info('-> Middlewares:')
-  console.log(middlewares.list())
-  middlewares.list().forEach(mw => {
-    if (typeof mw !== 'function') {
-      mw = require('./middlewares/' + mw)
-    }
-    app.use(mw)
-  })
 
   // notify the UI for every request made
   app.use((req, res, next) => {
