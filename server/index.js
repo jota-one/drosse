@@ -20,6 +20,8 @@ const drosseBin = join(
   'bin'
 )
 
+const forks = {}
+
 const getDrosses = () => {
   const drosses = JSON.parse(fs.readFileSync(drossesFile, 'utf8'))
   const uuids = Object.keys(drosses)
@@ -55,11 +57,11 @@ const up = (d, conn) => {
   conn.write(JSON.stringify({ event: 'up', drosse }))
 }
 
-const down = (d, conn, downFromUI) => {
+const down = (d, conn, online) => {
   const drosse = drosses[d.uuid]
 
   if (drosse) {
-    drosse.online = downFromUI === true
+    drosse.online = online
     drosse.up = false
     drosse.lastSeen = new Date()
   }
@@ -106,7 +108,7 @@ echo.on('connection', conn => {
   })
 
   d.join('down', drosse => {
-    down(drosse, conn)
+    down(drosse, conn, false)
   })
 
   d.join('downUI', drosse => {
@@ -142,10 +144,14 @@ app.post('/start', (req, res) => {
   const { uuid } = req.body
   const drosse = drosses[uuid]
 
+  console.log('start', drosse.name, drosse.online ? '🧵' : '💤')
+
   if (drosse.online) {
     d.send('start', uuid)
   } else {
-    fork(join(drosseBin, 'serve.js'), ['-r', drosse.root], { silent: true })
+    forks[uuid] = fork(join(drosseBin, 'serve.js'), ['-r', drosse.root], {
+      silent: true,
+    })
   }
 
   res.send()
@@ -153,7 +159,16 @@ app.post('/start', (req, res) => {
 
 app.post('/stop', (req, res) => {
   const { uuid } = req.body
-  d.send('stop', uuid)
+  const drosse = drosses[uuid]
+
+  console.log('stop', drosse.name, drosse.online ? '🧵' : '💤')
+
+  if (drosse.online) {
+    d.send('stop', uuid)
+  } else {
+    forks[uuid].kill()
+  }
+
   res.send()
 })
 
