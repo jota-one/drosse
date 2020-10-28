@@ -18,6 +18,8 @@ const state = useState()
 const middlewares = useMiddlewares()
 const db = useDb()
 
+process.send = process.send || function () {}
+
 const initServer = async args => {
   state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
   middlewares.set(config.middlewares)
@@ -80,7 +82,7 @@ const initServer = async args => {
     res.send({ routes: ioRoutes, inherited })
   })
 
-  return true
+  return { routes: ioRoutes, inherited, middlewares }
 }
 
 const initDrosse = async args => {
@@ -137,16 +139,17 @@ const onStart = drosse => {
 }
 
 const init = async args => {
-  await initServer(args)
-  return initDrosse(args)
+  const server = await initServer(args)
+  const drosse = await initDrosse(args)
+  return { ...server, drosse }
 }
 
 // start server
 module.exports = async args => {
-  let drosse, server
+  const { drosse, routes, inherited, middlewres } = await init(args)
+  let server
 
   const start = async () => {
-    drosse = await init(args)
     server = app.listen(drosse.port, '0.0.0.0', () => {
       onStart(drosse)
     })
@@ -169,8 +172,6 @@ module.exports = async args => {
       process.exit()
     }, 0)
   }
-
-  start()
 
   process.on('message', ({ event, data }) => {
     if (event === 'start') {
@@ -197,4 +198,6 @@ module.exports = async args => {
 
   // catch uncaught exceptions
   process.on('uncaughtException', exitHandler)
+
+  return { drosse, routes, inherited, middlewres, start, stop }
 }

@@ -1,13 +1,13 @@
 {
   "name": "@jota-one/drosse",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Mock your backend the right way.",
   "main": "app/index.js",
   "bin": {
     "drosse": "./bin/drosse.js"
   },
   "scripts": {
-    "serve": "./bin/exec.js serve"
+    "serve": "./bin/serve.js"
   },
   "repository": {
     "type": "git",

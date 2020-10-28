@@ -15,19 +15,23 @@ const exitHandler = () => {
 }
 
 const start = () => {
-  const app = fork(path.join(__dirname, 'drosse.js'), process.argv.slice(2), {
-    silent: true,
-  })
+  const app = fork(
+    path.join(__dirname, 'drosse.js'),
+    ['serve'].concat(process.argv.slice(2)),
+    {
+      silent: true,
+    }
+  )
 
   app.stdout.on('data', data => {
-    `${data}`.split('\n').forEach(msg => {
+    ;`${data}`.split('\n').forEach(msg => {
       d.send('log', { uuid, msg })
     })
     process.stdout.write(`${data}`)
   })
 
   app.stderr.on('data', data => {
-    `${data}`.split('\n').forEach(msg => {
+    ;`${data}`.split('\n').forEach(msg => {
       d.send('log', { uuid, msg })
     })
     process.stderr.write(`${data}`)
