@@ -267,9 +267,9 @@ api.users:id.json
 
 1:11:29 AM Mocks root: /some/path/mymocks
 
-1:17:27 AM loadStatic: tried with [/Users/joelpoulin/Sites/jota/drosse/examples/staticjson/static/api.users.3.get.json]. File not found.
-1:17:27 AM loadStatic: tried with [/Users/joelpoulin/Sites/jota/drosse/examples/staticjson/static/api.users.3.json]. File not found.
-1:17:27 AM loadStatic: tried with [/Users/joelpoulin/Sites/jota/drosse/examples/staticjson/static/api.users.:id.get.json]. File not found.
+1:17:27 AM loadStatic: tried with [/some/path/mymocks/static/api.users.3.get.json]. File not found.
+1:17:27 AM loadStatic: tried with [/some/path/mymocks/static/api.users.3.json]. File not found.
+1:17:27 AM loadStatic: tried with [/some/path/mymocks/static/api.users.:id.get.json]. File not found.
 ```
 You can see above that the system has first tried with the very precise `api.users.3.get.json` (resolved parameter + verb). Then it tries the same without verb (`api.users.3.json`). As it still fails, it tries without resolving the parameter, but again with the verb (`api.users.:id.get.json`) and finally find a corresponding mock file with `api.users.:id.json`. Of course this last one is not logged as it was found.
 
