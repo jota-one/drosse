@@ -1,15 +1,15 @@
 module.exports = {
+  root: true,
   env: {
-    commonjs: true,
-    es2020: true,
-    node: true
+    node: true,
   },
-  extends: [
-    'standard'
-  ],
-  parserOptions: {
-    ecmaVersion: 11
-  },
+  extends: ['standard', 'eslint:recommended'],
   rules: {
-  }
+    'prettier/prettier': 'error',
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'comma-dangle': 0,
+    'space-before-function-paren': 0,
+  },
+  plugins: ['prettier'],
 }

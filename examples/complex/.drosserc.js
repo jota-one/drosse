@@ -1,4 +1,4 @@
 module.exports = {
   name: 'Complex example app',
-  port: 3636
+  port: 3636,
 }

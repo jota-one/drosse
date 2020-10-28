@@ -1,0 +1,18 @@
+{
+  "check-session": {
+    "DROSSE": {
+      "get": {
+        "body": {
+          "connected": true
+        }
+      }
+    }
+  },
+  "auth": {
+    "DROSSE": {
+      "post": {
+        "service": true
+      }
+    }
+  }
+}

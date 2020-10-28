@@ -5,17 +5,17 @@ let state = JSON.parse(JSON.stringify(config.state))
 
 module.exports = function () {
   return {
-    set (key, value) {
+    set(key, value) {
       state[key] = value
     },
-    get (key) {
+    get(key) {
       if (key) {
         return state[key]
       }
       return state
     },
-    merge (conf) {
+    merge(conf) {
       state = _.merge(state, conf)
-    }
+    },
   }
 }

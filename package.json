@@ -1,13 +1,13 @@
 {
   "name": "@jota-one/drosse",
-  "version": "0.1.13",
+  "version": "1.0.0",
   "description": "Mock your backend the right way.",
   "main": "app/index.js",
   "bin": {
     "drosse": "./bin/drosse.js"
   },
   "scripts": {
-    "serve": "./bin/drosse.js serve"
+    "serve": "./bin/serve.js"
   },
   "repository": {
     "type": "git",
@@ -29,12 +29,16 @@
   "homepage": "https://drosse.dev",
   "dependencies": {
     "@jota-one/replacer": "^0.3.0",
+    "ansi-colors": "^4.1.1",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "get-port": "^5.1.1",
     "http-proxy-middleware": "^1.0.4",
     "ip": "^1.1.5",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "lokijs": "^1.5.9",
+    "morgan": "^1.10.0",
     "node-discover": "^1.1.3",
     "readdirp": "^3.4.0",
     "stoppable": "^1.1.0",
@@ -43,11 +47,13 @@
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "eslint": "^7.4.0",
-    "eslint-config-standard": "^14.1.1",
+    "eslint": "^7.9.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "prettier": "^2.1.2",
+    "standard": "^14.3.4"
   }
 }

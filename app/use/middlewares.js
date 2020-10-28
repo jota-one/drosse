@@ -1,18 +1,17 @@
-const config = require('../config')
-let state = config.middlewares
+let state = []
 
 module.exports = function () {
   return {
-    append (mw) {
-      state.push(mw)
+    append(mw) {
+      state = [...state, ...mw]
     },
 
-    set (mws) {
-      state = [...mws]
+    set(mw) {
+      state = [...mw]
     },
 
-    list () {
+    list() {
       return state
-    }
+    },
   }
 }
