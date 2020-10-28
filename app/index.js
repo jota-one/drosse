@@ -82,7 +82,7 @@ const initServer = async args => {
     res.send({ routes: ioRoutes, inherited })
   })
 
-  return { routes: ioRoutes, inherited, middlewares }
+  return { routes: ioRoutes, inherited }
 }
 
 const initDrosse = async args => {
@@ -146,7 +146,7 @@ const init = async args => {
 
 // start server
 module.exports = async args => {
-  const { drosse, routes, inherited, middlewres } = await init(args)
+  const { drosse, routes, inherited } = await init(args)
   let server
 
   const start = async () => {
@@ -159,12 +159,11 @@ module.exports = async args => {
   const stop = () => {
     server.stop(() => {
       logger.warn('Server stopped by UI')
-      process.send({ event: 'down', data: drosse })
+      process.send({ event: 'downUI', data: drosse })
     })
   }
 
   const exitHandler = arg => {
-    process.send({ event: 'down', data: drosse })
     setTimeout(() => {
       if (typeof arg === 'object') {
         console.log(arg)
@@ -199,5 +198,5 @@ module.exports = async args => {
   // catch uncaught exceptions
   process.on('uncaughtException', exitHandler)
 
-  return { drosse, routes, inherited, middlewres, start, stop }
+  return { drosse, routes, inherited, start, stop }
 }

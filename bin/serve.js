@@ -9,6 +9,7 @@ const d = new Discover({ advertisement: {} })
 let forked, uuid
 
 const exitHandler = () => {
+  d.send('down', { uuid })
   setTimeout(() => {
     process.exit()
   }, 100)
@@ -24,14 +25,14 @@ const start = () => {
   )
 
   app.stdout.on('data', data => {
-    ;`${data}`.split('\n').forEach(msg => {
+    `${data}`.split('\n').forEach(msg => {
       d.send('log', { uuid, msg })
     })
     process.stdout.write(`${data}`)
   })
 
   app.stderr.on('data', data => {
-    ;`${data}`.split('\n').forEach(msg => {
+    `${data}`.split('\n').forEach(msg => {
       d.send('log', { uuid, msg })
     })
     process.stderr.write(`${data}`)

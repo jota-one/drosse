@@ -12,17 +12,15 @@ module.exports = {
 
   async handler(yargs) {
     const app = require('../app')
-    const { drosse, routes, inherited, middlewares } = await app(yargs)
+    const { drosse } = await app(yargs)
 
     process.send = process.send || function () {}
-
     process.send({
       event: 'describe',
-      data: { drosse, routes, inherited, middlewares },
+      data: { drosse },
     })
 
     console.log({ drosse })
-
     process.exit(0)
   },
 }
