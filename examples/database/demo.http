@@ -1,0 +1,32 @@
+### List users
+GET http://localhost:3665/api/users
+Accept: application/json
+
+### Update user name
+PUT http://localhost:3665/api/users/1
+Content-Type: application/json
+
+{
+  "name": "Tadashi"
+}
+
+### Add super power to a user (with no power at all in the beginning)
+POST http://localhost:3665/api/users/1/powers
+Content-Type: application/json
+
+{
+  "id": "fly"
+}
+
+### Create a new user
+POST http://localhost:3665/api/users
+Content-Type: application/json
+
+{
+  "id": 3,
+  "name": "Sephiroth"
+}
+
+### Delete a user
+DELETE http://localhost:3665/api/users/2
+Content-Type: application/json
