@@ -1,0 +1,13 @@
+{
+  "name": "Tadai",
+  "powers": [{
+    "collection": "superpowers",
+    "id": "guitar"
+  }],
+  "DROSSE": {
+    "ids": [
+      "tadai",
+      "1"
+    ]
+  }
+}

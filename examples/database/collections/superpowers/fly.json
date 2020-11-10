@@ -1,0 +1,8 @@
+{
+  "name": "fly",
+  "description": "Can fly over the rainbows",
+  "level": 12,
+  "DROSSE": {
+    "ids": ["fly"]
+  }
+}

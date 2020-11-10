@@ -1,0 +1,8 @@
+{
+  "name": "bulletproof",
+  "description": "Resistent body to any impact",
+  "level": 10,
+  "DROSSE": {
+    "ids": ["bulletproof"]
+  }
+}
