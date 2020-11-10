@@ -1,0 +1,8 @@
+{
+  "name": "laser",
+  "description": "Can throw lasers with their eyes",
+  "level": 15,
+  "DROSSE": {
+    "ids": ["laser"]
+  }
+}

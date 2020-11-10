@@ -121,6 +121,11 @@ module.exports = function () {
     },
 
     query: {
+      list(collection) {
+        const coll = db.getCollection(collection)
+        return coll.data.map(clean())
+      },
+
       getRef(refObj, dynamicId) {
         const { collection, id: refId } = refObj
         const id = dynamicId || refId
@@ -170,6 +175,11 @@ module.exports = function () {
       clean,
     },
 
+    insert(collection, ids, payload) {
+      const coll = db.getCollection(collection)
+      return coll.insert(lodash.cloneDeep({ ...payload, DROSSE: { ids } }))
+    },
+
     update: {
       byId(collection, id, newValue) {
         const coll = db.getCollection(collection)
@@ -179,6 +189,35 @@ module.exports = function () {
             doc[key] = value
           })
         })
+      },
+
+      subItem: {
+        append(collection, id, subPath, payload) {
+          const coll = db.getCollection(collection)
+          coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
+            if (!lodash.get(doc, subPath)) {
+              lodash.set(doc, subPath, [])
+            }
+            lodash.get(doc, subPath).push(payload)
+          })
+        },
+        prepend(collection, id, subPath, payload) {
+          const coll = db.getCollection(collection)
+          coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
+            if (!lodash.get(doc, subPath)) {
+              lodash.set(doc, subPath, [])
+            }
+            lodash.get(doc, subPath).unshift(payload)
+          })
+        },
+      },
+    },
+
+    remove: {
+      byId(collection, id) {
+        const coll = db.getCollection(collection)
+        const toDelete = coll.findOne({ 'DROSSE.ids': { $contains: id } })
+        return toDelete && coll.remove(toDelete)
       },
     },
   }

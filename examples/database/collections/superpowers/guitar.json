@@ -1,0 +1,8 @@
+{
+  "name": "guitar",
+  "description": "Can play the guitar",
+  "level": 2,
+  "DROSSE": {
+    "ids": ["guitar"]
+  }
+}

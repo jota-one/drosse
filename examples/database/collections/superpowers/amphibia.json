@@ -1,0 +1,8 @@
+{
+  "name": "amphibia",
+  "description": "Can hold breath and support water pressure like whales",
+  "level": 8,
+  "DROSSE": {
+    "ids": ["amphibia"]
+  }
+}

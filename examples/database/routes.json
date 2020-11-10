@@ -1,0 +1,31 @@
+{
+  "api": {
+    "users": {
+      "DROSSE": {
+        "get": {
+          "service": true
+        },
+        "post": {
+          "service": true
+        }
+      },
+      ":id": {
+        "DROSSE": {
+          "put": {
+            "service": true
+          },
+          "delete": {
+            "service": true
+          }
+        },
+        "powers": {
+          "DROSSE": {
+            "post": {
+              "service": true
+            }
+          }
+        }
+      }
+    }
+  }
+}
