@@ -159,6 +159,14 @@ In the example above, the route `GET /api/users` will be throttled between 1 and
 
 Here all the routes under `/api` will be throttled between 5 and 10 seconds, except the `GET /api/users` that keeps its own 1-2 seconds throttling.
 
+### Proxies
+
+_to be described..._
+
+### Templates
+
+_to be described..._
+
 <a name="inline-mocks"></a>
 ## Inline mocks
 
@@ -422,7 +430,7 @@ module.exports = function ({ req, res, db }) {
 
 ## Drosse db API
 
-_To be continued... (check the code)._
+_To be described... (check the code)._
 
 ## The .drosserc.js file (configure your Drosse)
 This file holds your mock server general configuration. It's optional as all its keys have default values. It must simply export a configuration object.
