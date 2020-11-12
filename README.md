@@ -92,11 +92,12 @@ Everything happens inside the `DROSSE` object. You can insert a `DROSSE` object 
 > :triumph: I WANT TO MOCK MY ROUTES!!! WHERE DO I PUT MY MOCKED CONTENTS???
 
 There we go! You can mock your datas in 3 different ways:
-1. directly inside the `routes.json` file, using the `body` key (inlined mocks).
-2. in a static JSON file with a constrained name
-3. in a dynamic JS file (we consider it a service) with a constrained name
+1. directly inside the `routes.json` file, using the `body` key (see [inline mocks](#inline-mocks)).
+2. in a static JSON file with a constrained name (see [Static mocks](#static-mocks))
+3. in a dynamic JS file (we consider it a service) with a constrained name (see [Services](#dynamic-mocks))
 
-#### Inline mocks
+<a name="inline-mocks"></a>
+## Inline mocks
 
 Let's focus first on the `body` key, by far the simplest but by far the less cool. If you calm down, you'll be allowed to know about the 2 other solutions. Here's how you can mock your routes with inlined mocks.
 
@@ -189,6 +190,7 @@ We defined a new route corresponding to this one `GET /api/users/premiums`. Of c
 
 > :open_mouth: That's awesome! It calmed me down totally... I'm ready to know more about the 2 other ways to mock my stuffs!
 
+<a name="static-mocks"></a>
 #### Static mocks (in separated files)
 
 As you've probably noticed, the inline mocks are not that dynamic... For instance, if we take the `GET /api/users/:id` route, you can call it with any value for `:id`, you will always get the same response. Although it can be enough for most usecases, sometimes we want a little bit more.
@@ -273,6 +275,7 @@ api.users:id.json
 ```
 You can see above that the system has first tried with the very precise `api.users.3.get.json` (resolved parameter + verb). Then it tries the same without verb (`api.users.3.json`). As it still fails, it tries without resolving the parameter, but again with the verb (`api.users.:id.get.json`) and finally find a corresponding mock file with `api.users.:id.json`. Of course this last one is not logged as it was found.
 
+<a name="dynamic-mocks"></a>
 #### Services (aka dynamic mocks)
 
 With the services, we cross some sort of line between pure mocking and an actual alternative backend for our frontend app. But sometimes it can be really useful. For example when you want to test interactivity in your app, or you don't have the backend yet because you're on a big project with separated teams and the backend  will be implemented after the frontend, but you still have to deliver a working frontend at the same time as the backend, etc.
