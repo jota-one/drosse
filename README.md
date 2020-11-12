@@ -34,7 +34,7 @@ Yes there are a couple of things to do yourself. But you're a developer, right? 
 
 Let's focus first on these 2 files.
 
-### The routes.json file
+## The routes.json file
 This file is mandatory but you can customize its name in the `.drosserc.js` file (see below). This is where you define all the routes you want to mock. Each route is defined as a tree, with _slash_ as separator.
 
 > :dizzy_face: Woot ? Tree ? Slash ? I just want to mock a couple of routes...
@@ -66,7 +66,7 @@ That's what we mean by "a tree". We consider that an API can be completely descr
 
 Good questions, thanks for asking.
 
-#### The DROSSE object
+### The DROSSE object
 That's where the `DROSSE` object comes in and saves our souls. Look at this:
 
 ```json
@@ -95,6 +95,69 @@ There we go! You can mock your datas in 3 different ways:
 1. directly inside the `routes.json` file, using the `body` key (see [inline mocks](#inline-mocks)).
 2. in a static JSON file with a constrained name (see [Static mocks](#static-mocks))
 3. in a dynamic JS file (we consider it a service) with a constrained name (see [Services](#dynamic-mocks))
+
+But before we move to the mock contents, let's have a look to the other stuffs you can put into the `DROSSE` object.
+
+### Throttling
+A must have feature if you want to detect your race condition and test your lovely loading animations. You can throttle any endpoint by adding the `throttle` configuration object into it. Just like this:
+
+```json
+{
+  "api": {
+    "users": {
+      "DROSSE": {
+        "get": {
+          "throttle": {
+            "min": 1000,
+            "max": 2000
+          }
+        },
+        "post": {}
+      },
+      ":id": {
+        "DROSSE": {
+          "get": {}
+        }
+      }
+    }
+  }
+}
+```
+
+In the example above, the route `GET /api/users` will be throttled between 1 and 2 seconds (randomly chosen in the boundaries).
+
+:cherries: Of course, you can put your throttle at any level of your routes tree and it will be inherited in all the sub routes that don't have their own `throttle` configuration.
+
+```json
+{
+  "api": {
+    "DROSSE": {
+      "throttle": {
+        "min": 5000,
+        "max": 10000
+      }
+    },
+    "users": {
+      "DROSSE": {
+        "get": {
+          "throttle": {
+            "min": 1000,
+            "max": 2000
+          }
+        },
+        "post": {}
+      },
+      ":id": {
+        "DROSSE": {
+          "get": {}
+        }
+      }
+    }
+  }
+}
+```
+
+Here all the routes under `/api` will be throttled between 5 and 10 seconds, except the `GET /api/users` that keeps its own 1-2 seconds throttling.
 
 <a name="inline-mocks"></a>
 ## Inline mocks
@@ -191,7 +254,7 @@ We defined a new route corresponding to this one `GET /api/users/premiums`. Of c
 > :open_mouth: That's awesome! It calmed me down totally... I'm ready to know more about the 2 other ways to mock my stuffs!
 
 <a name="static-mocks"></a>
-#### Static mocks (in separated files)
+## Static mocks (in separated files)
 
 As you've probably noticed, the inline mocks are not that dynamic... For instance, if we take the `GET /api/users/:id` route, you can call it with any value for `:id`, you will always get the same response. Although it can be enough for most usecases, sometimes we want a little bit more.
 
@@ -276,7 +339,7 @@ api.users:id.json
 You can see above that the system has first tried with the very precise `api.users.3.get.json` (resolved parameter + verb). Then it tries the same without verb (`api.users.3.json`). As it still fails, it tries without resolving the parameter, but again with the verb (`api.users.:id.get.json`) and finally find a corresponding mock file with `api.users.:id.json`. Of course this last one is not logged as it was found.
 
 <a name="dynamic-mocks"></a>
-#### Services (aka dynamic mocks)
+## Services (aka dynamic mocks)
 
 With the services, we cross some sort of line between pure mocking and an actual alternative backend for our frontend app. But sometimes it can be really useful. For example when you want to test interactivity in your app, or you don't have the backend yet because you're on a big project with separated teams and the backend  will be implemented after the frontend, but you still have to deliver a working frontend at the same time as the backend, etc.
 
@@ -323,7 +386,7 @@ Let's just take another example to make it clear. For example for a `PUT /api/us
 
 Now let's have a look inside these service files.
 
-#### The service file
+### The service file
 
 A service file must export a function that takes one object argument.
 
@@ -357,11 +420,11 @@ module.exports = function ({ req, res, db }) {
 
 :fire: But there is more! The `db` object gives you access to the embbedded Drosse database and its super-fancy API. This part requires a full chapter.
 
-### Drosse db API
+## Drosse db API
 
 _To be continued... (check the code)._
 
-### The .drosserc.js file
+## The .drosserc.js file (configure your Drosse)
 This file holds your mock server general configuration. It's optional as all its keys have default values. It must simply export a configuration object.
 
 Here is a typical example of what it could contain.
@@ -372,7 +435,7 @@ module.exports = {
 }
 ```
 
-#### All configuration keys
+### All configuration keys
 | Key                  | Default value | Description |
 |----------------------|---------------|-------------|
 | `name`               | **(empty)**     | The name of your app. Mostly used to recognize it in your console or in [drosse UI](https://github.com/jota-one/drosse-ui). |
@@ -400,6 +463,3 @@ module.exports = {
 - Journey
 - Sync with OpenAPI (Swagger) ?
 - GraphQL support ?
-
-## Warning
-This project is in an early stage and under active development. API might change without notice.
