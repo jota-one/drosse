@@ -102,7 +102,7 @@ module.exports = function () {
      *
      * @returns {Loki}
      */
-    get: function () {
+    loki: function () {
       return db
     },
 
@@ -120,24 +120,58 @@ module.exports = function () {
       return coll
     },
 
-    query: {
-      list(collection) {
+    list: {
+      all(collection, cleanFields = []) {
         const coll = db.getCollection(collection)
-        return coll.data.map(clean())
+        return coll.data.map(clean(...cleanFields))
       },
 
-      getRef(refObj, dynamicId) {
+      byId(collection, id, cleanFields = []) {
+        const coll = db.getCollection(collection)
+        return coll
+          .find({ 'DROSSE.ids': { $contains: id } })
+          .map(clean(...cleanFields))
+      },
+
+      byField(collection, field, value, cleanFields = []) {
+        return this.byFields(collection, [field], value, cleanFields)
+      },
+
+      byFields(collection, fields, value, cleanFields = []) {
+        return this.find(
+          collection,
+          {
+            $or: fields.map(field => ({
+              [field]: { $contains: value },
+            })),
+          },
+          cleanFields
+        )
+      },
+
+      find(collection, query, cleanFields = []) {
+        const coll = db.getCollection(collection)
+        return coll
+          .chain()
+          .find(query)
+          .data()
+          .map(clean(...cleanFields))
+      },
+    },
+
+    get: {
+      byId(collection, id) {
+        const coll = db.getCollection(collection)
+        return clean()(coll.findOne({ 'DROSSE.ids': { $contains: id } }))
+      },
+
+      byRef(refObj, dynamicId) {
         const { collection, id: refId } = refObj
         const id = dynamicId || refId
         return {
           ...lodash.omit(refObj, ['collection', 'id']),
           ...this.byId(collection, id),
         }
-      },
-
-      byId(collection, id) {
-        const coll = db.getCollection(collection)
-        return clean()(coll.findOne({ 'DROSSE.ids': { $contains: id } }))
       },
 
       byField(collection, field, value) {
@@ -154,9 +188,11 @@ module.exports = function () {
 
       find(collection, query) {
         const coll = db.getCollection(collection)
-        return coll.chain().find(query).data().map(clean())
+        return coll.chain().findOne(query).data().map(clean())
       },
+    },
 
+    query: {
       getIdMap(collection, fieldname, firstOnly = false) {
         const coll = db.getCollection(collection)
         return coll.data.reduce(
