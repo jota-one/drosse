@@ -222,7 +222,7 @@ module.exports = function () {
 
         coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
           Object.entries(newValue).forEach(([key, value]) => {
-            doc[key] = value
+            lodash.set(doc, key, value)
           })
         })
       },
