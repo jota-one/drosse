@@ -79,7 +79,7 @@ module.exports = function () {
   const clean = (...fields) => result =>
     lodash.omit(result, config.db.reservedFields.concat(fields || []))
 
-  return {
+  const service = {
     loadDb: function () {
       return new Promise((resolve, reject) => {
         try {
@@ -122,12 +122,12 @@ module.exports = function () {
 
     list: {
       all(collection, cleanFields = []) {
-        const coll = db.getCollection(collection)
+        const coll = service.collection(collection)
         return coll.data.map(clean(...cleanFields))
       },
 
       byId(collection, id, cleanFields = []) {
-        const coll = db.getCollection(collection)
+        const coll = service.collection(collection)
         return coll
           .find({ 'DROSSE.ids': { $contains: id } })
           .map(clean(...cleanFields))
@@ -150,7 +150,7 @@ module.exports = function () {
       },
 
       find(collection, query, cleanFields = []) {
-        const coll = db.getCollection(collection)
+        const coll = service.collection(collection)
         return coll
           .chain()
           .find(query)
@@ -161,7 +161,7 @@ module.exports = function () {
 
     get: {
       byId(collection, id) {
-        const coll = db.getCollection(collection)
+        const coll = service.collection(collection)
         return clean()(coll.findOne({ 'DROSSE.ids': { $contains: id } }))
       },
 
@@ -187,14 +187,14 @@ module.exports = function () {
       },
 
       find(collection, query) {
-        const coll = db.getCollection(collection)
+        const coll = service.collection(collection)
         return coll.chain().findOne(query).data().map(clean())
       },
     },
 
     query: {
       getIdMap(collection, fieldname, firstOnly = false) {
-        const coll = db.getCollection(collection)
+        const coll = service.collection(collection)
         return coll.data.reduce(
           (acc, item) => ({
             ...acc,
@@ -205,20 +205,20 @@ module.exports = function () {
       },
 
       chain(collection) {
-        return db.getCollection(collection).chain()
+        return service.collection(collection).chain()
       },
 
       clean,
     },
 
     insert(collection, ids, payload) {
-      const coll = db.getCollection(collection)
+      const coll = service.collection(collection)
       return coll.insert(lodash.cloneDeep({ ...payload, DROSSE: { ids } }))
     },
 
     update: {
       byId(collection, id, newValue) {
-        const coll = db.getCollection(collection)
+        const coll = service.collection(collection)
 
         coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
           Object.entries(newValue).forEach(([key, value]) => {
@@ -229,7 +229,7 @@ module.exports = function () {
 
       subItem: {
         append(collection, id, subPath, payload) {
-          const coll = db.getCollection(collection)
+          const coll = service.collection(collection)
           coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
             if (!lodash.get(doc, subPath)) {
               lodash.set(doc, subPath, [])
@@ -238,7 +238,7 @@ module.exports = function () {
           })
         },
         prepend(collection, id, subPath, payload) {
-          const coll = db.getCollection(collection)
+          const coll = service.collection(collection)
           coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
             if (!lodash.get(doc, subPath)) {
               lodash.set(doc, subPath, [])
@@ -251,10 +251,11 @@ module.exports = function () {
 
     remove: {
       byId(collection, id) {
-        const coll = db.getCollection(collection)
+        const coll = service.collection(collection)
         const toDelete = coll.findOne({ 'DROSSE.ids': { $contains: id } })
         return toDelete && coll.remove(toDelete)
       },
     },
   }
+  return service
 }
