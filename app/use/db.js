@@ -160,9 +160,11 @@ module.exports = function () {
     },
 
     get: {
-      byId(collection, id) {
+      byId(collection, id, cleanFields = []) {
         const coll = service.collection(collection)
-        return clean()(coll.findOne({ 'DROSSE.ids': { $contains: id } }))
+        return clean(...cleanFields)(
+          coll.findOne({ 'DROSSE.ids': { $contains: id } })
+        )
       },
 
       byRef(refObj, dynamicId) {
@@ -174,21 +176,25 @@ module.exports = function () {
         }
       },
 
-      byField(collection, field, value) {
-        return this.byFields(collection, [field], value)
+      byField(collection, field, value, cleanFields = []) {
+        return this.byFields(collection, [field], value, cleanFields)
       },
 
-      byFields(collection, fields, value) {
-        return this.find(collection, {
-          $or: fields.map(field => ({
-            [field]: { $contains: value },
-          })),
-        })
+      byFields(collection, fields, value, cleanFields = []) {
+        return this.find(
+          collection,
+          {
+            $or: fields.map(field => ({
+              [field]: { $contains: value },
+            })),
+          },
+          cleanFields
+        )
       },
 
-      find(collection, query) {
+      find(collection, query, cleanFields = []) {
         const coll = service.collection(collection)
-        return coll.chain().findOne(query).data().map(clean())
+        return clean(...cleanFields)(coll.findOne(query))
       },
     },
 
