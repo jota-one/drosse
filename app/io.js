@@ -64,7 +64,10 @@ const loadStatic = (routePath, params = {}, verb = null, skipVerb = false) => {
     path.join(
       state.get('root'),
       state.get('staticPath'),
-      routePath.join('.').concat(verb && !skipVerb ? `.${verb}` : '')
+      routePath
+        .join('.')
+        .concat(verb && !skipVerb ? `.${verb}` : '')
+        .replace(/:([^\\/\\.]+)/gim, '{$1}')
     ),
     params
   )
