@@ -36,12 +36,12 @@
             :disabled="verb.disabled"
             @click="$emit('select-verb', verb.type)"
           />
-          <Clickable
+          <!-- <Clickable
             v-if="!route.virtual && route.verbs.length > 0"
             class="remove"
             icon="minus"
           />
-          <Clickable v-if="!route.virtual" class="add" icon="plus" />
+          <Clickable v-if="!route.virtual" class="add" icon="plus" /> -->
         </div>
       </div>
     </div>
@@ -80,7 +80,7 @@
         </div>
       </div>
     </template>
-    <div class="col actions">
+    <!-- <div class="col actions">
       <div class="inner">
         <Clickable
           :class="['icon', { disabled: !route.virtual }]"
@@ -104,7 +104,7 @@
           title="Delete route"
         />
       </div>
-    </div>
+    </div> -->
     <div class="col end" />
   </div>
 </template>

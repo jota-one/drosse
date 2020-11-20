@@ -11,7 +11,7 @@
       @close="browserOpened = false"
       @select="importDrosse"
     />
-    <Drosses v-if="allDrosses.length">
+    <Drosses v-if="allDrosses.length" @sort="sort">
       <Drosse
         v-for="drosse in allDrosses"
         :key="drosse.uuid"
@@ -40,7 +40,16 @@ export default {
     const { importFolder } = useIo()
     const { drosses, loadDrosses } = useDrosses()
     const browserOpened = ref(false)
-    const allDrosses = computed(() => Object.values(drosses.value))
+    const sortKey = ref('port')
+    const allDrosses = computed(() =>
+      Object.values(drosses.value).sort((a, b) =>
+        a[sortKey.value] < b[sortKey.value]
+          ? -1
+          : a[sortKey.value] > b[sortKey.value]
+          ? 1
+          : 0
+      )
+    )
 
     const toggleImport = () => {
       browserOpened.value = !browserOpened.value
@@ -51,7 +60,7 @@ export default {
       await loadDrosses()
     }
 
-    return { allDrosses, browserOpened, importDrosse, toggleImport }
+    return { allDrosses, browserOpened, importDrosse, sortKey, toggleImport }
   },
 }
 </script>

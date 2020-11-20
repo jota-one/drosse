@@ -6,6 +6,7 @@
     <input
       type="text"
       :value="state.v"
+      readonly
       @input="onInput"
       @focus="state.focus = true"
       @blur="state.focus = false"

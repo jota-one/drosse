@@ -4,6 +4,7 @@
       <FilterBar
         :show-virtual="showVirtual"
         @toggle-virtual="$emit('toggle-virtual')"
+        @search="$emit('search', $event)"
       />
       <slot />
     </div>

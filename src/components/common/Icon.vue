@@ -48,6 +48,6 @@ export default {
 <style lang="postcss" scoped>
 .icon {
   will-change: fill;
-  transition: fill 0.2s ease-in-out;
+  transition: fill 0.1s linear;
 }
 </style>

@@ -16,7 +16,7 @@
           @select="openDrosse(drosse.uuid)"
           @close="closeDrosse(drosse.uuid)"
         />
-        <Clickable icon="plus" class="add" />
+        <!-- <Clickable icon="plus" class="add" /> -->
       </div>
     </div>
   </header>

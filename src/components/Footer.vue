@@ -9,7 +9,7 @@
         />
       </div>
       <div class="credits">
-        <span class="dev-by"> A product developed by </span>
+        <span class="dev-by">crafted by</span>
         <a href="https://jota.one" target="_blank">
           <Icon class="icon" name="jota" />
         </a>

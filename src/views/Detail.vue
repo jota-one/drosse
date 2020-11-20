@@ -37,6 +37,7 @@
       <Routes
         :show-virtual="showVirtual"
         @toggle-virtual="showVirtual = !showVirtual"
+        @search="routesFilter = $event"
       >
         <template v-for="(route, i) in routes">
           <template v-if="i === 0 ? true : showRoute(route)">
@@ -61,6 +62,9 @@
             </div>
           </template>
         </template>
+        <div v-if="routesFilter && routes.length === 0" class="filtered-empty">
+          You filtered too much...
+        </div>
       </Routes>
       <Logger :logs="logs" />
     </div>
@@ -93,6 +97,7 @@ export default {
     const { fetchHandler, openFile, saveDrosses } = useIo()
     const { setContent } = useEditor()
 
+    const routesFilter = ref('')
     const showVirtual = ref(true)
     const hit = ref([])
     const logs = ref([])
@@ -103,9 +108,9 @@ export default {
     )
 
     const routes = computed(() =>
-      drosse.value.routes.filter(route =>
-        showVirtual.value ? route : !route.virtual
-      )
+      drosse.value.routes
+        .filter(route => (showVirtual.value ? route : !route.virtual))
+        .filter(route => route.fullPath.includes(routesFilter.value))
     )
 
     const showRoute = route =>
@@ -209,6 +214,7 @@ export default {
     return {
       drosse,
       hit,
+      routesFilter,
       isParent,
       logs,
       openFile,
@@ -278,6 +284,10 @@ h2 {
   div {
     display: table-cell;
   }
+}
+
+.filtered-empty {
+  padding: 1rem 0 0 1rem;
 }
 
 /* Colors */

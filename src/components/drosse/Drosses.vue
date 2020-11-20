@@ -2,42 +2,39 @@
   <div class="Drosses">
     <div class="container">
       <div class="header">
+        <div class="col">status</div>
         <div class="col">
           <label class="label">
-            <Clickable class="sort" icon="sort-up" />
-            status
-          </label>
-        </div>
-        <div class="col">
-          <label class="label">
-            <Clickable class="sort" icon="sort-up" />
+            <Clickable
+              class="sort"
+              icon="sort-up"
+              @click="$emit('sort', 'port')"
+            />
             port
           </label>
         </div>
         <div class="col">
           <label class="label">
-            <Clickable class="sort" icon="sort-up" />
+            <Clickable
+              class="sort"
+              icon="sort-up"
+              @click="$emit('sort', 'name')"
+            />
             name
           </label>
         </div>
         <div class="col root">
           <label class="label">
-            <Clickable class="sort" icon="sort-up" />
+            <Clickable
+              class="sort"
+              icon="sort-up"
+              @click="$emit('sort', 'root')"
+            />
             root
           </label>
         </div>
-        <div class="col">
-          <label class="label">
-            <Clickable class="sort" icon="sort-up" />
-            protocol
-          </label>
-        </div>
-        <div class="col">
-          <label class="label">
-            <Clickable class="sort" icon="sort-up" />
-            last seen
-          </label>
-        </div>
+        <div class="col">protocol</div>
+        <div class="col">last seen</div>
         <div class="col">remove</div>
       </div>
       <slot />
@@ -57,6 +54,8 @@ export default {
 <style lang="postcss" scoped>
 .Drosses {
   width: 100%;
+  padding-bottom: 1rem;
+  overflow: auto;
 }
 
 .container {
@@ -70,7 +69,7 @@ export default {
 
 .col {
   display: table-cell;
-  padding: 1rem 1rem 1rem.5rem;
+  padding: 1rem;
   vertical-align: middle;
   white-space: nowrap;
   font-size: 0.9rem;
@@ -83,6 +82,7 @@ export default {
 .label {
   display: flex;
   align-items: center;
+  margin-left: -0.5rem;
   cursor: pointer;
 }
 
