@@ -36,6 +36,8 @@
     <div class="routes-container">
       <Routes
         :show-virtual="showVirtual"
+        @collapse-all-routes="collapseAllRoutes"
+        @open-all-routes="openAllRoutes"
         @toggle-virtual="showVirtual = !showVirtual"
         @search="routesFilter = $event"
       >
@@ -147,6 +149,10 @@ export default {
       saveDrosses(drosses.value)
     }
 
+    const collapseAllRoutes = () => {}
+
+    const openAllRoutes = () => {}
+
     const selectVerb = (route, verb) => {
       route.selected = verb
       saveDrosses(drosses.value)
@@ -212,13 +218,15 @@ export default {
     })
 
     return {
+      collapseAllRoutes,
       drosse,
       hit,
-      routesFilter,
       isParent,
       logs,
+      openAllRoutes,
       openFile,
       routes,
+      routesFilter,
       selectVerb,
       showRoute,
       showVirtual,
@@ -287,7 +295,7 @@ h2 {
 }
 
 .filtered-empty {
-  padding: 1rem 0 0 1rem;
+  padding: 2.5rem 0 0 1rem;
 }
 
 /* Colors */

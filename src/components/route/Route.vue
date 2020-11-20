@@ -18,7 +18,7 @@
           :style="{ width: `${(showVirtual ? route.level : 1) * 0.75}rem` }"
         />
         <Clickable
-          v-if="showVirtual"
+          v-if="showVirtual && isParent"
           class="collapse"
           icon="chevron"
           @click="$emit('toggle-route')"

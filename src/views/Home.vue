@@ -11,7 +11,7 @@
       @close="browserOpened = false"
       @select="importDrosse"
     />
-    <Drosses v-if="allDrosses.length" @sort="sort">
+    <Drosses v-if="allDrosses.length" @sort="sortKey = $event">
       <Drosse
         v-for="drosse in allDrosses"
         :key="drosse.uuid"

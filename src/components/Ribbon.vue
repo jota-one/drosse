@@ -30,7 +30,6 @@ export default {
   transform-origin: 0 0;
   transform: rotate(45deg);
   z-index: 10;
-  pointer-events: none;
 }
 
 .wrapper {

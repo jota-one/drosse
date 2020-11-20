@@ -1,20 +1,19 @@
 <template>
-  <div class="FilterBar">
-    <div class="col">
+  <tr class="FilterBar">
+    <td class="col" colspan="8">
       <div class="inner">
-        <!-- <Clickable :class="['icon']" icon="collapse-all" />
-        <Clickable :class="['icon', 'icon-open-all']" icon="collapse-all" /> -->
         <Clickable
-          :class="['icon', { on: showVirtual }]"
-          icon="view-tree"
-          title="Display routea as tree list"
-          @click="$emit('toggle-virtual')"
+          :class="['icon']"
+          icon="collapse-all"
+          title="Collapse all routes"
+          @click="$emit('collapse-all-routes')"
         />
-        <Clickable
-          :class="['icon', { on: !showVirtual }]"
-          icon="view-flat"
-          title="Display routea as flat list"
-          @click="$emit('toggle-virtual')"
+        <Switch
+          :values="[
+            { icon: 'view-tree', value: 1 },
+            { icon: 'view-flat', value: 0 },
+          ]"
+          @switched="$emit('toggle-virtual')"
         />
         <div class="search">
           <Icon name="search" class="search-icon" />
@@ -27,25 +26,19 @@
           />
         </div>
       </div>
-    </div>
-    <div class="col" />
-    <div class="col" />
-    <div class="col" />
-    <div class="col" />
-    <div class="col" />
-    <div class="col" />
-    <div class="col" />
-  </div>
+    </td>
+  </tr>
 </template>
 
 <script>
 import { ref } from 'vue'
 import Icon from '@/components/common/Icon'
 import Clickable from '@/components/common/Clickable'
+import Switch from '@/components/common/Switch'
 
 export default {
   name: 'FilterBar',
-  components: { Clickable, Icon },
+  components: { Clickable, Icon, Switch },
   props: {
     showVirtual: Boolean,
   },
@@ -58,29 +51,28 @@ export default {
       })
     }
 
-    return { onInput, searchValue }
+    const onViewModeChanged = viewMode => {
+      console.log('onViewModeChanged', viewMode)
+    }
+
+    return { onInput, onViewModeChanged, searchValue }
   },
 }
 </script>
 
 <style lang="postcss" scoped>
-.FilterBar {
-  display: table-row;
-}
-
-.col {
-  display: table-cell;
-  height: 3.25rem;
-  vertical-align: middle;
-}
-
 .inner {
   display: flex;
   algn-items: center;
-  padding: 0 0.5rem;
+  padding: 0.75rem 0;
+
+  & > * {
+    margin: 0 0.75rem 0 0.5rem;
+  }
 }
 
 .icon {
+  position: relative;
   width: 2rem;
   height: 2rem;
 }
@@ -97,22 +89,21 @@ export default {
 
   .search-icon {
     position: absolute;
-    left: 0.5rem;
-    top: 0.4rem;
+    left: 0.65rem;
+    top: calc(50% - 0.6rem);
     width: 1.25rem;
     height: 1.25rem;
     fill: rgba(128, 128, 128, 1);
   }
 
   .search-input {
-    width: 13rem;
-    margin-top: 0.125rem;
-    padding: 0.35rem 0.35rem 0.35rem 2rem;
+    width: 20rem;
+    padding: 0.5rem 0.5rem 0.5rem 2.25rem;
     font-family: FiraCode, monospace;
     color: var(--c-green);
     background-color: rgba(128, 128, 128, 0.125);
     border: none;
-    border-radius: 0.75rem;
+    border-radius: 1rem;
 
     &:focus {
       outline: none;

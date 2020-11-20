@@ -24,7 +24,9 @@
     </main>
     <Footer />
     <Ribbon>
-      Version {{ version }}
+      <a href="https://github.com/jota-one/drosse-ui/releases" target="_blank"
+        >Version {{ version }}</a
+      >
       <br />
       <b>Read mode only</b>
     </Ribbon>
