@@ -8,27 +8,29 @@
           @click="switchTheme"
         />
       </div>
-      <div class="credits">
-        <span class="dev-by">crafted by</span>
-        <a href="https://jota.one" target="_blank">
-          <Icon class="icon" name="jota" />
-        </a>
-      </div>
+      <a href="https://jota.one" class="by-jota" target="_blank">
+        <svg
+          :width="byJota.width"
+          :height="byJota.height"
+          :viewBox="byJota.viewBox"
+          v-html="byJota.paths"
+        />
+      </a>
     </div>
   </footer>
 </template>
 
 <script>
+import byJota from '@/assets/by-jota.json'
 import useTheme from '@/modules/theme'
 import Clickable from '@/components/common/Clickable'
-import Icon from '@/components/common/Icon'
 
 export default {
   name: 'Footer',
-  components: { Clickable, Icon },
+  components: { Clickable },
   setup() {
     const { theme, switchTheme } = useTheme()
-    return { theme, switchTheme }
+    return { byJota, theme, switchTheme }
   },
 }
 </script>
@@ -56,11 +58,6 @@ footer {
   height: 3.25rem;
 }
 
-.dev-by {
-  font-family: sans-serif;
-  letter-spacing: 0;
-}
-
 a {
   display: flex;
 }
@@ -74,23 +71,21 @@ a {
 .theme-icon {
   fill: var(--c-gray-active);
   will-change: fill;
-  transition: fill 0.2s ease-in-out;
+  transition: fill 0.1s ease-in-out;
 
   &:hover {
     fill: var(--c-green);
   }
 }
 
-.dev-by {
-  opacity: 0.75;
-  color: var(--c-gray-active);
-}
+.by-jota {
+  svg {
+    fill: var(--c-gray-active);
+    transition: fill 0.1s ease-in-out;
 
-.icon {
-  fill: var(--c-gray-active);
-
-  &:hover {
-    fill: var(--c-green);
+    &:hover {
+      fill: var(--c-green);
+    }
   }
 }
 </style>
