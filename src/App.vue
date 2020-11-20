@@ -23,12 +23,18 @@
       </div>
     </main>
     <Footer />
+    <Ribbon>
+      Version {{ version }}
+      <br />
+      <b>Read mode only</b>
+    </Ribbon>
   </div>
 </template>
 
 <script>
 import '../public/fonts/FiraCode/fontface.css'
 import '../public/fonts/Oswald/fontface.css'
+import p from '../package.json'
 import { computed, ref } from 'vue'
 import useDrosses from '@/modules/drosses'
 import TabBar from '@/components/tabbar/TabBar'
@@ -37,10 +43,13 @@ import Detail from '@/views/Detail'
 import Editor from '@/components/Editor'
 import Help from '@/components/Help'
 import Footer from '@/components/Footer'
+import Ribbon from '@/components/Ribbon'
+
+const version = p.version
 
 export default {
   name: 'App',
-  components: { TabBar, Home, Detail, Editor, Help, Footer },
+  components: { TabBar, Home, Detail, Editor, Help, Footer, Ribbon },
   setup() {
     const { drosses, viewHome } = useDrosses()
     const editorOpened = ref(-1)
@@ -83,12 +92,13 @@ export default {
     })
 
     return {
-      viewHome,
+      hideEditor,
       editorOpened,
       editorTop,
       openEditor,
       updateEditor,
-      hideEditor,
+      version,
+      viewHome,
     }
   },
 }
@@ -261,7 +271,7 @@ button {
   outline: none;
   border-radius: 0.25rem;
   will-change: color, background-color;
-  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out;
 }
 
 .spacer {
@@ -270,6 +280,8 @@ button {
 
 #drosse-ui {
   min-width: 423px;
+  max-width: 100vw;
+  overflow: hidden;
 
   main {
     padding: 2rem 3rem;
@@ -288,7 +300,7 @@ body {
   color: var(--c-gray-active);
   background-color: var(--c-app-bg);
   will-change: background-color, color;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 }
 
 button:focus {

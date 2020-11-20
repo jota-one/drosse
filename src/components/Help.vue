@@ -29,7 +29,7 @@ export default {
 .icon {
   fill: var(--c-gray-inactive);
   will-change: fill;
-  transition: fill 0.2s ease-in;
+  transition: fill 0.1s ease-in;
 
   &:hover {
     fill: var(--c-help);

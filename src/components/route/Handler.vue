@@ -12,6 +12,7 @@
         ]"
         icon="proxy"
         title="Proxy route"
+        @click="onHandlerClick('proxy')"
       />
       <Clickable
         :class="['icon', { active: handler === 'service' }]"
@@ -118,7 +119,9 @@ export default {
 
     const inline = computed(() => ['proxy'].includes(handler.value))
 
-    const onHandlerClick = type => {}
+    const onHandlerClick = type => {
+      alert(`${type} action not yet implemented...`)
+    }
 
     const onHandlerValueClick = () => {
       emit('open-file', handlerValue.value)
@@ -164,7 +167,7 @@ export default {
     width: 0.75rem;
     height: 0.75rem;
     will-change: transform;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.1s ease-in-out;
   }
 
   &.editing .arrow-icon {
@@ -198,7 +201,7 @@ export default {
   .arrow-icon {
     fill: var(--c-gray-inactive);
     will-change: fill;
-    transition: fill 0.2s ease-in-out;
+    transition: fill 0.1s ease-in-out;
   }
 
   &:not(.inline):hover,

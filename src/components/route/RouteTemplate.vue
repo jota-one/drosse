@@ -4,7 +4,7 @@
     icon="template"
     :active="Boolean(verb?.template)"
     :inherited="verb.inherited.template"
-    :title="`Template: ${verb?.template}`"
+    :title="`Template: ${verb?.template || 'no template defined'}`"
     :tooltip="verb?.template"
   >
     <Input :value="verb.template" />

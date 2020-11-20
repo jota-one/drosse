@@ -91,7 +91,7 @@ export default {
   margin: -0.5rem 0 0 -1rem;
   transform: rotate(-45deg);
   will-change: transform;
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.1s ease-in-out;
 
   .big & {
     width: 5.5rem;
@@ -132,7 +132,7 @@ export default {
 .handle {
   fill: var(--c-gray-inactive);
   will-change: fill;
-  transition: fill 0.2s ease-in-out;
+  transition: fill 0.1s ease-in-out;
 
   .up & {
     fill: var(--c-green);
@@ -143,7 +143,7 @@ export default {
   fill: var(--c-gray-active);
   opacity: 0.5;
   will-change: fill, opacity;
-  transition: fill 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  transition: fill 0.1s ease-in-out, opacity 0.1s ease-in-out;
 
   .up & {
     fill: var(--c-green-light);

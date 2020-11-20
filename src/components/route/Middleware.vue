@@ -1,7 +1,7 @@
 <template>
   <div :class="['Middleware', { active, inherited }]">
     <div class="icon-wrapper" :title="title" :tool-tip="tooltip">
-      <Clickable :class="['icon', { active }]" :icon="icon" />
+      <Clickable :class="['icon', { active }]" :icon="icon" @click="onClick" />
     </div>
     <div v-if="active" class="handler">
       <slot />
@@ -30,6 +30,13 @@ export default {
       type: String,
       default: '',
     },
+  },
+  setup() {
+    const onClick = type => {
+      alert(`Edit mode not yet implemented...`)
+    }
+
+    return { onClick }
   },
 }
 </script>
@@ -68,7 +75,7 @@ export default {
       opacity: 0;
       border-radius: 0.35rem;
       z-index: 999;
-      transition: opacity 0.2s ease-in-out;
+      transition: opacity 0.1s ease-in-out;
     }
 
     &:hover:after {

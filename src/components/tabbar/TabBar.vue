@@ -26,11 +26,11 @@
 import { computed } from 'vue'
 import useDrosses from '@/modules/drosses'
 import Tab from './Tab'
-import Clickable from '@/components/common/Clickable'
+// import Clickable from '@/components/common/Clickable'
 
 export default {
   name: 'TabBar',
-  components: { Tab, Clickable },
+  components: { Tab /* Clickable */ },
   async setup() {
     const {
       drosses,
@@ -103,13 +103,13 @@ h1 {
 .TabBar {
   background-color: var(--c-tabbar-bg);
   will-change: background-color;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.1s ease-in-out;
 }
 
 .drosse {
   color: rgb(128, 128, 128);
   will-change: color;
-  transition: color 0.2s ease-in-out;
+  transition: color 0.1s ease-in-out;
 
   .viewHome & {
     color: var(--c-green);
@@ -119,6 +119,6 @@ h1 {
 .add {
   fill: var(--c-gray-inactive);
   will-change: fill;
-  transition: fill 0.2s ease-in-out;
+  transition: fill 0.1s ease-in-out;
 }
 </style>

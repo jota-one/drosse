@@ -275,7 +275,7 @@ h2 {
   display: table-row;
   height: 0;
   will-change: height;
-  transition: height 0.2s ease-in-out;
+  transition: height 0.1s ease-in-out;
 
   &.editing {
     height: var(--s-editor-height);

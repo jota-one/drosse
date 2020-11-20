@@ -1,5 +1,5 @@
 <template>
-  <button class="Clickable" @click="$emit('clilck')">
+  <button class="Clickable">
     <Icon class="icon" :name="icon" />
   </button>
 </template>

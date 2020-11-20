@@ -70,7 +70,7 @@ export default {
   color: var(--c-white);
   background-color: var(--c-app-bg);
   will-change: background-color, opacity;
-  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  transition: background-color 0.1s ease-in-out, opacity 0.1s ease-in-out;
   opacity: 0.5;
 
   &:hover {
@@ -93,6 +93,6 @@ export default {
 .close .icon {
   fill: var(--c-gray-inactive);
   will-change: fill;
-  transition: fill 0.2s ease-in-out;
+  transition: fill 0.1s ease-in-out;
 }
 </style>

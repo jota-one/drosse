@@ -10,6 +10,7 @@
       @input="onInput"
       @focus="state.focus = true"
       @blur="state.focus = false"
+      @click="onClick"
     />
     <pre ref="mask" class="mask">{{ state.vMask }}</pre>
   </span>
@@ -46,6 +47,10 @@ export default {
       resize()
     }
 
+    const onClick = () => {
+      alert('Edit mode not yet implemented...')
+    }
+
     const resize = () => {
       nextTick(() => {
         state.width = mask.value.offsetWidth + 3
@@ -57,7 +62,7 @@ export default {
       resize()
     })
 
-    return { state, onInput, mask }
+    return { state, onClick, onInput, mask }
   },
 }
 </script>

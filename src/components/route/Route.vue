@@ -185,7 +185,7 @@ export default {
   height: 1rem;
   margin: 0 0.25rem 0.125rem 0;
   will-change: transform;
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.1s ease-in-out;
 
   .isParent & {
     visibility: visible;
@@ -259,7 +259,7 @@ export default {
 .Route {
   color: var(--c-white);
   will-change: color, background-color;
-  transition: color 0.2s ease-in-out, background-color 0.1s ease-in-out;
+  transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out;
 
   &.virtual {
     color: var(--c-gray-active);

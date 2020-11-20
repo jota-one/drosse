@@ -7,11 +7,13 @@
         <Clickable
           :class="['icon', { on: showVirtual }]"
           icon="view-tree"
+          title="Display routea as tree list"
           @click="$emit('toggle-virtual')"
         />
         <Clickable
           :class="['icon', { on: !showVirtual }]"
           icon="view-flat"
+          title="Display routea as flat list"
           @click="$emit('toggle-virtual')"
         />
         <div class="search">

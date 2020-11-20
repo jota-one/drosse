@@ -33,7 +33,7 @@ export default {
   border: 1px solid;
   letter-spacing: -0.25px;
   will-change: border, color, background-color;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.1s ease-in-out;
 }
 
 /* Colors */

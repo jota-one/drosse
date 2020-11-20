@@ -41,7 +41,7 @@ export default {
   border-top: 1px solid rgba(128, 128, 128, 0.25);
   max-height: 4rem;
   overflow: hidden;
-  transition: max-height 0.2s ease-out;
+  transition: max-height 0.1s ease-out;
 
   &.opened {
     max-height: 34rem;
@@ -56,7 +56,7 @@ h3 {
   width: 1rem;
   height: 1rem;
   will-change: transform;
-  transition: transform 0.2s ease-out;
+  transition: transform 0.1s ease-out;
 
   .opened & {
     transform: rotate(90deg);
