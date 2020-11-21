@@ -36,8 +36,8 @@
     <div class="routes-container">
       <Routes
         :show-virtual="showVirtual"
-        @collapse-all-routes="collapseAllRoutes"
-        @open-all-routes="openAllRoutes"
+        :routes="routes"
+        @toggle-routes="toggleRoutes"
         @toggle-virtual="showVirtual = !showVirtual"
         @search="routesFilter = $event"
       >
@@ -48,7 +48,6 @@
               :route="route"
               :hit="hit.includes(i)"
               :show-virtual="showVirtual"
-              :is-parent="isParent(route)"
               :editing="editorOpened === i"
               :class="['route', { editing: editorOpened === i }]"
               @toggle-route="toggleRoute(i, route)"
@@ -82,7 +81,7 @@ import bus from '@/bus'
 import Logger from '@/components/Logger'
 import DrosseIcon from '@/components/common/DrosseIcon'
 import Input from '@/components/common/Input'
-import Routes from '@/components/route/Routes'
+import Routes from '@/components/detail/Routes'
 import Route from '@/components/route/Route'
 
 export default {
@@ -113,22 +112,24 @@ export default {
       drosse.value.routes
         .filter(route => (showVirtual.value ? route : !route.virtual))
         .filter(route => route.fullPath.includes(routesFilter.value))
+        .map(route => ({
+          ...route,
+          isParent: Boolean(
+            drosse.value.routes.find(
+              r => r.level > route.level && r.fullPath.includes(route.fullPath)
+            )
+          ),
+        }))
     )
 
     const showRoute = route =>
+      !showVirtual.value ||
       !routes.value
         .filter(
           r =>
             r.level < route.level && route.fullPath.includes(r.fullPath + '/')
         )
         .some(parent => !parent.opened)
-
-    const isParent = route =>
-      Boolean(
-        routes.value.find(
-          r => r.level > route.level && r.fullPath.includes(route.fullPath)
-        )
-      )
 
     const getRouteTop = () => {
       return routes.value.filter(
@@ -141,7 +142,7 @@ export default {
     }
 
     const toggleRoute = (index, route) => {
-      route.opened = !route.opened
+      drosses.value[drosse.value.uuid].routes[index].opened = !route.opened
       emit('update-editor', {
         top: getRouteTop(),
         hide: hideEditor(),
@@ -149,9 +150,18 @@ export default {
       saveDrosses(drosses.value)
     }
 
-    const collapseAllRoutes = () => {}
-
-    const openAllRoutes = () => {}
+    const toggleRoutes = state => {
+      if (['opened', 'closed'].includes(state)) {
+        const opened = state === 'opened'
+        drosses.value[drosse.value.uuid].routes = drosses.value[
+          drosse.value.uuid
+        ].routes.map(route => ({
+          ...route,
+          opened,
+        }))
+      }
+      saveDrosses(drosses.value)
+    }
 
     const selectVerb = (route, verb) => {
       route.selected = verb
@@ -218,12 +228,9 @@ export default {
     })
 
     return {
-      collapseAllRoutes,
       drosse,
       hit,
-      isParent,
       logs,
-      openAllRoutes,
       openFile,
       routes,
       routesFilter,
@@ -232,6 +239,7 @@ export default {
       showVirtual,
       toggleEditor,
       toggleRoute,
+      toggleRoutes,
     }
   },
 }
@@ -264,6 +272,8 @@ h2 {
 }
 
 .root {
+  white-space: nowrap;
+  overflow: auto;
   margin-right: 0.5rem;
   font-size: 0.9rem;
 }

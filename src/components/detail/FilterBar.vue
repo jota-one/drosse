@@ -2,18 +2,23 @@
   <tr class="FilterBar">
     <td class="col" colspan="8">
       <div class="inner">
-        <Clickable
-          :class="['icon']"
-          icon="collapse-all"
-          title="Collapse all routes"
-          @click="$emit('collapse-all-routes')"
-        />
         <Switch
           :values="[
-            { icon: 'view-tree', value: 1 },
-            { icon: 'view-flat', value: 0 },
+            { icon: 'view-flat', value: false },
+            { icon: 'view-tree', value: true },
           ]"
+          :selected-index="showVirtual ? 1 : 0"
           @switched="$emit('toggle-virtual')"
+        />
+        <Switch
+          :disabled="!showVirtual"
+          :selected-index="toggleRoutesSwitchIndex"
+          :values="[
+            { icon: 'close-all', value: 'closed' },
+            { label: '', value: '' },
+            { icon: 'open-all', value: 'opened' },
+          ]"
+          @switched="$emit('toggle-routes', $event)"
         />
         <div class="search">
           <Icon name="search" class="search-icon" />
@@ -31,19 +36,31 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Icon from '@/components/common/Icon'
-import Clickable from '@/components/common/Clickable'
 import Switch from '@/components/common/Switch'
 
 export default {
   name: 'FilterBar',
-  components: { Clickable, Icon, Switch },
+  components: { Icon, Switch },
   props: {
     showVirtual: Boolean,
+    routes: {
+      type: Array,
+      default: () => [],
+    },
   },
   setup(props, { emit }) {
     const searchValue = ref('')
+    const toggleRoutesSwitchIndex = computed(() => {
+      const routes = props.routes.filter(route => route.isParent)
+      const index = routes.every(route => route.opened)
+        ? 2
+        : routes.every(route => !route.opened)
+        ? 0
+        : 1
+      return index
+    })
 
     const onInput = value => {
       setTimeout(() => {
@@ -55,7 +72,12 @@ export default {
       console.log('onViewModeChanged', viewMode)
     }
 
-    return { onInput, onViewModeChanged, searchValue }
+    return {
+      onInput,
+      onViewModeChanged,
+      searchValue,
+      toggleRoutesSwitchIndex,
+    }
   },
 }
 </script>
@@ -67,7 +89,12 @@ export default {
   padding: 0.75rem 0;
 
   & > * {
-    margin: 0 0.75rem 0 0.5rem;
+    margin: 0;
+    padding: 0 1rem;
+
+    &:not(:last-child) {
+      border-right: 1px dashed rgba(128, 128, 128, 0.25);
+    }
   }
 }
 
@@ -85,11 +112,10 @@ export default {
   position: relative;
   display: flex;
   align-items: center;
-  margin: 0 1rem;
 
   .search-icon {
     position: absolute;
-    left: 0.65rem;
+    left: 1rem;
     top: calc(50% - 0.6rem);
     width: 1.25rem;
     height: 1.25rem;

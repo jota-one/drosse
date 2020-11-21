@@ -30,8 +30,8 @@ import useIo from '@/modules/io'
 import useDrosses from '@/modules/drosses'
 import Button from '@/components/common/Button'
 import FileBrowser from '@/components/common/FileBrowser'
-import Drosses from '@/components/drosse/Drosses'
-import Drosse from '@/components/drosse/Drosse'
+import Drosses from '@/components/home/Drosses'
+import Drosse from '@/components/home/Drosse'
 
 export default {
   name: 'Home',

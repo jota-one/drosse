@@ -1,5 +1,5 @@
 <template>
-  <fieldset class="Switch">
+  <fieldset class="Switch" :disabled="disabled">
     <label v-for="(value, i) in values" :key="value.value">
       <input
         v-model="selected"
@@ -10,8 +10,12 @@
       />
       <div
         v-if="i === 0"
-        :class="['toggle', { selected: selected === value.value }]"
+        :class="[
+          'toggle',
+          `pos-${values.findIndex(v => v.value === selected)}`,
+        ]"
       />
+      <div class="marker" />
       <div class="label">
         <template v-if="value.label">
           {{ value.label }}
@@ -34,9 +38,17 @@ export default {
   name: 'Switch',
   components: { Icon },
   props: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
     name: {
       type: String,
       default: 'switch',
+    },
+    selectedIndex: {
+      type: Number,
+      default: 0,
     },
     values: {
       type: Array,
@@ -55,12 +67,19 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const selected = ref(props.values[0].value)
+    const selected = ref(props.values[props.selectedIndex].value)
 
     watch(
       () => selected.value,
       selected => {
         emit('switched', selected)
+      }
+    )
+
+    watch(
+      () => props.selectedIndex,
+      selectedIndex => {
+        selected.value = props.values[selectedIndex].value
       }
     )
 
@@ -77,16 +96,36 @@ export default {
   border: none;
   padding: 0;
   margin: 0;
+
+  &[disabled] {
+    opacity: 0.35;
+  }
 }
 
 label {
+  position: relative;
   flex: 1;
   display: flex;
   align-items: center;
   height: 2rem;
 
+  .marker {
+    position: absolute;
+    top: 0.9rem;
+    left: 0.65rem;
+    width: 0.2rem;
+    height: 0.2rem;
+    border-radius: 50%;
+    background-color: rgba(128, 128, 128, 1.25);
+  }
+
   &:first-of-type {
     justify-content: flex-end;
+
+    .marker {
+      left: auto;
+      right: 0.65rem;
+    }
   }
 }
 
@@ -116,6 +155,7 @@ label {
 }
 
 .label {
+  min-width: 1.5rem;
   white-space: nowrap;
 
   label:first-of-type & {
@@ -129,8 +169,8 @@ label {
 
 .icon {
   margin-top: 0.125rem;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .toggle {
@@ -140,11 +180,18 @@ label {
   border-radius: 0.5rem;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
   z-index: 1;
-  transform: translate3d(1.175rem, 0, 0);
   transition: transform 0.1s ease-out;
 
-  &.selected {
-    transform: translate3d(-0.15rem, 0, 0);
+  &.pos-0 {
+    transform: translate3d(-0.25rem, 0, 0);
+  }
+
+  &.pos-1 {
+    transform: translate3d(1.25rem, 0, 0);
+  }
+
+  &.pos-2 {
+    transform: translate3d(2.75rem, 0, 0);
   }
 }
 

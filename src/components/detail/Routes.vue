@@ -3,7 +3,9 @@
     <div class="list">
       <FilterBar
         :show-virtual="showVirtual"
+        :routes="routes"
         @toggle-virtual="$emit('toggle-virtual')"
+        @toggle-routes="$emit('toggle-routes', $event)"
         @search="$emit('search', $event)"
       />
       <slot />
@@ -19,6 +21,10 @@ export default {
   components: { FilterBar },
   props: {
     showVirtual: Boolean,
+    routes: {
+      type: Array,
+      default: () => [],
+    },
   },
 }
 </script>

@@ -3,7 +3,7 @@
     :class="[
       'Route',
       {
-        isParent,
+        isParent: route.isParent,
         hit,
         virtual: route.virtual,
         opened: route.opened,
@@ -18,7 +18,7 @@
           :style="{ width: `${(showVirtual ? route.level : 1) * 0.75}rem` }"
         />
         <Clickable
-          v-if="showVirtual && isParent"
+          v-if="showVirtual && route.isParent"
           class="collapse"
           icon="chevron"
           @click="$emit('toggle-route')"
@@ -140,7 +140,6 @@ export default {
       default: () => ({}),
     },
     showVirtual: Boolean,
-    isParent: Boolean,
     editing: Boolean,
     hit: Boolean,
   },
