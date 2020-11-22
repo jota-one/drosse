@@ -116,7 +116,7 @@ label {
     width: 0.2rem;
     height: 0.2rem;
     border-radius: 50%;
-    background-color: rgba(128, 128, 128, 1.25);
+    background-color: rgba(128, 128, 128, 0.25);
   }
 
   &:first-of-type {
@@ -159,11 +159,11 @@ label {
   white-space: nowrap;
 
   label:first-of-type & {
-    margin-right: 1.75rem;
+    margin-right: 2rem;
   }
 
   label:last-of-type & {
-    margin-left: 1.75rem;
+    margin-left: 2rem;
   }
 }
 

@@ -8,7 +8,9 @@
         <Home v-if="viewHome" />
         <Detail
           v-else
+          :drosse="selectedDrosse"
           :editor-opened="editorOpened"
+          :logs="drosseLogs"
           @open-editor="openEditor($event)"
           @close-editor="editorOpened = -1"
           @update-editor="updateEditor($event)"
@@ -37,7 +39,8 @@
 import '../public/fonts/FiraCode/fontface.css'
 import '../public/fonts/Oswald/fontface.css'
 import p from '../package.json'
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
+import bus from '@/bus'
 import useDrosses from '@/modules/drosses'
 import TabBar from '@/components/tabbar/TabBar'
 import Home from '@/views/Home'
@@ -54,10 +57,28 @@ export default {
   components: { TabBar, Home, Detail, Editor, Help, Footer, Ribbon },
   setup() {
     const { drosses, viewHome } = useDrosses()
+    const selectedDrosse = computed(() =>
+      Object.values(drosses.value).find(drosse => drosse.selected)
+    )
+    const logs = reactive({})
     const editorOpened = ref(-1)
     const editorTop = ref(0)
     const _drosseEditing = ref({})
     const _hideEditor = ref(false)
+
+    const drosseLogs = computed(() => logs[selectedDrosse.value.uuid])
+
+    const hideEditor = computed(() => {
+      const selectedDrosse = Object.values(drosses.value).find(
+        drosse => drosse.selected
+      )
+
+      return (
+        _hideEditor.value ||
+        viewHome.value ||
+        _drosseEditing.value.uuid !== selectedDrosse.uuid
+      )
+    })
 
     const openEditor = ({ index, top, hide, drosse, delay }) => {
       const open = () => {
@@ -81,23 +102,22 @@ export default {
       _hideEditor.value = hide
     }
 
-    const hideEditor = computed(() => {
-      const selectedDrosse = Object.values(drosses.value).find(
-        drosse => drosse.selected
-      )
+    bus.on('log', ({ uuid, msg }) => {
+      if (!logs[uuid]) {
+        logs[uuid] = []
+      }
 
-      return (
-        _hideEditor.value ||
-        viewHome.value ||
-        _drosseEditing.value.uuid !== selectedDrosse.uuid
-      )
+      logs[uuid].push(msg)
+      console.log(logs)
     })
 
     return {
-      hideEditor,
       editorOpened,
       editorTop,
+      hideEditor,
+      drosseLogs,
       openEditor,
+      selectedDrosse,
       updateEditor,
       version,
       viewHome,

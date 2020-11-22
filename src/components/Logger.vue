@@ -1,11 +1,14 @@
 <template>
   <div :class="['Logger', { opened }]">
-    <h3>
-      <Clickable class="collapse" icon="chevron" @click="opened = !opened" />
-      Console
-    </h3>
+    <button class="button" @click="opened = !opened">
+      <h3>
+        <Icon class="icon" name="chevron" />
+        Console
+      </h3>
+    </button>
     <div class="wrapper">
       <div v-for="(log, i) in logs" :key="`log-${i}`" v-html="toHtml(log)" />
+      <div v-if="!logs.length" class="empty">Waiting for logs...</div>
     </div>
   </div>
 </template>
@@ -13,12 +16,12 @@
 <script>
 import { ref } from 'vue'
 import Convert from 'ansi-to-html'
-import Clickable from '@/components/common/Clickable'
+import Icon from '@/components/common/Icon'
 const convert = new Convert()
 
 export default {
   name: 'Logger',
-  components: { Clickable },
+  components: { Icon },
   props: {
     logs: {
       type: Array,
@@ -48,11 +51,16 @@ export default {
   }
 }
 
+.button {
+  display: flex;
+  align-items: center;
+}
+
 h3 {
   font-weight: 200;
 }
 
-.collapse {
+.icon {
   width: 1rem;
   height: 1rem;
   will-change: transform;
@@ -76,7 +84,15 @@ h3 {
   background-color: var(--c-logger-bg);
 }
 
-.collapse {
+.button {
+  color: var(--c-gray-active);
+}
+
+.icon {
   fill: var(--c-gray-active);
+}
+
+.empty {
+  color: var(--c-gray-active);
 }
 </style>

@@ -68,13 +68,8 @@ export default {
       })
     }
 
-    const onViewModeChanged = viewMode => {
-      console.log('onViewModeChanged', viewMode)
-    }
-
     return {
       onInput,
-      onViewModeChanged,
       searchValue,
       toggleRoutesSwitchIndex,
     }
@@ -85,7 +80,7 @@ export default {
 <style lang="postcss" scoped>
 .inner {
   display: flex;
-  algn-items: center;
+  align-items: center;
   padding: 0.75rem 0;
 
   & > * {
@@ -115,7 +110,7 @@ export default {
 
   .search-icon {
     position: absolute;
-    left: 1rem;
+    left: 1.65rem;
     top: calc(50% - 0.6rem);
     width: 1.25rem;
     height: 1.25rem;
@@ -139,6 +134,10 @@ export default {
 
 /* Colors */
 .col {
+  padding-bottom: 1rem;
+}
+
+.inner {
   background-color: rgba(0, 0, 0, 0.075);
 }
 

@@ -50,7 +50,7 @@
               :show-virtual="showVirtual"
               :editing="editorOpened === i"
               :class="['route', { editing: editorOpened === i }]"
-              @toggle-route="toggleRoute(i, route)"
+              @toggle-route="toggleRoute(route)"
               @select-verb="selectVerb(route, $event)"
               @toggle-editor="toggleEditor(i, $event)"
               @open-file="openFile(drosse.uuid, $event)"
@@ -88,6 +88,14 @@ export default {
   name: 'Detail',
   components: { Logger, DrosseIcon, Input, Routes, Route },
   props: {
+    drosse: {
+      type: Object,
+      default: null,
+    },
+    logs: {
+      type: Array,
+      default: () => [],
+    },
     editorOpened: {
       type: Number,
       default: -1,
@@ -101,21 +109,43 @@ export default {
     const routesFilter = ref('')
     const showVirtual = ref(true)
     const hit = ref([])
-    const logs = ref([])
     let editingIndex = -1
 
-    const drosse = computed(() =>
-      Object.values(drosses.value).find(drosse => drosse.selected)
-    )
-
     const routes = computed(() =>
-      drosse.value.routes
+      props.drosse.routes
         .filter(route => (showVirtual.value ? route : !route.virtual))
-        .filter(route => route.fullPath.includes(routesFilter.value))
+        .reduce((routes, route, i) => {
+          if (!routesFilter.value) {
+            routes.push(route)
+          } else {
+            const matching = route.fullPath.includes(routesFilter.value)
+
+            if (matching) {
+              const ancestors = route.fullPath.split('/').slice(1)
+              ancestors.pop()
+              let path = ''
+              for (const part of ancestors) {
+                path += `/${part}`
+                const ancestor = props.drosse.routes.find(
+                  r => r.fullPath === path
+                )
+                if (
+                  ancestor &&
+                  !routes.find(r => r.fullPath === ancestor.fullPath)
+                ) {
+                  routes.push(ancestor)
+                }
+              }
+
+              routes.push(route)
+            }
+          }
+          return routes
+        }, [])
         .map(route => ({
           ...route,
           isParent: Boolean(
-            drosse.value.routes.find(
+            props.drosse.routes.find(
               r => r.level > route.level && r.fullPath.includes(route.fullPath)
             )
           ),
@@ -141,8 +171,11 @@ export default {
       return editingIndex > -1 && !showRoute(routes.value[editingIndex])
     }
 
-    const toggleRoute = (index, route) => {
-      drosses.value[drosse.value.uuid].routes[index].opened = !route.opened
+    const toggleRoute = route => {
+      const index = drosses.value[props.drosse.uuid].routes.findIndex(
+        r => r.fullPath === route.fullPath
+      )
+      drosses.value[props.drosse.uuid].routes[index].opened = !route.opened
       emit('update-editor', {
         top: getRouteTop(),
         hide: hideEditor(),
@@ -153,8 +186,8 @@ export default {
     const toggleRoutes = state => {
       if (['opened', 'closed'].includes(state)) {
         const opened = state === 'opened'
-        drosses.value[drosse.value.uuid].routes = drosses.value[
-          drosse.value.uuid
+        drosses.value[props.drosse.uuid].routes = drosses.value[
+          props.drosse.uuid
         ].routes.map(route => ({
           ...route,
           opened,
@@ -188,14 +221,14 @@ export default {
       if (editingIndex > -1) {
         const isPath = handlerValue.startsWith('./')
         const { content, language } = isPath
-          ? await fetchHandler(drosse.value, handlerValue)
+          ? await fetchHandler(props.drosse, handlerValue)
           : { content: handlerValue, language: 'json' }
 
         setContent(content, language)
         emit('open-editor', {
           index: editingIndex,
           top: getRouteTop(),
-          drosse: drosse.value,
+          drosse: props.drosse,
           hide: hideEditor(),
           delay,
         })
@@ -205,7 +238,7 @@ export default {
     }
 
     bus.on('request', ({ uuid, url }) => {
-      if (uuid !== drosse.value.uuid) {
+      if (uuid !== props.drosse.uuid) {
         return
       }
 
@@ -219,18 +252,8 @@ export default {
       }
     })
 
-    bus.on('log', ({ uuid, msg }) => {
-      if (uuid !== drosse.value?.uuid) {
-        return
-      }
-
-      logs.value.push(msg)
-    })
-
     return {
-      drosse,
       hit,
-      logs,
       openFile,
       routes,
       routesFilter,

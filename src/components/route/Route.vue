@@ -168,6 +168,10 @@ export default {
   &.full {
     width: 100%;
   }
+
+  &.def {
+    padding-left: 1.75rem;
+  }
 }
 
 .inner,
@@ -188,6 +192,7 @@ export default {
 
   .isParent & {
     visibility: visible;
+    margin-left: -1.25rem;
   }
 
   .opened & {
