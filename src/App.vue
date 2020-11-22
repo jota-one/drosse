@@ -108,7 +108,6 @@ export default {
       }
 
       logs[uuid].push(msg)
-      console.log(logs)
     })
 
     return {
