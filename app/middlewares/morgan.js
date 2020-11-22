@@ -1,5 +1,7 @@
 const morgan = require('morgan')
 const c = require('ansi-colors')
+const useState = require('../use/state')
+const state = useState()
 
 morgan.token('time', function getTime() {
   return c.gray(new Date().toLocaleTimeString())
@@ -49,4 +51,7 @@ const format = function (tokens, req, res) {
   ].join(' ')
 }
 
-module.exports = morgan(format)
+module.exports = morgan(format, {
+  skip: (req, res) =>
+    Object.values(state.get('reservedRoutes')).includes(req.url),
+})
