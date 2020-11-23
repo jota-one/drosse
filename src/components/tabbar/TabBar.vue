@@ -3,7 +3,7 @@
     <div class="container">
       <div class="scrollbar">
         <h1>
-          <button class="drosse" @click="openHome">Drosse UI</button>
+          <button class="drosse" @click="openHome">Drosse <b>UI</b></button>
         </h1>
         <Tab
           v-for="drosse in openedDrosses"
@@ -85,7 +85,7 @@ h1 {
   margin: 0.375rem 1rem 0.125rem 0;
   padding: 0.25rem;
   font-family: Oswald, sans-serif;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0;

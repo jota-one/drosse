@@ -30,6 +30,9 @@
             @input="onInput"
           />
         </div>
+        <div class="verbs">verbs</div>
+        <div class="handlers">handlers</div>
+        <div class="middlewares">middlewares</div>
       </div>
     </td>
   </tr>
@@ -78,6 +81,10 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.col {
+  padding-bottom: 1rem;
+}
+
 .inner {
   display: flex;
   align-items: center;
@@ -86,10 +93,6 @@ export default {
   & > * {
     margin: 0;
     padding: 0 1rem;
-
-    &:not(:last-child) {
-      border-right: 1px dashed rgba(128, 128, 128, 0.25);
-    }
   }
 }
 
@@ -114,15 +117,13 @@ export default {
     top: calc(50% - 0.6rem);
     width: 1.25rem;
     height: 1.25rem;
-    fill: rgba(128, 128, 128, 1);
   }
 
   .search-input {
-    width: 20rem;
+    width: 13rem;
     padding: 0.5rem 0.5rem 0.5rem 2.25rem;
     font-family: FiraCode, monospace;
     color: var(--c-green);
-    background-color: rgba(128, 128, 128, 0.125);
     border: none;
     border-radius: 1rem;
 
@@ -133,12 +134,13 @@ export default {
 }
 
 /* Colors */
-.col {
-  padding-bottom: 1rem;
-}
-
 .inner {
+  border-bottom: 1px dashed rgba(128, 128, 128, 0.25);
   background-color: rgba(0, 0, 0, 0.075);
+
+  & > *:not(:last-child) {
+    border-right: 1px dashed rgba(128, 128, 128, 0.25);
+  }
 }
 
 .icon {
@@ -147,6 +149,16 @@ export default {
   &:hover,
   &.on {
     fill: var(--c-green);
+  }
+}
+
+.search {
+  .search-icon {
+    fill: rgba(128, 128, 128, 1);
+  }
+
+  .search-input {
+    background-color: rgba(128, 128, 128, 0.125);
   }
 }
 </style>

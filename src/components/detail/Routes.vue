@@ -1,6 +1,6 @@
 <template>
   <div class="Routes">
-    <div class="list">
+    <div :class="['list', { showVirtual }]">
       <FilterBar
         :show-virtual="showVirtual"
         :routes="routes"

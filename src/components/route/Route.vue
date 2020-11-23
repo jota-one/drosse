@@ -164,12 +164,13 @@ export default {
 .col {
   display: table-cell;
   vertical-align: top;
+  border-top: 1px dashed rgba(128, 128, 128, 0.1);
 
   &.full {
     width: 100%;
   }
 
-  &.def {
+  .showVirtual &.def {
     padding-left: 1.75rem;
   }
 }

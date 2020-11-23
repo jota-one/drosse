@@ -32,18 +32,31 @@
         title="Route response"
         @click="onHandlerClick('body')"
       />
-      <component
-        :is="inline ? 'Input' : 'button'"
-        v-if="handlerValue"
-        :class="['input', { inline, editing }]"
-        :value="handlerValue"
-        @click="onHandlerValueClick"
-      >
-        <template v-if="!inline && handlerValue">
-          <Icon v-if="multiple" class="arrow-icon" name="arrow" />
-          <span>{{ handlerValue.replace(/\s/g, '') }}</span>
+      <Input
+        v-if="value.type === 'inline'"
+        class="input"
+        :value="value.content"
+        @click="onValueClick"
+      />
+      <button v-else class="button" @click="onValueClick">
+        <span v-if="value.type === 'content'">
+          {{ value.content }}
+        </span>
+        <template v-if="value.type === 'path'">
+          <template v-for="(part, i) in value.content">
+            <span :key="`part-${part.value}-${i}`" :class="['path', part.type]">
+              {{ part.value }}
+            </span>
+            <span
+              v-if="i < value.content.length - 1"
+              :key="`sep-${part.value}-${i}`"
+              class="sep"
+            >
+              {{ part.type !== 'root' ? '.' : '/' }}
+            </span>
+          </template>
         </template>
-      </component>
+      </button>
     </div>
   </div>
 </template>
@@ -51,12 +64,11 @@
 <script>
 import { computed, ref } from 'vue'
 import Clickable from '@/components/common/Clickable'
-import Icon from '@/components/common/Icon'
 import Input from '@/components/common/Input'
 
 export default {
   name: 'Handler',
-  components: { Clickable, Icon, Input },
+  components: { Clickable, Input },
   props: {
     route: {
       type: Object,
@@ -80,60 +92,85 @@ export default {
         : null
     )
 
-    const shorten = (path, withVariables) => {
-      const arr = path
-        .split('/')
-        .slice(1)
-        .filter(p => (withVariables ? true : !p.startsWith(':')))
-
-      return arr
-        .map((p, i) => {
-          return p // i < arr.length - 1 ? '' : p
-        })
-        .join('.')
-        .replace(/\.{3,}/, '...')
-    }
-
-    const compress = json => JSON.stringify(json, null, 2)
-
-    const handlerValue = computed(() => {
-      let fileName
-
+    const value = computed(() => {
       switch (handler.value) {
-        case 'proxy':
-          return props.selectedVerb.handler
-        case 'service':
-          fileName =
-            shorten(props.route.fullPath) +
-            (selectedVerbType.value && `.${selectedVerbType.value}`)
-          return `./services/${fileName}.js`
-        case 'static':
-          fileName = shorten(props.route.fullPath, true)
-          return `./static/${fileName}.json`
         case 'body':
-          return compress(props.selectedVerb.handler)
+          return {
+            type: 'content',
+            content: JSON.stringify(
+              props.selectedVerb.handler,
+              null,
+              2
+            ).replace(/\s/gim, ''),
+          }
+        case 'proxy':
+          return {
+            type: 'inline',
+            content: props.selectedVerb.handler,
+          }
+        case 'service':
+          return {
+            type: 'path',
+            content: [
+              ...[{ type: 'root', value: './services' }],
+              ...props.route.fullPath
+                .split('/')
+                .slice(1)
+                .filter(p => !p.startsWith(':'))
+                .map(value => ({ type: 'part', value: value })),
+              ...[
+                { type: 'verb', value: selectedVerbType.value },
+                { type: 'extension', value: 'js' },
+              ],
+            ],
+          }
+        case 'static':
+          return {
+            type: 'path',
+            content: [
+              ...[{ type: 'root', value: './static' }],
+              ...props.route.fullPath
+                .split('/')
+                .slice(1)
+                .map(value => ({
+                  type: value.startsWith(':') ? 'variable' : 'part',
+                  value: value.replace(/:([^\\/\\.]+)/gim, '{$1}'),
+                })),
+              ...[
+                { type: 'verb', value: selectedVerbType.value },
+                { type: 'extension', value: 'json' },
+              ],
+            ],
+          }
         default:
           return ''
       }
     })
 
-    const inline = computed(() => ['proxy'].includes(handler.value))
-
     const onHandlerClick = type => {
       alert(`${type} action not yet implemented...`)
     }
 
-    const onHandlerValueClick = () => {
-      emit('open-file', handlerValue.value)
+    const onValueClick = () => {
+      const path = value.value.content
+        .map((p, i) =>
+          p.type === 'root'
+            ? `${p.value}/`
+            : i < value.value.content.length - 1
+            ? `${p.value}.`
+            : p.value
+        )
+        .join('')
+
+      emit('open-file', path)
     }
 
     return {
-      inline,
       handler,
-      handlerValue,
+      value,
       multiple,
       onHandlerClick,
-      onHandlerValueClick,
+      onValueClick,
     }
   },
 }
@@ -143,35 +180,39 @@ export default {
 .icon {
   width: 2rem;
   height: 2rem;
+  flex-shrink: 0;
 }
 
-.input {
-  min-width: 10rem;
-  font-size: 0.9rem;
-  margin: 0 1rem 0 0.5rem;
+.input,
+.button {
   display: flex;
-  flex-shrink: 0;
   align-items: center;
+  margin: 0.125rem 0 0 0.5rem;
+  line-height: 1.5;
+}
 
-  span {
-    display: block;
-    max-width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.path {
+  display: block;
+  padding: 0.125rem 0 0.125rem;
+  border-radius: 0.25rem;
+
+  &.root,
+  &.variable,
+  &.verb {
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
   }
 
-  .arrow-icon {
-    flex-shrink: 0;
-    margin-right: 0.25rem;
-    width: 0.75rem;
-    height: 0.75rem;
-    will-change: transform;
-    transition: transform 0.1s ease-in-out;
+  &.root {
+    font-size: 0.7rem;
+    color: var(--c-black);
+    background-color: rgba(255, 255, 255, 0.125);
   }
 
-  &.editing .arrow-icon {
-    transform: rotate(90deg);
+  &.verb,
+  &.variable {
+    font-size: 0.8rem;
+    background-color: rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -193,24 +234,7 @@ export default {
   }
 }
 
-.input {
-  &:not(.inline) {
-    color: var(--c-gray-active);
-  }
-
-  .arrow-icon {
-    fill: var(--c-gray-inactive);
-    will-change: fill;
-    transition: fill 0.1s ease-in-out;
-  }
-
-  &:not(.inline):hover,
-  &.editing {
-    color: var(--c-green);
-
-    .arrow-icon {
-      fill: var(--c-green);
-    }
-  }
+.button {
+  color: var(--c-gray-active);
 }
 </style>

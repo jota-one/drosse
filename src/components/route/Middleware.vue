@@ -58,7 +58,6 @@ export default {
 .icon-wrapper {
   position: relative;
   flex-shrink: 0;
-  margin: 0 0.5rem;
 
   .active & {
     &:after {

@@ -121,19 +121,21 @@ export default {
             const matching = route.fullPath.includes(routesFilter.value)
 
             if (matching) {
-              const ancestors = route.fullPath.split('/').slice(1)
-              ancestors.pop()
-              let path = ''
-              for (const part of ancestors) {
-                path += `/${part}`
-                const ancestor = props.drosse.routes.find(
-                  r => r.fullPath === path
-                )
-                if (
-                  ancestor &&
-                  !routes.find(r => r.fullPath === ancestor.fullPath)
-                ) {
-                  routes.push(ancestor)
+              if (showVirtual.value) {
+                const ancestors = route.fullPath.split('/').slice(1)
+                ancestors.pop()
+                let path = ''
+                for (const part of ancestors) {
+                  path += `/${part}`
+                  const ancestor = props.drosse.routes.find(
+                    r => r.fullPath === path
+                  )
+                  if (
+                    ancestor &&
+                    !routes.find(r => r.fullPath === ancestor.fullPath)
+                  ) {
+                    routes.push(ancestor)
+                  }
                 }
               }
 
@@ -197,7 +199,10 @@ export default {
     }
 
     const selectVerb = (route, verb) => {
-      route.selected = verb
+      const index = drosses.value[props.drosse.uuid].routes.findIndex(
+        r => r.fullPath === route.fullPath
+      )
+      drosses.value[props.drosse.uuid].routes[index].selected = verb
       saveDrosses(drosses.value)
     }
 
