@@ -1,5 +1,5 @@
 <template>
-  <div :class="['Middleware', { active, inherited }]">
+  <div :class="['Plugin', { active, inherited }]">
     <div class="icon-wrapper" :title="title" :tool-tip="tooltip">
       <Clickable :class="['icon', { active }]" :icon="icon" @click="onClick" />
     </div>
@@ -13,7 +13,7 @@
 import Clickable from '@/components/common/Clickable'
 
 export default {
-  name: 'Middleware',
+  name: 'Plugin',
   components: { Clickable },
   props: {
     active: Boolean,
@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.Middleware {
+.Plugin {
   height: inherit;
   display: flex;
   align-items: center;
@@ -97,7 +97,7 @@ export default {
 }
 
 /* Colors */
-.Middleware {
+.Plugin {
   color: var(--c-gray-inactive);
 
   &.active {

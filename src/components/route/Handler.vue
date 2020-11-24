@@ -206,7 +206,7 @@ export default {
   &.root {
     font-size: 0.7rem;
     color: var(--c-black);
-    background-color: rgba(255, 255, 255, 0.125);
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   &.verb,
@@ -236,5 +236,9 @@ export default {
 
 .button {
   color: var(--c-gray-active);
+
+  &:hover {
+    color: var(--c-green);
+  }
 }
 </style>

@@ -6,22 +6,25 @@ module.exports = {
     loaderOptions: {
       postcss: {
         plugins: [
-          require('postcss-nested')()
-        ]
-      }
-    }
+          require('postcss-nested')(),
+          require('autoprefixer')({ grid: 'no-autoplace' }),
+        ],
+      },
+    },
   },
   chainWebpack: config => {
-    config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
-      config.pluginOptions && config.pluginOptions.monaco
-    ])
+    config
+      .plugin('monaco-editor')
+      .use(MonacoWebpackPlugin, [
+        config.pluginOptions && config.pluginOptions.monaco,
+      ])
   },
   devServer: {
     proxy: Object.values(endpoints).reduce((targets, path) => {
       targets[path] = {
-        target: `http://localhost:${process.env.VUE_APP_PORT}`
+        target: `http://localhost:${process.env.VUE_APP_PORT}`,
       }
       return targets
-    }, {})
-  }
+    }, {}),
+  },
 }

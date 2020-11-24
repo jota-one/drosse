@@ -58,23 +58,23 @@
       @toggle-editor="$emit('toggle-editor', $event)"
       @open-file="$emit('open-file', $event)"
     />
-    <div class="col middleware">
+    <div class="col plugin">
       <div v-if="!route.virtual" class="inner">
         <RouteTemplate :verb="selectedVerb" />
       </div>
     </div>
-    <div class="col middleware">
+    <div class="col plugin">
       <div v-if="!route.virtual" class="inner">
         <Throttle :verb="selectedVerb" />
       </div>
     </div>
     <template v-if="false">
-      <div class="col middleware">
+      <div class="col plugin">
         <div v-if="!route.virtual" class="inner">
           <Fail :verb="selectedVerb" />
         </div>
       </div>
-      <div class="col middleware">
+      <div class="col plugin">
         <div v-if="!route.virtual" class="inner">
           <Headers :verb="selectedVerb" />
         </div>

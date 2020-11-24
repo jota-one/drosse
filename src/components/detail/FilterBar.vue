@@ -2,6 +2,16 @@
   <tr class="FilterBar">
     <td class="col" colspan="8">
       <div class="inner">
+        <div class="toggle-routes">
+          <Clickable
+            :class="[
+              'button',
+              { opened: toggleRoutes.opened, closed: toggleRoutes.closed },
+            ]"
+            icon="close-all"
+            @click="onRoutesToggle"
+          />
+        </div>
         <Switch
           :values="[
             { icon: 'view-flat', value: false },
@@ -9,16 +19,6 @@
           ]"
           :selected-index="showVirtual ? 1 : 0"
           @switched="$emit('toggle-virtual')"
-        />
-        <Switch
-          :disabled="!showVirtual"
-          :selected-index="toggleRoutesSwitchIndex"
-          :values="[
-            { icon: 'close-all', value: 'closed' },
-            { label: '', value: '' },
-            { icon: 'open-all', value: 'opened' },
-          ]"
-          @switched="$emit('toggle-routes', $event)"
         />
         <div class="search">
           <Icon name="search" class="search-icon" />
@@ -32,20 +32,21 @@
         </div>
         <div class="verbs">verbs</div>
         <div class="handlers">handlers</div>
-        <div class="middlewares">middlewares</div>
+        <div class="plugins">plugins</div>
       </div>
     </td>
   </tr>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import Icon from '@/components/common/Icon'
+import Clickable from '@/components/common/Clickable'
 import Switch from '@/components/common/Switch'
 
 export default {
   name: 'FilterBar',
-  components: { Icon, Switch },
+  components: { Icon, Clickable, Switch },
   props: {
     showVirtual: Boolean,
     routes: {
@@ -55,15 +56,20 @@ export default {
   },
   setup(props, { emit }) {
     const searchValue = ref('')
-    const toggleRoutesSwitchIndex = computed(() => {
+    const toggleRoutes = computed(() => {
       const routes = props.routes.filter(route => route.isParent)
-      const index = routes.every(route => route.opened)
-        ? 2
-        : routes.every(route => !route.opened)
-        ? 0
-        : 1
-      return index
+
+      return {
+        opened: routes.every(route => route.opened),
+        closed: routes.every(route => !route.opened),
+      }
     })
+
+    const onRoutesToggle = () => {
+      const state = toggleRoutes.value.opened ? 'closed' : 'opened'
+      console.log('state', state)
+      emit('toggle-routes', state)
+    }
 
     const onInput = value => {
       setTimeout(() => {
@@ -73,8 +79,9 @@ export default {
 
     return {
       onInput,
+      onRoutesToggle,
       searchValue,
-      toggleRoutesSwitchIndex,
+      toggleRoutes,
     }
   },
 }
@@ -100,6 +107,26 @@ export default {
   position: relative;
   width: 2rem;
   height: 2rem;
+}
+
+.toggle-routes {
+  .button {
+    width: 1.5rem;
+    height: 1.5rem;
+    transform: rotate(45deg);
+    transition: transform 0.1s linear;
+    fill: var(--c-gray-inactive);
+
+    &.closed {
+      transform: rotate(0deg);
+      fill: var(--c-green);
+    }
+
+    &.opened {
+      transform: rotate(90deg);
+      fill: var(--c-green);
+    }
+  }
 }
 
 .icon-open-all {

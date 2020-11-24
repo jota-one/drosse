@@ -1,5 +1,5 @@
 <template>
-  <Middleware
+  <Plugin
     class="Throttle"
     icon="throttle"
     :active="Boolean(verb?.throttle)"
@@ -12,17 +12,17 @@
       -
       <Input :value="max" />
     </template>
-  </Middleware>
+  </Plugin>
 </template>
 
 <script>
 import { computed } from 'vue'
 import Input from '@/components/common/Input'
-import Middleware from './Middleware'
+import Plugin from './Plugin'
 
 export default {
   name: 'Throttle',
-  components: { Middleware, Input },
+  components: { Plugin, Input },
   props: {
     verb: {
       type: Object,
@@ -44,7 +44,7 @@ export default {
 
 <style lang="postcss" scoped>
 /* Colors */
-.Middleware ::v-deep(.icon) {
+.Plugin ::v-deep(.icon) {
   &.active {
     fill: var(--c-yellow);
   }

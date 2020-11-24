@@ -49,7 +49,7 @@ export default function useRoutes() {
               return handler
             }, {})
 
-          const middlewares = verbEntries
+          const plugins = verbEntries
             .filter(([type]) => !isHandler(type))
             .map(([type, handler]) => ({
               type,
@@ -58,7 +58,7 @@ export default function useRoutes() {
             }))
             .reduce(handleDetail, {})
 
-          return { type, handler, ...middlewares }
+          return { type, handler, ...plugins }
         })
         .sort()
 

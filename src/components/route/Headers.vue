@@ -1,21 +1,21 @@
 <template>
-  <Middleware
+  <Plugin
     :active="Boolean(verb?.headers)"
     class="Headers"
     icon="header"
     title="Headers"
   >
     <Input :value="JSON.stringify({})" />
-  </Middleware>
+  </Plugin>
 </template>
 
 <script>
 import Input from '@/components/common/Input'
-import Middleware from './Middleware'
+import Plugin from './Plugin'
 
 export default {
   name: 'Headers',
-  components: { Middleware, Input },
+  components: { Plugin, Input },
   props: {
     verb: {
       type: Object,
@@ -27,7 +27,7 @@ export default {
 
 <style lang="postcss" scoped>
 /* Colors */
-.Middleware ::v-deep(.icon) {
+.Plugin ::v-deep(.icon) {
   &:hover,
   &.active {
     fill: var(--c-green);

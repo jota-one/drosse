@@ -1,5 +1,5 @@
 <template>
-  <Middleware
+  <Plugin
     :active="Boolean(verb?.fail)"
     class="Fail"
     icon="fail"
@@ -8,16 +8,16 @@
     <Input :value="verb?.fail?.rate || 0" />
     <Input :value="verb?.fail?.status || 500" />
     <Input :value="JSON.stringify(verb?.fail?.body || {}).replace(/\s/, '')" />
-  </Middleware>
+  </Plugin>
 </template>
 
 <script>
 import Input from '@/components/common/Input'
-import Middleware from './Middleware'
+import Plugin from './Plugin'
 
 export default {
   name: 'Fail',
-  components: { Middleware, Input },
+  components: { Plugin, Input },
   props: {
     verb: {
       type: Object,
@@ -29,7 +29,7 @@ export default {
 
 <style lang="postcss" scoped>
 /* Colors */
-.Middleware ::v-deep(.icon) {
+.Plugin ::v-deep(.icon) {
   &:hover,
   &.active {
     fill: var(--c-red);

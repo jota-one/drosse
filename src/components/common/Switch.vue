@@ -1,5 +1,5 @@
 <template>
-  <fieldset class="Switch" :disabled="disabled">
+  <div class="Switch" :class="{ disabled }">
     <label v-for="(value, i) in values" :key="value.value">
       <input
         v-model="selected"
@@ -27,7 +27,7 @@
         />
       </div>
     </label>
-  </fieldset>
+  </div>
 </template>
 
 <script>
@@ -97,8 +97,9 @@ export default {
   padding: 0;
   margin: 0;
 
-  &[disabled] {
+  &.disabled {
     opacity: 0.35;
+    pointer-events: none;
   }
 }
 
