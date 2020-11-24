@@ -3,6 +3,7 @@ node_modules
 /dist
 /public/sockjs*
 /desktop
+/pkg
 
 # local env files
 .env.local

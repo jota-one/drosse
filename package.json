@@ -2,11 +2,20 @@
   "name": "drosse-ui",
   "version": "0.1.0",
   "description": "Manage your drosses visually.",
+  "bin": "dist/server/index.js",
+  "pkg": {
+    "assets": [
+      "dist/**/*",
+      "node_modules/@jota-one/drosse/bin/*.js",
+      "node_modules/@jota-one/drosse/cmd/*.js",
+      "node_modules/@jota-one/drosse/app/**/*.js"
+    ]
+  },
   "scripts": {
     "drosse": "npx drosse serve",
     "start": "node dist/server",
     "serve": "node prebuild && concurrently --kill-others --raw \"node server development\" \"vue-cli-service serve\"",
-    "build": "node prebuild && vue-cli-service build && cp -r server dist",
+    "build": "node prebuild && vue-cli-service build && cp -r server dist && rm dist/**/*.map && rm dist/*.map && pkg . --out-path pkg",
     "lint": "vue-cli-service lint"
   },
   "repository": {
@@ -54,6 +63,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^7.0.0-alpha.0",
     "monaco-editor-webpack-plugin": "^1.9.0",
+    "pkg": "^4.4.9",
     "postcss-nested": "^4.2.1",
     "prettier": "^2.1.2",
     "standard": "^14.3.4",

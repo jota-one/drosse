@@ -67,7 +67,6 @@ export default {
 
     const onRoutesToggle = () => {
       const state = toggleRoutes.value.opened ? 'closed' : 'opened'
-      console.log('state', state)
       emit('toggle-routes', state)
     }
 

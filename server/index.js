@@ -11,17 +11,6 @@ const sockjs = require('sockjs')
 const getPort = require('get-port')
 const Discover = require('node-discover')
 
-const drosseBin = join(
-  __dirname,
-  '..',
-  'node_modules',
-  '@jota-one',
-  'drosse',
-  'bin'
-)
-
-const forks = {}
-
 const getDrosses = () => {
   const drosses = JSON.parse(fs.readFileSync(drossesFile, 'utf8'))
   const uuids = Object.keys(drosses)
@@ -73,7 +62,17 @@ const down = (d, conn, online) => {
 const env = process.argv[2] || 'production'
 const home = join(os.homedir(), '.drosse-ui')
 const drossesFile = join(home, 'drosses.json')
+const drosseBin = join(
+  __dirname,
+  '..',
+  env === 'production' ? '..' : '',
+  'node_modules',
+  '@jota-one',
+  'drosse',
+  'bin'
+)
 const app = express()
+const forks = {}
 let d
 
 app.use(bodyParser.json())
@@ -223,7 +222,6 @@ app.post('/import', async (req, res) => {
   const description = await new Promise((resolve, reject) => {
     const { path } = req.body
     const args = ['describe', '-r', path]
-
     const app = fork(join(drosseBin, 'drosse.js'), args, { silent: false })
 
     app.on('message', ({ event, data }) => {
