@@ -8,10 +8,15 @@
     "drosse-serve": "./bin/serve.js"
   },
   "scripts": {
-    "serve": "./bin/serve.js"
+    "serve": "./bin/serve.js",
+    "build": "pkg . --out-path pkg"
   },
   "pkg": {
-    "scripts": ["cmd/*.js", "bin/*.js", "app/**/*.js"]
+    "scripts": [
+      "bin/*.js",
+      "cmd/*.js",
+      "app/**/*.js"
+    ]
   },
   "repository": {
     "type": "git",
