@@ -34,7 +34,7 @@ npm i -g @jota-one/drosse
 drosse serve -r /path/to/my/my/mocks
 ```
 
-### As a Docker image
+### As a [Docker image](https://hub.docker.com/r/jotaone/drosse)
 You can use a docker image if you don't want to install nodejs runtime on your machine.
 **Note** though that you'll have to map your local folder to the container's `data` volume as well as the  port your drosse is configured on.
 
