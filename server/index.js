@@ -11,6 +11,24 @@ const sockjs = require('sockjs')
 const getPort = require('get-port')
 const Discover = require('node-discover')
 
+const env = process.argv[2] || 'production'
+const home = join(os.homedir(), '.drosse-ui')
+const drossesFile = join(home, 'drosses.json')
+const drosseBin = join(
+  __dirname,
+  '..',
+  env === 'production' ? '..' : '',
+  'node_modules',
+  '@jota-one',
+  'drosse',
+  'bin'
+)
+const app = express()
+const forked = {}
+let notForked = []
+let stopped = []
+let d
+
 const getDrosses = () => {
   const drosses = JSON.parse(fs.readFileSync(drossesFile, 'utf8'))
   const uuids = Object.keys(drosses)
@@ -37,7 +55,21 @@ const up = (d, conn) => {
 
   const drosse = drosses[d.uuid]
 
-  drosse.online = true
+  // Register process as not forked.
+  // When process is forked, it is storef in forked beforehand.
+  if (!Object.keys(forked).includes(d.uuid) && !notForked.includes(d.uuid)) {
+    notForked.push(d.uuid)
+  }
+
+  // Kill forked process and cleanup `forked` array if forked process
+  // has been stopped (via UI) and its non-forked equivalent is started
+  // from a terminal.
+  if (Object.keys(forked).includes(d.uuid) && stopped.includes(d.uuid)) {
+    forked[d.uuid].kill()
+    delete forked[d.uuid]
+    notForked.push(d.uuid)
+  }
+
   drosse.up = true
   drosse.lastSeen = drosse.lastSeen || new Date()
   drosses[drosse.uuid].available = fs.existsSync(drosses[drosse.uuid].root)
@@ -46,34 +78,39 @@ const up = (d, conn) => {
   conn.write(JSON.stringify({ event: 'up', drosse }))
 }
 
-const down = (d, conn, online) => {
+const down = (d, conn, fromUI) => {
   const drosse = drosses[d.uuid]
+  let skipWs = false
 
   if (drosse) {
-    drosse.online = online
     drosse.up = false
     drosse.lastSeen = new Date()
+
+    // Remove from `notForked` array if process has been terminated
+    // from a terminal (e.g. SIGINT). This case cannot happen with
+    // forked processes as theya re always started and stopped from the UI.
+    if (!fromUI) {
+      notForked = notForked.filter(uuid => uuid !== d.uuid)
+    }
+
+    // Don't forward the "down" event to the frontend if process sends
+    // a "down" event while its forked equivalent is running.
+    // This use case happens when a drosse process has been forked via the UI
+    // but its non-forked equivalent has been started in a terminal and got
+    // "EADDRINUSE" error. The process doesn't exit autoamtically and the user
+    // has to explicitely exit it via SIGINT, which sends a "down event"...
+    skipWs =
+      Object.keys(forked).includes(d.uuid) &&
+      !stopped.includes(d.uuid) &&
+      !notForked.includes(d.uuid)
   }
 
   updateDrosses()
-  conn.write(JSON.stringify({ event: 'down', drosse }))
-}
 
-const env = process.argv[2] || 'production'
-const home = join(os.homedir(), '.drosse-ui')
-const drossesFile = join(home, 'drosses.json')
-const drosseBin = join(
-  __dirname,
-  '..',
-  env === 'production' ? '..' : '',
-  'node_modules',
-  '@jota-one',
-  'drosse',
-  'bin'
-)
-const app = express()
-const forks = {}
-let d
+  if (!skipWs) {
+    conn.write(JSON.stringify({ event: 'down', drosse }))
+  }
+}
 
 app.use(bodyParser.json())
 
@@ -107,7 +144,7 @@ echo.on('connection', conn => {
   })
 
   d.join('down', drosse => {
-    down(drosse, conn, false)
+    down(drosse, conn)
   })
 
   d.join('downUI', drosse => {
@@ -143,14 +180,19 @@ app.post('/start', (req, res) => {
   const { uuid } = req.body
   const drosse = drosses[uuid]
 
-  console.log('start', drosse.name, drosse.online ? '🧵' : '💤')
+  // Remove the process from the `stopped`
+  stopped = stopped.filter(_uuid => _uuid !== uuid)
 
-  if (drosse.online) {
-    d.send('start', uuid)
-  } else {
-    forks[uuid] = fork(join(drosseBin, 'serve.js'), ['-r', drosse.root], {
+  // Fork the process only if it has not already been started via terminal
+  // => not present in `noForked` AND not present in `forked`.
+  // Store the process's uuid in the `forked` object for further
+  // differenciation between forked and not-forked processes.
+  if (!notForked.includes(uuid) && !Object.keys(forked).includes(uuid)) {
+    forked[uuid] = fork(join(drosseBin, 'serve.js'), ['-r', drosse.root], {
       silent: true,
     })
+  } else {
+    d.send('start', uuid)
   }
 
   res.send()
@@ -158,14 +200,11 @@ app.post('/start', (req, res) => {
 
 app.post('/stop', (req, res) => {
   const { uuid } = req.body
-  const drosse = drosses[uuid]
 
-  console.log('stop', drosse.name, drosse.online ? '🧵' : '💤')
+  d.send('stop', uuid)
 
-  if (drosse.online) {
-    d.send('stop', uuid)
-  } else {
-    forks[uuid].kill()
+  if (!stopped.includes(uuid)) {
+    stopped.push(uuid)
   }
 
   res.send()
