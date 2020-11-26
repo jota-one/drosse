@@ -23,7 +23,7 @@ npm install --save-dev @jota-one/drosse
 }
 ```
 
-### As a global npm package
+### As a global [npm](https://www.npmjs.com/package/@jota-one/drosse) package
 1. Install drosse globally.
 ```
 npm i -g @jota-one/drosse
