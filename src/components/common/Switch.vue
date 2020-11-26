@@ -156,15 +156,15 @@ label {
 }
 
 .label {
-  min-width: 1.5rem;
+  min-width: 1.25rem;
   white-space: nowrap;
 
   label:first-of-type & {
-    margin-right: 2rem;
+    margin-right: 1.75rem;
   }
 
   label:last-of-type & {
-    margin-left: 2rem;
+    margin-left: 1.75rem;
   }
 }
 

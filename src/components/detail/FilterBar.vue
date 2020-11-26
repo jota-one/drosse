@@ -1,52 +1,94 @@
 <template>
   <tr class="FilterBar">
-    <td class="col" colspan="8">
-      <div class="inner">
-        <div class="toggle-routes">
-          <Clickable
-            :class="[
-              'button',
-              { opened: toggleRoutes.opened, closed: toggleRoutes.closed },
+    <td colspan="2" class="col">
+      <div class="rows-wrapper">
+        <div class="inner">
+          <div class="counter">
+            <div class="badge">
+              {{ routes.filter(route => !route.virtual).length }}
+            </div>
+          </div>
+          <div class="search">
+            <div class="search-wrapper">
+              <Icon name="filter" class="search-icon" />
+              <input
+                v-model="filters.search"
+                type="text"
+                class="search-input"
+                placeholder="Filter routes"
+                @input="onSearch"
+              />
+            </div>
+          </div>
+          <div class="verbs">
+            <Verb
+              v-for="verb in verbs"
+              :key="verb"
+              :type="verb"
+              :selected="filters.verbs.includes(verb)"
+              @click="onVerbToggle(verb)"
+            />
+          </div>
+        </div>
+        <div class="outer">
+          <div class="toggle-routes">
+            <Clickable
+              :disabled="!showVirtual"
+              :class="[
+                'button',
+                { opened: toggleRoutes.opened, closed: toggleRoutes.closed },
+              ]"
+              icon="close-all"
+              @click="onRoutesToggle"
+            />
+          </div>
+          <Switch
+            class="switch-virtual-routes"
+            :values="[
+              { icon: 'view-tree', value: true },
+              { icon: 'view-flat', value: false },
             ]"
-            icon="close-all"
-            @click="onRoutesToggle"
+            :selected-index="showVirtual ? 0 : 1"
+            @switched="$emit('toggle-virtual')"
           />
         </div>
-        <Switch
-          :values="[
-            { icon: 'view-flat', value: false },
-            { icon: 'view-tree', value: true },
-          ]"
-          :selected-index="showVirtual ? 1 : 0"
-          @switched="$emit('toggle-virtual')"
-        />
-        <div class="search">
-          <Icon name="search" class="search-icon" />
-          <input
-            v-model="searchValue"
-            type="text"
-            class="search-input"
-            placeholder="Filter routes"
-            @input="onInput"
+      </div>
+    </td>
+    <td colspan="4" class="col handler">
+      <div class="inner">
+        <div class="handlers">
+          <Clickable
+            :class="['icon', 'proxy']"
+            icon="proxy"
+            title="Proxy route"
           />
+          <Clickable
+            :class="['icon']"
+            icon="file-js"
+            title="Handle response in JS file"
+          />
+          <Clickable
+            :class="['icon']"
+            icon="file-json"
+            title="Handle response in JSON file"
+          />
+          <Clickable :class="['icon']" icon="json" title="Route response" />
         </div>
-        <div class="verbs">verbs</div>
-        <div class="handlers">handlers</div>
-        <div class="plugins">plugins</div>
       </div>
     </td>
   </tr>
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { computed, reactive } from 'vue'
 import Icon from '@/components/common/Icon'
 import Clickable from '@/components/common/Clickable'
 import Switch from '@/components/common/Switch'
+import Verb from '@/components/route/Verb'
 
 export default {
   name: 'FilterBar',
-  components: { Icon, Clickable, Switch },
+  components: { Icon, Clickable, Switch, Verb },
   props: {
     showVirtual: Boolean,
     routes: {
@@ -55,7 +97,11 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const searchValue = ref('')
+    const filters = reactive({
+      search: '',
+      verbs: [],
+      handlers: [],
+    })
     const toggleRoutes = computed(() => {
       const routes = props.routes.filter(route => route.isParent)
 
@@ -64,42 +110,66 @@ export default {
         closed: routes.every(route => !route.opened),
       }
     })
+    const verbs = computed(() =>
+      props.routes.reduce((verbs, route) => {
+        for (const verb of (route.verbs || []).map(verb => verb.type)) {
+          if (!verbs.includes(verb)) {
+            verbs.push(verb)
+          }
+        }
+        return verbs
+      }, [])
+    )
 
     const onRoutesToggle = () => {
       const state = toggleRoutes.value.opened ? 'closed' : 'opened'
       emit('toggle-routes', state)
     }
 
-    const onInput = value => {
+    const onSearch = value => {
       setTimeout(() => {
-        emit('search', searchValue.value)
+        emit('filter', filters)
+      })
+    }
+
+    const onVerbToggle = verb => {
+      if (filters.verbs.includes(verb)) {
+        filters.verbs = filters.verbs.filter(v => v !== verb)
+      } else {
+        filters.verbs.push(verb)
+      }
+      setTimeout(() => {
+        emit('filter', filters)
       })
     }
 
     return {
-      onInput,
+      filters,
       onRoutesToggle,
-      searchValue,
+      onSearch,
+      onVerbToggle,
       toggleRoutes,
+      verbs,
     }
   },
 }
 </script>
 
 <style lang="postcss" scoped>
-.col {
-  padding-bottom: 1rem;
+td {
+  vertical-align: top;
 }
 
 .inner {
   display: flex;
   align-items: center;
   padding: 0.75rem 0;
+}
 
-  & > * {
-    margin: 0;
-    padding: 0 1rem;
-  }
+.outer {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0;
 }
 
 .icon {
@@ -108,22 +178,29 @@ export default {
   height: 2rem;
 }
 
+.toggle-routes,
+.switch-virtual-routes {
+  margin-left: 1rem;
+}
+
 .toggle-routes {
   .button {
     width: 1.5rem;
     height: 1.5rem;
     transform: rotate(45deg);
     transition: transform 0.1s linear;
-    fill: var(--c-gray-inactive);
 
     &.closed {
       transform: rotate(0deg);
-      fill: var(--c-green);
     }
 
     &.opened {
       transform: rotate(90deg);
-      fill: var(--c-green);
+    }
+
+    &[disabled] {
+      opacity: 0.3;
+      cursor: default;
     }
   }
 }
@@ -132,24 +209,40 @@ export default {
   transform: rotate(90deg);
 }
 
-.search {
+.counter {
+  margin-left: 1rem;
+
+  .badge {
+    display: flex;
+    align-items: center;
+    justidy-content: center;
+    padding: 0.35rem 0.55rem 0.35rem 0.525rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--c-gray-active);
+    border-radius: 1.25rem;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.search-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  margin: 0.25rem 0.5rem 0.25rem 1rem;
 
   .search-icon {
     position: absolute;
-    left: 1.65rem;
-    top: calc(50% - 0.6rem);
+    left: 0.65rem;
+    top: calc(50% - 0.575rem);
     width: 1.25rem;
     height: 1.25rem;
   }
 
   .search-input {
-    width: 13rem;
-    padding: 0.5rem 0.5rem 0.5rem 2.25rem;
+    width: 12rem;
+    padding: 0.35rem 0.5rem 0.35rem 2.25rem;
     font-family: FiraCode, monospace;
-    color: var(--c-green);
     border: none;
     border-radius: 1rem;
 
@@ -159,14 +252,19 @@ export default {
   }
 }
 
-/* Colors */
-.inner {
-  border-bottom: 1px dashed rgba(128, 128, 128, 0.25);
-  background-color: rgba(0, 0, 0, 0.075);
+.verbs {
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem;
+}
 
-  & > *:not(:last-child) {
-    border-right: 1px dashed rgba(128, 128, 128, 0.25);
-  }
+/* Colors */
+.FilterBar {
+  background-color: rgba(0, 0, 0, 0.035);
+}
+
+.inner {
+  background-color: rgba(0, 0, 0, 0.075);
 }
 
 .icon {
@@ -178,12 +276,27 @@ export default {
   }
 }
 
+.toggle-routes {
+  .button {
+    fill: var(--c-gray-inactive);
+
+    &.closed {
+      fill: var(--c-green);
+    }
+
+    &.opened {
+      fill: var(--c-green);
+    }
+  }
+}
+
 .search {
   .search-icon {
     fill: rgba(128, 128, 128, 1);
   }
 
   .search-input {
+    color: var(--c-green);
     background-color: rgba(128, 128, 128, 0.125);
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div
+  <tr
     :class="[
       'Route',
       {
@@ -11,7 +11,7 @@
       },
     ]"
   >
-    <div class="col def">
+    <td class="col def">
       <div class="inner">
         <div
           class="level"
@@ -44,43 +44,44 @@
           <Clickable v-if="!route.virtual" class="add" icon="plus" /> -->
         </div>
       </div>
-    </div>
-    <div class="col to">
+    </td>
+    <td class="col to">
       <div v-if="!route.virtual" class="inner">
         <Icon class="icon" name="route" />
       </div>
-    </div>
-    <Handler
-      class="col handler full"
-      :route="route"
-      :selected-verb="selectedVerb"
-      :editing="editing"
-      @toggle-editor="$emit('toggle-editor', $event)"
-      @open-file="$emit('open-file', $event)"
-    />
-    <div class="col plugin">
+    </td>
+    <td class="col handler">
+      <Handler
+        :route="route"
+        :selected-verb="selectedVerb"
+        :editing="editing"
+        @toggle-editor="$emit('toggle-editor', $event)"
+        @open-file="$emit('open-file', $event)"
+      />
+    </td>
+    <td class="col plugin template">
       <div v-if="!route.virtual" class="inner">
         <RouteTemplate :verb="selectedVerb" />
       </div>
-    </div>
-    <div class="col plugin">
+    </td>
+    <td class="col plugin throttle">
       <div v-if="!route.virtual" class="inner">
         <Throttle :verb="selectedVerb" />
       </div>
-    </div>
+    </td>
     <template v-if="false">
-      <div class="col plugin">
+      <td class="col plugin">
         <div v-if="!route.virtual" class="inner">
           <Fail :verb="selectedVerb" />
         </div>
-      </div>
-      <div class="col plugin">
+      </td>
+      <td class="col plugin">
         <div v-if="!route.virtual" class="inner">
           <Headers :verb="selectedVerb" />
         </div>
-      </div>
+      </td>
     </template>
-    <!-- <div class="col actions">
+    <!-- <td class="col actions">
       <div class="inner">
         <Clickable
           :class="['icon', { disabled: !route.virtual }]"
@@ -104,9 +105,9 @@
           title="Delete route"
         />
       </div>
-    </div> -->
-    <div class="col end" />
-  </div>
+    </td> -->
+    <td class="col end" />
+  </tr>
 </template>
 
 <script>
@@ -157,21 +158,32 @@ export default {
 
 <style lang="postcss" scoped>
 .Route {
-  display: table-row;
   font-size: 0.9rem;
 }
 
 .col {
-  display: table-cell;
   vertical-align: top;
-  border-top: 1px dashed rgba(128, 128, 128, 0.1);
 
-  &.full {
+  &.handler {
     width: 100%;
+    padding-right: 4rem;
   }
 
   .showVirtual &.def {
     padding-left: 1.75rem;
+  }
+
+  &.plugin {
+    position: absolute;
+    background-color: var(--c-app-bg);
+
+    &.template {
+      right: 2rem;
+    }
+
+    &.throttle {
+      right: 0;
+    }
   }
 }
 
@@ -281,6 +293,8 @@ export default {
 }
 
 .col {
+  border-bottom: 1px solid rgba(128, 128, 128, 0.075);
+
   .disabled &:not(.actions):not(.def) {
     opacity: 0.4;
   }

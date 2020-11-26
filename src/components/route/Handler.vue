@@ -212,6 +212,7 @@ export default {
   &.verb,
   &.variable {
     font-size: 0.8rem;
+    line-height: 1rem;
     background-color: rgba(0, 0, 0, 0.25);
   }
 }

@@ -39,7 +39,7 @@
         :routes="routes"
         @toggle-routes="toggleRoutes"
         @toggle-virtual="showVirtual = !showVirtual"
-        @search="routesFilter = $event"
+        @filter="routeFilters = $event"
       >
         <template v-for="(route, i) in routes">
           <template v-if="i === 0 ? true : showRoute(route)">
@@ -63,7 +63,10 @@
             </div>
           </template>
         </template>
-        <div v-if="routesFilter && routes.length === 0" class="filtered-empty">
+        <div
+          v-if="routeFilters.search && routes.length === 0"
+          class="filtered-empty"
+        >
           You filtered too much...
         </div>
       </Routes>
@@ -78,7 +81,7 @@ import useDrosses from '@/modules/drosses'
 import useIo from '@/modules/io'
 import useEditor from '@/modules/editor'
 import bus from '@/bus'
-import Logger from '@/components/Logger'
+import Logger from '@/components/detail/Logger'
 import DrosseIcon from '@/components/common/DrosseIcon'
 import Input from '@/components/common/Input'
 import Routes from '@/components/detail/Routes'
@@ -106,7 +109,7 @@ export default {
     const { fetchHandler, openFile, saveDrosses } = useIo()
     const { setContent } = useEditor()
 
-    const routesFilter = ref('')
+    const routeFilters = ref({})
     const showVirtual = ref(true)
     const hit = ref([])
     let editingIndex = -1
@@ -115,10 +118,20 @@ export default {
       props.drosse.routes
         .filter(route => (showVirtual.value ? route : !route.virtual))
         .reduce((routes, route, i) => {
-          if (!routesFilter.value) {
+          if (Object.keys(routeFilters.value).length === 0) {
             routes.push(route)
           } else {
-            const matching = route.fullPath.includes(routesFilter.value)
+            const matchSearch = route.fullPath.includes(
+              routeFilters.value.search
+            )
+            const matchVerbs = route.verbs?.reduce(
+              (match, verb) =>
+                match ||
+                routeFilters.value.verbs.length === 0 ||
+                routeFilters.value.verbs.includes(verb.type),
+              false
+            )
+            const matching = matchSearch && matchVerbs
 
             if (matching) {
               if (showVirtual.value) {
@@ -260,8 +273,8 @@ export default {
     return {
       hit,
       openFile,
+      routeFilters,
       routes,
-      routesFilter,
       selectVerb,
       showRoute,
       showVirtual,

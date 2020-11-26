@@ -37,7 +37,7 @@ export default {
 
 <style lang="postcss" scoped>
 footer {
-  height: 8rem;
+  height: 7rem;
   padding: 2rem 3rem;
 }
 

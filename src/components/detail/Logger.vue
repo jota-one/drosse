@@ -39,9 +39,8 @@ export default {
 
 <style lang="postcss" scoped>
 .Logger {
-  margin-top: 3rem;
+  margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(128, 128, 128, 0.25);
   max-height: 4rem;
   overflow: hidden;
   transition: max-height 0.1s ease-out;

@@ -1,15 +1,15 @@
 <template>
   <div class="Routes">
-    <div :class="['list', { showVirtual }]">
+    <table :class="['routes', { showVirtual }]">
       <FilterBar
         :show-virtual="showVirtual"
         :routes="routes"
         @toggle-virtual="$emit('toggle-virtual')"
         @toggle-routes="$emit('toggle-routes', $event)"
-        @search="$emit('search', $event)"
+        @filter="$emit('filter', $event)"
       />
       <slot />
-    </div>
+    </table>
   </div>
 </template>
 
@@ -29,17 +29,31 @@ export default {
 }
 </script>
 
+<style lang="postcss">
+table.routes {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  tr {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  tr,
+  td {
+    margin: 0;
+    padding: 0;
+  }
+
+  td .inner {
+    min-height: 3rem;
+  }
+}
+</style>
+
 <style lang="postcss" scoped>
 .Routes {
   overflow: auto;
-}
-
-.list {
-  display: table;
-  width: 100%;
-}
-
-.add-route {
-  margin: 2rem 0 0 0.5rem;
 }
 </style>
