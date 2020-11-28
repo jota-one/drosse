@@ -7,8 +7,8 @@
           <label class="label">
             <Clickable
               class="sort"
-              icon="sort-up"
-              @click="$emit('sort', 'port')"
+              :icon="getSortIcon('port')"
+              @click="onSort('port')"
             />
             port
           </label>
@@ -17,8 +17,8 @@
           <label class="label">
             <Clickable
               class="sort"
-              icon="sort-up"
-              @click="$emit('sort', 'name')"
+              :icon="getSortIcon('name')"
+              @click="onSort('name')"
             />
             name
           </label>
@@ -27,8 +27,8 @@
           <label class="label">
             <Clickable
               class="sort"
-              icon="sort-up"
-              @click="$emit('sort', 'root')"
+              :icon="getSortIcon('root')"
+              @click="onSort('root')"
             />
             root
           </label>
@@ -43,11 +43,49 @@
 </template>
 
 <script>
+import { onMounted } from 'vue'
 import Clickable from '@/components/common/Clickable'
 
 export default {
   name: 'Drosses',
   components: { Clickable },
+  props: {
+    sortKey: {
+      type: String,
+      default: 'port.asc',
+    },
+  },
+  setup(props, { emit }) {
+    const getSortIcon = key => {
+      let icon = 'sort-'
+
+      if (!props.sortKey.includes(key)) {
+        icon += 'none'
+      } else if (props.sortKey.includes('asc')) {
+        icon += 'up'
+      } else {
+        icon += 'down'
+      }
+
+      return icon
+    }
+
+    const onSort = key => {
+      if (!props.sortKey.includes(key)) {
+        key += '.asc'
+      } else {
+        key += props.sortKey.includes('desc') ? '.asc' : '.desc'
+      }
+
+      emit('sort', key)
+    }
+
+    onMounted(() => {
+      emit('sort', props.sortKey)
+    })
+
+    return { getSortIcon, onSort }
+  },
 }
 </script>
 
