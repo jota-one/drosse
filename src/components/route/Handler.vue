@@ -80,6 +80,7 @@ export default {
     },
     editing: Boolean,
   },
+  emits: ['open-file'],
   setup(props, { emit }) {
     const multiple = ref(false)
     const selectedVerbType = computed(() => props.selectedVerb?.type)

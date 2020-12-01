@@ -37,6 +37,7 @@ export default {
       default: 0,
     },
   },
+  emits: ['close'],
   setup() {
     const initialized = ref(false)
     const { load, switchTheme, unload } = useEditor()

@@ -8,14 +8,16 @@
         <Home v-if="viewHome" />
         <Detail
           v-else
+          :key="selectedDrosse.uuid"
           :drosse="selectedDrosse"
           :editor-opened="editorOpened"
           :logs="drosseLogs"
-          @open-editor="openEditor($event)"
-          @close-editor="editorOpened = -1"
-          @update-editor="updateEditor($event)"
+          @openEditor="openEditor($event)"
+          @closeEditor="editorOpened = -1"
+          @updateEditor="updateEditor($event)"
         />
         <Editor
+          v-if="false"
           :hidden="hideEditor"
           :opened="editorOpened > -1"
           :top="editorTop"

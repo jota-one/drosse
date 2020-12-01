@@ -31,6 +31,7 @@ export default {
     available: Boolean,
     selected: Boolean,
   },
+  emits: ['close', 'select'],
   setup() {
     const { closeDrosse } = useDrosses()
     return { closeDrosse }

@@ -15,7 +15,8 @@
     "drosse": "npx drosse serve",
     "start": "node dist/server",
     "serve": "node prebuild && concurrently --kill-others --raw \"node server development\" \"vue-cli-service serve\"",
-    "build": "node prebuild && vue-cli-service build && cp -r server dist && rm dist/**/*.map && rm dist/*.map && pkg . --out-path pkg",
+    "build": "node prebuild && vue-cli-service build && cp -r server dist",
+    "report": "vue-cli-service build --modern --report",
     "lint": "vue-cli-service lint"
   },
   "repository": {
@@ -43,7 +44,7 @@
     "open": "^7.3.0",
     "sockjs": "^0.3.20",
     "sockjs-client": "^1.4.0",
-    "vue": "^3.0.0-beta.18"
+    "vue": "^3.0.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.4.0",

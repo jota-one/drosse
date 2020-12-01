@@ -66,6 +66,7 @@ export default {
       ],
     },
   },
+  emits: ['switched'],
   setup(props, { emit }) {
     const selected = ref(props.values[props.selectedIndex].value)
 

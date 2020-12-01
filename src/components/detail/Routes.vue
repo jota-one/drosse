@@ -4,8 +4,8 @@
       <FilterBar
         :show-virtual="showVirtual"
         :routes="routes"
-        @toggle-virtual="$emit('toggle-virtual')"
-        @toggle-routes="$emit('toggle-routes', $event)"
+        @toggleVirtual="$emit('toggle-virtual')"
+        @toggleRoutes="$emit('toggle-routes', $event)"
         @filter="$emit('filter', $event)"
       />
       <slot />
@@ -26,6 +26,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['filter', 'toggle-routes', 'toggle-virtual'],
 }
 </script>
 

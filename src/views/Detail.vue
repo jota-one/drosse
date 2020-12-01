@@ -37,8 +37,8 @@
       <Routes
         :show-virtual="showVirtual"
         :routes="routes"
-        @toggle-routes="toggleRoutes"
-        @toggle-virtual="showVirtual = !showVirtual"
+        @toggleRoutes="toggleRoutes"
+        @toggleVirtual="showVirtual = !showVirtual"
         @filter="routeFilters = $event"
       >
         <template v-for="(route, i) in routes">
@@ -50,26 +50,20 @@
               :show-virtual="showVirtual"
               :editing="editorOpened === i"
               :class="['route', { editing: editorOpened === i }]"
-              @toggle-route="toggleRoute(route)"
-              @select-verb="selectVerb(route, $event)"
-              @toggle-editor="toggleEditor(i, $event)"
-              @open-file="openFile(drosse.uuid, $event)"
+              @toggleRoute="toggleRoute(route)"
+              @selectVerb="selectVerb(route, $event)"
+              @toggleEditor="toggleEditor(i, $event)"
+              @openFile="openFile(drosse.uuid, $event)"
             />
-            <div
-              :key="`editor.${route.fullPath}`"
-              :class="['editor-placeholder', { editing: editorOpened === i }]"
-            >
-              <div v-for="j in [...Array(8).keys()]" :key="j" />
-            </div>
           </template>
         </template>
-        <div
-          v-if="routeFilters.search && routes.length === 0"
-          class="filtered-empty"
-        >
-          You filtered too much...
-        </div>
       </Routes>
+      <div
+        v-if="routeFilters.search && routes.length === 0"
+        class="filtered-empty"
+      >
+        You filtered too much...
+      </div>
       <Logger :logs="logs" />
     </div>
   </div>
@@ -104,6 +98,7 @@ export default {
       default: -1,
     },
   },
+  emits: ['close-editor', 'open-editor', 'update-editor'],
   setup(props, { emit }) {
     const { drosses } = useDrosses()
     const { fetchHandler, openFile, saveDrosses } = useIo()
@@ -115,7 +110,7 @@ export default {
     let editingIndex = -1
 
     const routes = computed(() =>
-      props.drosse.routes
+      (props.drosse.routes || [])
         .filter(route => (showVirtual.value ? route : !route.virtual))
         .reduce((routes, route, i) => {
           if (Object.keys(routeFilters.value).length === 0) {
@@ -131,6 +126,7 @@ export default {
                 routeFilters.value.verbs.includes(verb.type),
               false
             )
+
             const matching = matchSearch && matchVerbs
 
             if (matching) {

@@ -33,6 +33,7 @@ export default {
       default: '/',
     },
   },
+  emits: ['close', 'select'],
   setup(props, { emit }) {
     const { browse } = useIo()
     const dirs = ref([])
@@ -83,6 +84,9 @@ export default {
 
 .parent,
 .dir {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  line-height: 1rem;
   padding: 0.125rem 0 0.25rem;
 }
 

@@ -96,6 +96,7 @@ export default {
       default: () => [],
     },
   },
+  emits: ['filter', 'toggle-routes', 'toggle-virtual'],
   setup(props, { emit }) {
     const filters = reactive({
       search: '',
@@ -111,14 +112,16 @@ export default {
       }
     })
     const verbs = computed(() =>
-      props.routes.reduce((verbs, route) => {
-        for (const verb of (route.verbs || []).map(verb => verb.type)) {
-          if (!verbs.includes(verb)) {
-            verbs.push(verb)
+      props.routes
+        .reduce((verbs, route) => {
+          for (const verb of (route.verbs || []).map(verb => verb.type)) {
+            if (!verbs.includes(verb)) {
+              verbs.push(verb)
+            }
           }
-        }
-        return verbs
-      }, [])
+          return verbs
+        }, [])
+        .sort()
     )
 
     const onRoutesToggle = () => {

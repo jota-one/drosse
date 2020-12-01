@@ -55,6 +55,7 @@ export default {
       default: 'port.asc',
     },
   },
+  emits: ['sort'],
   setup(props, { emit }) {
     const getSortIcon = key => {
       let icon = 'sort-'

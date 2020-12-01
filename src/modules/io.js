@@ -57,7 +57,7 @@ export default function useIo() {
       fetch(endpoints.drosses, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(drosses),
+        body: JSON.stringify({ ...drosses }),
       })
     } catch (e) {
       // eslint-disable-next-line
@@ -70,7 +70,7 @@ export default function useIo() {
       const response = await fetch(endpoints.file, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uuid: drosse.uuid, file }),
+        body: JSON.stringify({ uuid: { ...drosse.uuid }, file }),
       })
       const json = await response.json()
       return {

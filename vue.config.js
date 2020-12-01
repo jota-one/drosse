@@ -18,6 +18,11 @@ module.exports = {
       .use(MonacoWebpackPlugin, [
         config.pluginOptions && config.pluginOptions.monaco,
       ])
+
+    config.plugin('define').tap(definitions => {
+      definitions[0]['process.env'].__VUE_PROD_DEVTOOLS__ = true
+      return definitions
+    })
   },
   devServer: {
     proxy: Object.values(endpoints).reduce((targets, path) => {

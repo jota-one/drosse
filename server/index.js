@@ -134,6 +134,7 @@ echo.on('connection', conn => {
     if (!adv.isDrosse) return
 
     const drosse = drosses[adv.uuid]
+
     if (!drosse || (drosse && !drosse.up)) {
       up(adv, conn)
     }
@@ -180,9 +181,6 @@ app.post('/start', (req, res) => {
   const { uuid } = req.body
   const drosse = drosses[uuid]
 
-  // Remove the process from the `stopped`
-  stopped = stopped.filter(_uuid => _uuid !== uuid)
-
   // Fork the process only if it has not already been started via terminal
   // => not present in `noForked` AND not present in `forked`.
   // Store the process's uuid in the `forked` object for further
@@ -194,6 +192,9 @@ app.post('/start', (req, res) => {
   } else {
     d.send('start', uuid)
   }
+
+  // Remove the process from the `stopped`
+  stopped = stopped.filter(_uuid => _uuid !== uuid)
 
   res.send()
 })
@@ -261,7 +262,7 @@ app.post('/import', async (req, res) => {
   const description = await new Promise((resolve, reject) => {
     const { path } = req.body
     const args = ['describe', '-r', path]
-    const app = fork(join(drosseBin, 'drosse.js'), args, { silent: false })
+    const app = fork(join(drosseBin, 'drosse.js'), args, { silent: true })
 
     app.on('message', ({ event, data }) => {
       if (event === 'describe') {

@@ -55,8 +55,8 @@
         :route="route"
         :selected-verb="selectedVerb"
         :editing="editing"
-        @toggle-editor="$emit('toggle-editor', $event)"
-        @open-file="$emit('open-file', $event)"
+        @toggleEditor="$emit('toggle-editor', $event)"
+        @openFile="$emit('open-file', $event)"
       />
     </td>
     <td class="col plugin template">
@@ -81,8 +81,8 @@
         </div>
       </td>
     </template>
-    <!-- <td class="col actions">
-      <div class="inner">
+    <td class="col actions">
+      <div v-if="false" class="inner">
         <Clickable
           :class="['icon', { disabled: !route.virtual }]"
           icon="plus"
@@ -105,7 +105,7 @@
           title="Delete route"
         />
       </div>
-    </td> -->
+    </td>
     <td class="col end" />
   </tr>
 </template>
@@ -144,6 +144,7 @@ export default {
     editing: Boolean,
     hit: Boolean,
   },
+  emits: ['open-file', 'select-verb', 'toggle-editor', 'toggle-route'],
   setup(props, { emit }) {
     const selectedVerb = computed(() =>
       props.route.selected === 'global'
