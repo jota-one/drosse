@@ -29,7 +29,10 @@ module.exports = function () {
     const res = await defineCollectionsList()
     const collectionList = lodash
       .chain(res)
-      .map(file => file.path.split(path.sep).slice(0, -1).join(path.sep))
+      .map(file => {
+        const collection = file.path.split(path.sep).slice(0, -1).join(path.sep)
+        return collection || file.path.split('.').slice(0, -1).join('.')
+      })
       .uniq()
       .map(file => file.split(path.sep).join('.'))
       .value()
@@ -41,14 +44,14 @@ module.exports = function () {
         if (coll) {
           if (!shallowCollections.includes(name)) {
             logger.warn(
-              'collection:',
+              '📦 collection',
               name,
               "already exists and won't be overriden."
             )
             return false
           } else {
             logger.warn(
-              'collection:',
+              '🌊 collection',
               name,
               'already exists and will be overriden.'
             )
@@ -58,20 +61,41 @@ module.exports = function () {
         coll = db.addCollection(name)
 
         const filesPath = path.join(dirname, name.split('.').join(path.sep))
-        return fs.readdir(filesPath).then(filenames =>
-          Promise.all(
-            filenames
-              .filter(filename => filename.endsWith('json'))
-              .map(filename =>
-                fs
-                  .readFile(path.join(filesPath, filename), 'utf-8')
-                  .then(content => {
-                    logger.success(`loaded ${filename} into collection ${name}`)
-                    return coll.insert(JSON.parse(content))
-                  })
+        return fs
+          .readdir(filesPath)
+          .catch(e => {
+            logger.warn(e.path, 'is not a directory.')
+            logger.warn('I try as a JSON file...')
+            fs.readFile(e.path + '.json', 'utf-8').then(content => {
+              const files = JSON.parse(content)
+              if (!Array.isArray(files)) {
+                logger.error(
+                  'Cannot import collection file into db. It must be an array.'
+                )
+              }
+              files.forEach(file => coll.insert(file))
+              logger.success(
+                `Collection successfully imported. ${files.length} files imported.`
               )
+            })
+            return [] // so that the next then doesn't do anything...
+          })
+          .then(filenames =>
+            Promise.all(
+              filenames
+                .filter(filename => filename.endsWith('json'))
+                .map(filename =>
+                  fs
+                    .readFile(path.join(filesPath, filename), 'utf-8')
+                    .then(content => {
+                      logger.success(
+                        `loaded ${filename} into collection ${name}`
+                      )
+                      return coll.insert(JSON.parse(content))
+                    })
+                )
+            )
           )
-        )
       })
     )
   }
