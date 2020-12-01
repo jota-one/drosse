@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ...
 
+## [1.4.1] - 2020-12-01
+### Fixed
+- Fix routes creation order
+
 ## [1.4.0] - 2020-12-01
 ### Added
 - Add `drosse-serve` bin entry in package.json
@@ -32,7 +36,8 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/1.4.0...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/1.4.1...develop
+[1.4.1]: https://github.com/jota-one/drosse/compare/1.4.0...1.4.1
 [1.4.0]: https://github.com/jota-one/drosse/compare/1.3.0...1.4.0
 [1.3.0]: https://github.com/jota-one/drosse/compare/1.2.0...1.3.0
 [1.2.0]: https://github.com/jota-one/drosse/compare/1.1.0...1.2.0
