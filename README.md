@@ -1,10 +1,10 @@
-<img src="./Drosse.svg"/>
+<img src="https://raw.githubusercontent.com/jota-one/drosse/master/Drosse.svg" style="width:350px;max-width:100%;margin: 25px 0;"/>
 
 ## What is it ?
 > Drosse is the last mock server you'll ever need.
 
 ## Installation
-via [npm](https://www.npmjs.com/package/@jota-one/drosse)
+### As [npm](https://www.npmjs.com/package/@jota-one/drosse) dependency in your node project
 
 1. Simply install it as a dev dependency of the project you want to mock.
 ```
@@ -15,13 +15,39 @@ npm install --save-dev @jota-one/drosse
 {
   "name": "my-node-project",
   "scripts": {
-    "mock-server": "npx drosse serve -r path/to/mocks-directory"
+    "mock-server": "npx drosse-serve -r path/to/mocks-directory"
   },
   "devDependencies": {
     "@jota-one/drosse": "^1.0.0"
   }
 }
 ```
+
+### As a global [npm](https://www.npmjs.com/package/@jota-one/drosse) package
+1. Install drosse globally.
+```
+npm i -g @jota-one/drosse
+```
+
+2. Run it via the `serve` command and your drosse folder as root via the `-r` param.
+```
+drosse serve -r /path/to/my/my/mocks
+```
+
+### As a [Docker image](https://hub.docker.com/r/jotaone/drosse)
+You can use a docker image if you don't want to install nodejs runtime on your machine.
+**Note** though that you'll have to map your local folder to the container's `data` volume as well as the  port your drosse is configured on.
+
+1. Pull the docker image on your computer
+```
+docker pull jotaone/drosse
+```
+
+2. Run the container and map your mocks' path and port
+```
+docker run -v /path/to/my/mocks:/data -p 8000:8000 jotaone/drosse
+```
+
 
 ## Usage
 You need a directory where you will store all your mocks definitions.
@@ -53,7 +79,7 @@ You would create a _tree_ in your `routes.json` file like this:
   "api": {
     "users": {
       ":id": {
-        
+
       }
     }
   }

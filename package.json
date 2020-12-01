@@ -1,13 +1,22 @@
 {
   "name": "@jota-one/drosse",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Mock your backend the right way.",
   "main": "app/index.js",
   "bin": {
-    "drosse": "./bin/drosse.js"
+    "drosse": "./bin/drosse.js",
+    "drosse-serve": "./bin/serve.js"
   },
   "scripts": {
-    "serve": "./bin/serve.js"
+    "serve": "./bin/serve.js",
+    "build": "pkg . --out-path pkg"
+  },
+  "pkg": {
+    "scripts": [
+      "bin/*.js",
+      "cmd/*.js",
+      "app/**/*.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -54,6 +63,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
+    "pkg": "^4.4.9",
     "prettier": "^2.1.2",
     "standard": "^14.3.4"
   }
