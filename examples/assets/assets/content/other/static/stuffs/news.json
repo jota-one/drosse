@@ -1,0 +1,9 @@
+[{
+  "id": 1,
+  "title": "News number one",
+  "description": "Some long text that nobody will read..."
+}, {
+  "id": 2,
+  "title": "News number two",
+  "description": "Other long text that maybe someone might read..."
+}]

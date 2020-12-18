@@ -8,6 +8,7 @@ module.exports = {
     routesFile: 'routes',
     collectionsPath: 'collections',
     shallowCollections: [],
+    assetsPath: 'assets',
     servicesPath: 'services',
     staticPath: 'static',
     database: 'mocks.db',
