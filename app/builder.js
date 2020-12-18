@@ -1,11 +1,15 @@
 const proxy = require('http-proxy-middleware')
+const express = require('express')
+const path = require('path')
+const { isEmpty, isString } = require('lodash')
 const logger = require('./logger')
 const useParser = require('./use/parser')
 const useTemplates = require('./use/templates')
+const useState = require('./use/state')
 const { loadService, loadStatic } = require('./io')
-const { isEmpty } = require('lodash')
 
 const { parse } = useParser()
+const state = useState()
 const templates = useTemplates()
 
 const getThrottle = function (min, max) {
@@ -80,6 +84,24 @@ const createRoute = function (def, root, defHierarchy) {
       setRoute(app, def[verb], verb, root)
     })
 
+  if (def.assets) {
+    if (!this.assets) {
+      this.assets = []
+    }
+
+    const routePath = [''].concat(root)
+    const assetsSubPath =
+      def.assets === true
+        ? routePath
+        : isString(def.assets)
+          ? def.assets.split('/')
+          : def.assets
+    this.assets.push({
+      path: routePath.join('/'),
+      context: { target: path.join(state.get('assetsPath'), ...assetsSubPath) },
+    })
+  }
+
   if (def.proxy) {
     if (!this.proxies) {
       this.proxies = []
@@ -98,6 +120,7 @@ const createRoute = function (def, root, defHierarchy) {
 
 const createRoutes = (app, routes) => {
   app.proxies = []
+  app.assets = []
   const inherited = parse({ routes, onRouteDef: createRoute.bind(app) })
   const result = inherited.reduce((acc, item) => {
     if (!acc[item.path]) {
@@ -113,6 +136,7 @@ const createRoutes = (app, routes) => {
     acc[item.path][item.verb][item.type] = true
     return acc
   }, {})
+  createAssets(app)
   createProxies(app)
   return result
 }
@@ -127,6 +151,26 @@ const restream = function (proxyReq, req, res) {
     // stream the content
     proxyReq.write(bodyData)
   }
+}
+
+const createAssets = app => {
+  if (!app.assets) {
+    return
+  }
+
+  app.assets.forEach(({ path: routePath, context }) => {
+    app.use(
+      routePath,
+      express.static(path.join(state.get('root'), context.target))
+    )
+
+    logger.info(
+      `-> STATIC ASSETS   ${routePath || '/'} => ${path.join(
+        state.get('root'),
+        context.target
+      )}`
+    )
+  })
 }
 
 const createProxies = app => {

@@ -1,0 +1,32 @@
+{
+  "api": {
+    "users": {
+      "DROSSE": {
+        "get": {
+          "static": true
+        }
+      }
+    }
+  },
+  "content": {
+    "DROSSE": {
+      "assets": true
+    },
+    "imgs": {
+      "background_*.jpg": {
+        "DROSSE": {
+          "assets": "content/imgs/background_mocked.png"
+        }
+      }
+    }
+  },
+  "i18n": {
+    "v3": {
+      "crappy-path": {
+        "DROSSE": {
+          "assets": "i18n"
+        }
+      }
+    }
+  }
+}
