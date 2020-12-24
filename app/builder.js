@@ -42,8 +42,24 @@ const setRoute = function (app, def, verb, root) {
         response = def.body
       }
 
-      if (def.template && Object.keys(def.template).length) {
+      // Don't apply any template if the responseType is 'file'.
+      if (
+        def.responseType !== 'file' &&
+        def.template &&
+        Object.keys(def.template).length
+      ) {
         response = templates.list()[def.template](response)
+      }
+
+      // send response
+      if (def.responseType === 'file') {
+        return res.sendFile(response, function (err) {
+          if (err) {
+            logger.error(err.stack)
+          } else {
+            logger.success('File downloaded successfully')
+          }
+        })
       }
 
       return res.send(response)
