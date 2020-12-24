@@ -87,10 +87,11 @@ const createRoute = function (def, root, defHierarchy) {
       }
 
       // set template
-      const originalTemplate = Boolean(def[verb].template)
-      def[verb].template =
-        def[verb].template ||
-        defHierarchy.reduce((acc, item) => item.template || acc, {})
+      const originalTemplate =
+        def[verb].template === null || Boolean(def[verb].template)
+      def[verb].template = originalTemplate
+        ? def[verb].template
+        : defHierarchy.reduce((acc, item) => item.template || acc, {})
 
       if (!originalTemplate && def[verb].template) {
         inheritance.push({ path: root.join('/'), type: 'template', verb })
