@@ -181,6 +181,15 @@ module.exports = function () {
           .data()
           .map(clean(...cleanFields))
       },
+
+      where(collection, searchFn, cleanFields = []) {
+        const coll = service.collection(collection)
+        return coll
+          .chain()
+          .where(searchFn)
+          .data()
+          .map(clean(...cleanFields))
+      },
     },
 
     get: {
@@ -219,6 +228,14 @@ module.exports = function () {
       find(collection, query, cleanFields = []) {
         const coll = service.collection(collection)
         return clean(...cleanFields)(coll.findOne(query))
+      },
+
+      where(collection, searchFn, cleanFields = []) {
+        const result = service.list.where(collection, searchFn, cleanFields)
+        if (result.length > 0) {
+          return result[0]
+        }
+        return null
       },
     },
 

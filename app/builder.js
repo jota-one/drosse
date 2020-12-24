@@ -42,8 +42,24 @@ const setRoute = function (app, def, verb, root) {
         response = def.body
       }
 
-      if (def.template && Object.keys(def.template).length) {
+      // Don't apply any template if the responseType is 'file'.
+      if (
+        def.responseType !== 'file' &&
+        def.template &&
+        Object.keys(def.template).length
+      ) {
         response = templates.list()[def.template](response)
+      }
+
+      // send response
+      if (def.responseType === 'file') {
+        return res.sendFile(response, function (err) {
+          if (err) {
+            logger.error(err.stack)
+          } else {
+            logger.success('File downloaded successfully')
+          }
+        })
       }
 
       return res.send(response)
@@ -71,10 +87,11 @@ const createRoute = function (def, root, defHierarchy) {
       }
 
       // set template
-      const originalTemplate = Boolean(def[verb].template)
-      def[verb].template =
-        def[verb].template ||
-        defHierarchy.reduce((acc, item) => item.template || acc, {})
+      const originalTemplate =
+        def[verb].template === null || Boolean(def[verb].template)
+      def[verb].template = originalTemplate
+        ? def[verb].template
+        : defHierarchy.reduce((acc, item) => item.template || acc, {})
 
       if (!originalTemplate && def[verb].template) {
         inheritance.push({ path: root.join('/'), type: 'template', verb })
