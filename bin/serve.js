@@ -24,19 +24,23 @@ const start = () => {
     }
   )
 
-  app.stdout.on('data', data => {
-    ;`${data}`.split('\n').forEach(msg => {
-      d.send('log', { uuid, msg })
+  if (app.stdout) {
+    app.stdout.on('data', data => {
+      ;`${data}`.split('\n').forEach(msg => {
+        d.send('log', { uuid, msg })
+      })
+      process.stdout.write(`${data}`)
     })
-    process.stdout.write(`${data}`)
-  })
+  }
 
-  app.stderr.on('data', data => {
-    ;`${data}`.split('\n').forEach(msg => {
-      d.send('log', { uuid, msg })
+  if (app.stderr) {
+    app.stderr.on('data', data => {
+      ;`${data}`.split('\n').forEach(msg => {
+        d.send('log', { uuid, msg })
+      })
+      process.stderr.write(`${data}`)
     })
-    process.stderr.write(`${data}`)
-  })
+  }
 
   app.on('close', code => {
     if (code !== 0) {
