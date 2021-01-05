@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ...
 
+## [1.8.0] - 2021-01-05
+### Added
+- Added a REPL CLI with an extensible command system.
+
+### Fixed
+- Avoid errors in case of silent:false configuration in the child-process
+
 ## [1.7.0] - 2020-12-30
 ### Added
 - Added a `config` property (aka state.get()) in the exposed API.
@@ -50,7 +57,8 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/1.7.0...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/1.8.0...develop
+[1.8.0]: https://github.com/jota-one/drosse/compare/1.7.0...1.8.0
 [1.7.0]: https://github.com/jota-one/drosse/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/jota-one/drosse/compare/1.5.0...1.6.0
 [1.5.0]: https://github.com/jota-one/drosse/compare/1.4.1...1.5.0
