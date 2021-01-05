@@ -9,6 +9,7 @@ const logger = require('./logger')
 const openCors = require('./middlewares/open-cors')
 const useState = require('./use/state')
 const useMiddlewares = require('./use/middlewares')
+const useCommands = require('./use/commands')
 const useDb = require('./use/db')
 const { checkRoutesFile, loadUuid, loadRcFile, routes } = require('./io')
 const { createRoutes } = require('./builder')
@@ -131,6 +132,8 @@ const onStart = drosse => {
     console.log()
     logger.debug(`Mocks root: ${c.magenta(state.get('root'))}`)
     console.log()
+
+    useCommands().start()
   }, 100)
 
   // advertise UI of our presence

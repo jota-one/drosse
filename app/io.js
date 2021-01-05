@@ -7,6 +7,7 @@ const { replace } = require('@jota-one/replacer')
 const useState = require('./use/state')
 const useMiddleware = require('./use/middlewares')
 const useTemplates = require('./use/templates')
+const useCommands = require('./use/commands')
 const logger = require('./logger')
 const state = useState()
 const middlewares = useMiddleware()
@@ -28,8 +29,12 @@ const loadRcFile = () => {
   templates.set([])
   const rcFile = path.join(state.get('root'), '.drosserc.js')
 
-  if (fs.existsSync(rcFile) || fs.existsSync(rcFile)) {
+  if (fs.existsSync(rcFile)) {
     const userConfig = require(rcFile)
+
+    if (userConfig.commands) {
+      useCommands().extend(userConfig.commands)
+    }
 
     if (userConfig.middlewares) {
       middlewares.append(userConfig.middlewares)
