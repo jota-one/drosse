@@ -14,10 +14,10 @@
   "scripts": {
     "drosse": "npx drosse serve",
     "start": "node dist/server",
-    "serve": "node prebuild && concurrently --kill-others --raw \"node server development\" \"vue-cli-service serve\"",
-    "build": "node prebuild && vue-cli-service build && cp -r server dist",
-    "report": "vue-cli-service build --modern --report",
-    "lint": "vue-cli-service lint"
+    "serve": "node prebuild && ../../node_modules/.bin/concurrently --kill-others --raw \\\"node server development\\\" \\\"vue-cli-service serve\\\"",
+    "build": "node prebuild && ../../node_modules/.bin/vue-cli-service build && cp -r server dist",
+    "report": "../../node_modules/.bin/vue-cli-service build --modern --report",
+    "lint": "../../node_modules/.bin/vue-cli-service lint"
   },
   "repository": {
     "type": "git",
