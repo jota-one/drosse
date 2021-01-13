@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/jota-one/drosse/master/Drosse.svg" style="width:350px;max-width:100%;margin: 25px 0;"/>
+<img src="https://raw.githubusercontent.com/jota-one/drosse/master/packages/core/Drosse.svg" style="width:350px;max-width:100%;margin: 25px 0;"/>
 
 ## What is it ?
 > Drosse is the last mock server you'll ever need.
@@ -410,7 +410,7 @@ To define a service, you have to do pretty much the same as to define a static m
 
 See ? From the `routes.json` file, it's quite a piece of cake :cake: !
 
-Now of course, there is no magic (yet!) here. You have now to create a file with the proper name and put it in the `services` subdirectory of your mocks directory.
+Now of course, there is no magic (yet!) here. You have to create a file with the proper name and put it in the `services` subdirectory of your mocks directory.
 
 :fire: Like for the others subdirectories, you can redefine this `services` directory name in your `.drosserc.js` file (see below).
 
@@ -430,7 +430,7 @@ module.exports = function ({ req, res, db }) {
 }
 ```
 
-As you can see, the object argument gives you access to the well known `req` and `res` objects from Express. With those two you and the full power of javascript, you can already do more than what you will ever need in a mock-server.
+As you can see, the object argument gives you access to the well known `req` and `res` objects from Express. With those two and the full power of javascript, you can already do more than what you will ever need in a mock-server.
 
 :star: The return value of your function will be passed to the associated route response (optionally modified by a template, see later).
 
