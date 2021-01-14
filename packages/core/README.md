@@ -270,7 +270,7 @@ You can use the `assets` property in the `DROSSE` object to tell a path to serve
 
 In this example, all calls done to `/content` will be done statically on the `assets/content` directory. For example, if you call `http://localhost:8000/content/fonts/myfont.woff2`, Drosse will look up for a file in `[your mocks root]/assets/content/fonts/myfont.woff2` and serve it statically.
 
-The examples reveals another feature: you can rewrite the path through the `assets` property. If you call `http://localhost:8000/content/imgs/background_whatever.jpg`, Drosse will statically serve the `[your mocks root]/assets/content/imgs/background_whatever.jpg` file.
+The example reveals another feature: you can rewrite the path through the `assets` property. If you call `http://localhost:8000/content/imgs/background_whatever.jpg`, Drosse will statically serve the `[your mocks root]/assets/content/imgs/background_whatever.jpg` file.
 
 :fire: You can redefine this `assets` directory name in your `.drosserc.js` file ([see below](#drosserc)).
 
