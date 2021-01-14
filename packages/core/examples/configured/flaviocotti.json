@@ -34,6 +34,18 @@
     "countries": {
       "DROSSE": {
         "proxy": "https://restcountries.eu/rest/v2"
+      },
+      "name": {
+        "switzerland": {
+          "DROSSE": {
+            "get": {
+              "body": {
+                "name": "Switzerland",
+                "description": "Best country in the World!"
+              }
+            }
+          }
+        }
       }
     }
   }
