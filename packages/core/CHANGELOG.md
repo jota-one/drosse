@@ -5,7 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-...
+### Changed
+- Changed the proxy configuration to make it actually usable intuitively. From now, the URL path to where the proxy is defined is removed from the proxied path.
+
+### Added
+- Added documentation and examples for the proxy feature.
+
+## [1.9.0] - 2021-01-13
+### Changed
+- Changed the Drosse repository to a monorepo. Now it holds as well drosse UI and drosse website.
 
 ## [1.8.0] - 2021-01-05
 ### Added
@@ -57,7 +65,8 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/1.8.0...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/1.9.0...develop
+[1.9.0]: https://github.com/jota-one/drosse/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/jota-one/drosse/compare/1.7.0...1.8.0
 [1.7.0]: https://github.com/jota-one/drosse/compare/1.6.0...1.7.0
 [1.6.0]: https://github.com/jota-one/drosse/compare/1.5.0...1.6.0
