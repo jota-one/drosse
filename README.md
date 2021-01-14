@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/jota-one/drosse/master/Drosse.svg" style="width:350px;max-width:100%;margin: 25px 0;"/>
+<img src="https://raw.githubusercontent.com/jota-one/drosse/master/packages/core/Drosse.svg" style="width:350px;max-width:100%;margin: 25px 0;"/>
 
 Welcome in the monorepo root of the Drosse project.
 
