@@ -274,6 +274,7 @@ The examples reveals another feature: you can rewrite the path through the `asse
 
 :fire: You can redefine this `assets` directory name in your `.drosserc.js` file ([see below](#drosserc)).
 
+<a name="templates"></a>
 ### Templates
 
 A small yet very handsome feature. Templates help you to DRY your mocked endpoints. In Drosse, a template is a simple function that takes a content and transforms it to something else. Let's take an example:
@@ -627,9 +628,21 @@ module.exports = {
 | `routesFile`         | **routes**      | Name of the routes definition file. |
 | `collectionsPath`    | **collections** | Relative path to the loki collections directory from your mocks directory. |
 | `shallowCollections` | **[]**          | List of collections that should be recreated/overriden on each server restart. |
+| `assetsPath`         | **assets**      | Relative path to the assets directory from your mocks directory. |
 | `servicesPath`       | **services**    | Relative path to the services directory from your mocks directory. |
 | `staticPath`         | **static**      | Relative path to the static files directory from your mocks directory. |
 | `database`           | **mocks.db**    | Name of your loki database dump file. |
+| `middlewares`        | **['body-parser-json', 'morgan']** | List of global middlewares. Drosse provides 3 built-in middlewares, 2 being added by default. The third is 'open-cors'. |
+| `templates`          | **{}**          | Templates to be used in `routes.json`. See [templates](#templates) documentation. |
+| `errorHandler`       | **(empty)**     | A custom express error handler. Must be a function with the following signature: function (err, req, res, next) { ... } (see [express documentation](https://expressjs.com/en/guide/error-handling.html#the-default-error-handler)) |
+| `commands`           | **(empty)**     | Used to extend Drosse CLI with custom commands. Must be a function with the following signature: function (vorpal, drosse) { ... }. See [the cli](#cli) documentation. |
+
+<a name="cli"></a>
+## The CLI
+
+Drosse, once started, is a REPL console where you can type commands. It uses [Vorpal](https://github.com/dthree/vorpal).
+
+This feature is still under active development, but you can already create your own commands and register them in the `.drosserc.js`.
 
 ## Features
 - Cascading Proxies
