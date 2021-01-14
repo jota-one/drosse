@@ -187,7 +187,41 @@ Here all the routes under `/api` will be throttled between 5 and 10 seconds, exc
 
 ### Proxies
 
-_to be described..._
+In Drosse, proxies let you escape from your mock-server for a while. How does it work ?
+
+Anywhere in your routes `tree`, you can define a proxy (inside the `DROSSE` object, like always). All the routes matching the path where your proxy is defined, but NOT matching a subsequent route will be proxied to... your proxy. Okay this sentence is really f***-up. Let's have a look to the `routes.json`.
+
+```json
+{
+  "api": {
+    "users": {
+      "DROSSE": {
+        "get": {
+          "throttle": {
+            "min": 1000,
+            "max": 2000
+          }
+        },
+        "post": {}
+      },
+      ":id": {
+        "DROSSE": {
+          "get": {}
+        }
+      }
+    },
+    "countries": {
+      "DROSSE": {
+        "proxy": "https://restcountries.eu/rest/v2"
+      }
+    }
+  }
+}
+```
+
+In the above example, any request made on `http://localhost:8000/api/countries` will be done instead on `https://restcountries.eu/rest/v2`. The subsequent path will be applied as well.
+
+So `http://localhost:8000/api/countries/name/indonesia` will be proxied to `https://restcountries.eu/rest/v2/name/indonesia` and return the expected result.
 
 ### Templates
 
