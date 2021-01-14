@@ -1,7 +1,4 @@
 {
-  "DROSSE": {
-    "proxy": "http://www.admin.ch"
-  },
   "api": {
     "users": {
       "DROSSE": {
@@ -22,8 +19,7 @@
               "id": "{id}",
               "name": "User {id}"
             }
-          },
-          "proxy": "http://www.jota.one"
+          }
         },
         "activate": {
           "DROSSE": {
@@ -33,6 +29,11 @@
             }
           }
         }
+      }
+    },
+    "countries": {
+      "DROSSE": {
+        "proxy": "https://restcountries.eu/rest/v2"
       }
     }
   }
