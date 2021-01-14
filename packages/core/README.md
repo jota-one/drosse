@@ -606,7 +606,130 @@ module.exports = function ({ req, res, db }) {
 
 ## Drosse db API
 
-_To be described... (check the code)._
+Drosse leverages [LokiJS](https://github.com/techfort/LokiJS) power to allow stateful interactive mocking. But don't worry, no need for database configuration or any complicated stuffs. Basically, LokiJS is a nosql document database (a bit like mongo, but way simpler).
+
+When you start your mock server for the first time, Drosse will create a database and store it in a `mocks.json` file in your `[mocks root]` directory. Yes! You've read it, it's a simple JSON file. You can open it in your IDE and see the content of your database. But don't modify it manually, it will probably break the database. To be precise, LokiJS is a in-memory database and it will simply dump its content every 4 seconds in the `mocks.json` file.
+
+> :anguished: How do I update it, then ?
+
+LokiJS is collections-based. You can consider each collection as an array of objects, each object being a document.
+
+To provide some contents to your database, you need to create a `collections` directory in your `[mocks root]` directory. In this directory you will define your collections. A collection can be either:
+
+- A directory that contains JSON files. These files must contain a JSON object (not an array).
+- A JSON files that must contain an array of objects.
+
+In the end it's the same. Drosse will process either the directory or the big JSON file and insert it as a new collection full of documents in your database.
+
+:fire: You can redefine the `mocks.json` database file and the `collections` directory name in your `.drosserc.js` file ([see below](#drosserc)).
+
+By default, on each startup Drosse will check the `collections` directory and see if the collection already exists in the database. If not, it will import it. If the collection already exists, Drosse won't import it again; even if you added new files in the collection directory.
+
+If you want a fresh database, simply delete the `mocks.json` file and restart Drosse.
+
+> :sweat_smile: That's a bit violent! Is there a smoother way?
+
+You ask it, we provide.
+
+You can define a `shallowCollections` key in your `.drosserc.js` file. It must contain an array with collection names. All the collections listed in this array will be overriden on each Drosse startup.
+
+<a name="db-identify"></a>
+### Identify your documents
+One more thing. To make Drosse aware of how you identify each of your document, you should provide in each document a `DROSSE` property which contains an `ids` property, which itself contains a list of what you consider the document identifiers.
+
+It can be very useful to have different identifiers for your documents. As the identifiers don't have to be unique, it's not an issue. Don't forget that Drosse is a mock server. You aim to mock a real system that lives somewhere out there. And in the real world, it happens often that the same entity is retrieved through different ways. Imagine a Project entity. It could be retrieved by its unique ID, but maybe also by a customer unique code or whatever else.
+
+The real backend has probably different methods to fetch the project accordingly. But here we want to be fast and we don't care about all that. So we can store all the potential identifiers of a document in our `DROSSE.ids` array. It will look like this:
+
+```json
+{
+  "id": 1980,
+  "name": "Construction of a skyscraper",
+  "customer": {
+    "name": "ACME corp",
+    "projectCode": "SKYSCRAPER-999"
+  },
+  "budget": 98000000,
+  "DROSSE": {
+    "ids": [1980, "SKYSCRAPER-999"]
+  }
+}
+```
+Like this, it will be easier to find our document and we won't have to ask ourselves which identifier was sent to our service.
+
+
+
+### API
+
+Once your documents are stored in the database, here is how you can query them or even dynamically insert new documents programmatically. As you've maybe already read above in the [dynamic mocks section](#dynamic-mocks), when you define a service function, it takes an object as argument and this object contains a `db` property. This `db` property exposes the whole Drosse DB API. Let's have a look to it in detail.
+
+**db.list.all(collection, cleanFields)**
+
+List all documents in a collection.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns an _Array_ of documents.
+
+**db.list.byId(collection, id, cleanFields)**
+
+List all documents in a collection that have the provided identifier.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| id                      | _Required_ | Mixed     | A [document identifier](#db-identify)                |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns an _Array_ of documents.
+
+**db.list.byFields(collection, fields, value, cleanFields)**
+
+List all documents in a collection having at least one of the provided fields that contains the provided value.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| fields                  | _Required_ | String[]  | A list of fields                |
+| value                   | _Required_ | Mixed     | A value to test for. Should be a string or number               |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns an _Array_ of documents.
+
+**db.list.byField(collection, field, value, cleanFields)**
+
+List all documents in a collection having the provided field that contains the provided value.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| field                   | _Required_ | String    | A field                         |
+| value                   | _Required_ | Mixed     | A value to test for. Should be a string or number               |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns an _Array_ of documents.
+
+**db.list.find(collection, query, cleanFields)**
+
+List all documents in a collection matching the provided query.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| query                   | _Required_ | Object    | A lokiJS query object           |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns an _Array_ of documents.
+
+**db.list.where(collection, searchFn, cleanFields)**
+
+List all documents in a collection for which the searchFn callback returns a truthy value
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| searchFn                | _Required_ | Function  | A function that will be called for each document and take the document in argument.           |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns an _Array_ of documents.
+
 
 <a name="drosserc"></a>
 ## The .drosserc.js file (configure your Drosse)
