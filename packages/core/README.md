@@ -54,14 +54,14 @@ You need a directory where you will store all your mocks definitions.
 1. Create a directory anywhere in your project repository (or anywhere else).
 2. Update the `package.json` script you just added in the Installation phase to target your new mocks directory.
 3. In your mocks directory, create a `routes.json` file. This file will hold every single mocked route of your server.
-4. In the same directory, you can also create a `.drosserc.js` file. This file allows you to configure your mock server. It's optional but you will very likely need it.
+4. In the same directory, you can also create a `.drosserc.js` file. This file allows you to configure your mock server ([see below](#drosserc)). It's optional but you will very likely need it.
 
 Yes there are a couple of things to do yourself. But you're a developer, right? You know how to edit a JSON file or a JS file. In the upcoming releases, we will add a CLI and a UI, don't worry!
 
 Let's focus first on these 2 files.
 
 ## The routes.json file
-This file is mandatory but you can customize its name in the `.drosserc.js` file (see below). This is where you define all the routes you want to mock. Each route is defined as a tree, with _slash_ as separator.
+This file is mandatory but you can customize its name in the `.drosserc.js` file ([see below](#drosserc)). This is where you define all the routes you want to mock. Each route is defined as a tree, with _slash_ as separator.
 
 > :dizzy_face: Woot ? Tree ? Slash ? I just want to mock a couple of routes...
 
@@ -223,9 +223,124 @@ In the above example, any request made on `http://localhost:8000/api/countries` 
 
 So `http://localhost:8000/api/countries/name/indonesia` will be proxied to `https://restcountries.eu/rest/v2/name/indonesia` and return the expected result.
 
+Of course you can still define subroutes in a proxied path. They will take precedence on the proxy. Let's change our `countries` block like this:
+
+```json
+    "countries": {
+      "DROSSE": {
+        "proxy": "https://restcountries.eu/rest/v2"
+      },
+      "name": {
+        "switzerland": {
+          "DROSSE": {
+            "get": {
+              "body": {
+                "name": "Switzerland",
+                "description": "Best country in the World!"
+              }
+            }
+          }
+        }
+      }
+    }
+```
+
+If we call `http://localhost:8000/api/countries/name/switzerland`, Drosse will not proxy the request as there is a fully qualified path in our routes definition. We will then get the response defined just above and not a proxied response.
+
+### Assets
+
+You can use the `assets` property in the `DROSSE` object to tell a path to serve only static contents. Behind the scene, it will apply the `express.static` middleware to this path. Let's check the following example:
+
+```json
+{
+  "content": {
+    "DROSSE": {
+      "assets": true
+    },
+    "imgs": {
+      "background_*.jpg": {
+        "DROSSE": {
+          "assets": "content/images/background_mocked.png"
+        }
+      }
+    }
+  }
+}
+```
+
+In this example, all calls done to `/content` will be done statically on the `assets/content` directory. For example, if you call `http://localhost:8000/content/fonts/myfont.woff2`, Drosse will look up for a file in `[your mocks root]/assets/content/fonts/myfont.woff2` and serve it statically.
+
+The examples reveals another feature: you can rewrite the path through the `assets` property. If you call `http://localhost:8000/content/imgs/background_whatever.jpg`, Drosse will statically serve the `[your mocks root]/assets/content/imgs/background_whatever.jpg` file.
+
+:fire: You can redefine this `assets` directory name in your `.drosserc.js` file ([see below](#drosserc)).
+
 ### Templates
 
-_to be described..._
+A small yet very handsome feature. Templates help you to DRY your mocked endpoints. In Drosse, a template is a simple function that takes a content and transforms it to something else. Let's take an example:
+
+```json
+{
+  "api": {
+    "DROSSE": {
+      "template": "response"
+    },
+    "products": {
+      "v1": {
+        "DROSSE": {
+          "template": "responseV1"
+        }
+      }
+    },
+    "other": {},
+    "routes": {}
+  }
+}
+```
+
+When passing a `template` to a node, you tell Drosse to apply this template to all endpoint results from this node path and all subnodes. Except if you redefine another template. In that case it will take precedence. In our example, any call to `/api`, `/api/products`, `/api/other` or `/api/routes` will have their response passed to the `response` template. But a call to `/api/products/v1` will have its response passed to `responseV1` template.
+
+To use a template, you need to create a JS file, store it somewhere in your `[mocks root]` directory and reference it in your `.drosserc.js` file. Here is an example of `.drosserc.js` file with our 2 templates registered:
+
+```js
+// .drosserc.js
+const response = require('./templates/response')
+const responseV1 = require('./templates/responseV1')
+
+module.exports = {
+  name: 'My awesome app',
+  port: 8004,
+  templates: { response, responseV1 }
+}
+```
+
+Here we stored the templates in a `templates` directory, but you can load them from wherever you prefer. You simply need to register each template function in a `templates` property.
+
+
+Here is how the `response` and `responseV1` template could look like:
+
+```js
+// response.js
+module.exports = function (response) {
+  return {
+    version: 'v2',
+    data: response
+  }
+}
+```
+
+```js
+// responseV1.js
+module.exports = function (response) {
+  return {
+    version: 'v1',
+    ...response
+  }
+}
+```
+
+You can also use these templates to perform intermediate transformations in your services (see [dynamic mocks section](#dynamic-mocks)) as they are also simple JS functions...
+
+:fire: You need to register your templates in the `.drosserc.js` file only if you want to use them in the `routes.json` file.
 
 <a name="inline-mocks"></a>
 ## Inline mocks
@@ -361,7 +476,7 @@ To define a `static mock`, simply set the `static` property of your `DROSSE` obj
 
 With such a definition, when you call `GET /api/users/65`, drosse will look for a specific JSON file in the `static` subdirectory of your mocks directory.
 
-:fire: You can redefine this `static` directory name in your `.drosserc.js` file (see below).
+:fire: You can redefine this `static` directory name in your `.drosserc.js` file ([see below](#drosserc)).
 
 Drosse will look for different filenames, from the more precise to the more generic until it finds one that matches. Let's keep the above example and see which filenames will be looked for:
 
@@ -446,7 +561,7 @@ See ? From the `routes.json` file, it's quite a piece of cake :cake: !
 
 Now of course, there is no magic (yet!) here. You have to create a file with the proper name and put it in the `services` subdirectory of your mocks directory.
 
-:fire: Like for the others subdirectories, you can redefine this `services` directory name in your `.drosserc.js` file (see below).
+:fire: Like for the others subdirectories, you can redefine this `services` directory name in your `.drosserc.js` file ([see below](#drosserc)).
 
 To name your file, the rule is even simpler as for the static files. Here you just take in account the non-parameter nodes of your route path. In our case we don't have any parameter node. Our `POST /api/users` route will resolve into a `api.users.post.js` service file.
 
@@ -492,6 +607,7 @@ module.exports = function ({ req, res, db }) {
 
 _To be described... (check the code)._
 
+<a name="drosserc"></a>
 ## The .drosserc.js file (configure your Drosse)
 This file holds your mock server general configuration. It's optional as all its keys have default values. It must simply export a configuration object.
 
