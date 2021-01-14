@@ -484,7 +484,7 @@ Drosse will look for different filenames, from the more precise to the more gene
 ```
 api.users.65.get.json
 api.users.65.json
-api.users.:id.json
+api.users.{id}.json
 ```
 
 If you have a route with several path parameters, drosse will ignore them from left to right. Example, for this route:
@@ -495,8 +495,8 @@ GET /api/users/:id/posts/:type
 Assuming that you have 2 types of posts, `unread` and `read` and a big quantity of users, it's more convenient to be able to define a mocked list of `read` posts and another mocked list of `unread` posts, independently of the user. For that usecase you can then create only 2 files in your `static` directory:
 
 ```
-api.users.:id.posts.read.get.json
-api.users.:id.posts.unread.get.json
+api.users.{id}.posts.read.get.json
+api.users.{id}.posts.unread.get.json
 ```
 
 :fire: If you are not sure of the precedence for a given route, just try and check the drosse console. It will log each failed attempts.
@@ -506,7 +506,7 @@ If we try to call `GET /api/users/3` and we have defined the following static mo
 ```
 api.users.1.json
 api.users.2.json
-api.users:id.json
+api.users{id}.json
 ```
 
 ```bash
@@ -518,9 +518,9 @@ api.users:id.json
 
 1:17:27 AM loadStatic: tried with [/some/path/mymocks/static/api.users.3.get.json]. File not found.
 1:17:27 AM loadStatic: tried with [/some/path/mymocks/static/api.users.3.json]. File not found.
-1:17:27 AM loadStatic: tried with [/some/path/mymocks/static/api.users.:id.get.json]. File not found.
+1:17:27 AM loadStatic: tried with [/some/path/mymocks/static/api.users.{id}.get.json]. File not found.
 ```
-You can see above that the system has first tried with the very precise `api.users.3.get.json` (resolved parameter + verb). Then it tries the same without verb (`api.users.3.json`). As it still fails, it tries without resolving the parameter, but again with the verb (`api.users.:id.get.json`) and finally find a corresponding mock file with `api.users.:id.json`. Of course this last one is not logged as it was found.
+You can see above that the system has first tried with the very precise `api.users.3.get.json` (resolved parameter + verb). Then it tries the same without verb (`api.users.3.json`). As it still fails, it tries without resolving the parameter, but again with the verb (`api.users.{id}.get.json`) and finally find a corresponding mock file with `api.users.{id}.json`. Of course this last one is not logged as it was found.
 
 <a name="dynamic-mocks"></a>
 ## Services (aka dynamic mocks)
