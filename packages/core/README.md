@@ -866,6 +866,105 @@ const getDetailedProject = projectId => {
 const detailedProject = getDetailedProject(1980)
 ```
 
+<a name="db-query-getMapId"></a>
+**db.query.getMapId(collection, fieldname, firstOnly)**
+
+Generate a hash to link a specific document field value to the document ids (or first id)
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| fieldname               | _Required_ | String    | A field                         |
+| firstOnly               | _Optional_ | Boolean   | If `true`, will consider only the first `id` found in the `DROSSE.ids` array.                 |
+
+Returns a correspondance hash with the chosen field value as key and the corresponding id as value.
+
+:warning: Be aware that if the chosen `fieldname` hasn't unique values for each document in collection, the later documents will overwrite the formers.
+
+<a name="db-query-chain"></a>
+**db.query.chain(collection)**
+
+Exposes the LokiJS chain method ([see LokiJS documentation](https://techfort.github.io/LokiJS/Collection.html) for more details)
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+
+Returns a [LokiJS ResultSet](https://techfort.github.io/LokiJS/Resultset.html)
+
+<a name="db-query-clean"></a>
+**db.query.clean([...fields])**
+
+Creates a cleaning function that will remove all listed fields from the passed object
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| ...fields               | _Optional_ | ...String | Any number of fieldnames             |
+
+Returns a function that takes a javascript Object as unique argument
+
+:fire: Even if no fields are passed, the function will be configured to remove the `reseserved words` from Drosse and Loki, aka: $loki, meta and DROSSE.
+
+:fire::fire: This function is used in all other methods to clean up the results and merges the optional `cleanFields` with the `reserved words`.
+
+<a name="db-insert"></a>
+**db.insert(collection, ids, payload)**
+
+Inserts a document in a collection
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| ids                     | _Required_ | Array     | An array of identifiers for your new document (will be stored in `DROSSE.ids`)       |
+| payload                 | _Required_ | Object    | The document               |
+
+Returns the inserted document
+
+<a name="db-update-byId"></a>
+**db.update.byId(collection, id, newValue)**
+
+Updates a document in a collection
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| id                      | _Required_ | Mixed     | One of the document identifiers (from `DROSSE.ids`)       |
+| newValue                | _Required_ | Object    | A hash with keys being of type `field.subfield.subsubfield` ([lodash.set](https://lodash.com/docs#set) is used to apply the changes)              |
+
+Returns _nothing_
+
+<a name="db-update-subItem-append"></a>
+**db.update.subItem.append(collection, id, subPath, payload)**
+
+Insert (append) a new item in some of the identified document subItems list
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| id                      | _Required_ | Mixed     | One of the document identifiers (from `DROSSE.ids`)       |
+| subPath                 | _Required_ | String    | A string of type `field.subfield.subsubfield` pointing to the field to alter       |
+| payload                 | _Required_ | Object    | The sub item to insert              |
+
+Returns _nothing_
+
+
+<a name="db-update-subItem-prepend"></a>
+**db.update.subItem.prepend(collection, id, subPath, payload)**
+
+Insert (prepend) a new item in some of the identified document subItems list
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| id                      | _Required_ | Mixed     | One of the document identifiers (from `DROSSE.ids`)       |
+| subPath                 | _Required_ | String    | A string of type `field.subfield.subsubfield` pointing to the field to alter       |
+| payload                 | _Required_ | Object    | The sub item to insert              |
+
+Returns _nothing_
+
+<a name="db-update-byId"></a>
+**db.remove.byId(collection, id)**
+
+Removes (delete) a document from a collection
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| id                      | _Required_ | Mixed     | One of the document identifiers (from `DROSSE.ids`)       |
+
+Returns _nothing_ or `false` if the document was not found.
 
 <a name="drosserc"></a>
 ## The .drosserc.js file (configure your Drosse)
