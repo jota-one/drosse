@@ -646,6 +646,7 @@ The real backend has probably different methods to fetch the project accordingly
   "id": 1980,
   "name": "Construction of a skyscraper",
   "customer": {
+    "id": 888,
     "name": "ACME corp",
     "projectCode": "SKYSCRAPER-999"
   },
@@ -657,12 +658,58 @@ The real backend has probably different methods to fetch the project accordingly
 ```
 Like this, it will be easier to find our document and we won't have to ask ourselves which identifier was sent to our service.
 
+<a name="db-ref"></a>
+### Reference documents
+In the above example we have a customer inside a project. But what if we want to list all the customers in our app ? We could duplicate the customer informations into a `customers` collection, but that would mean that the customer's informations displayed in the project document are duplicated. Not good to maintain our mocks...
+
+Here come reference documents to the rescue!
+
+Assuming you have a `customers` collection with this customer document in it.
+
+```json
+{
+  "id": 888,
+  "name": "ACME corp",
+  "address": {
+    "street": "Undefined or null 1",
+    "zip": "00001",
+    "town": "North Pole City"
+  },
+  "activity": "Secretely conquer the world by not being evil... at first."
+  "DROSSE": {
+    "ids": [1980, "SKYSCRAPER-999"]
+  }
+}
+```
+
+You can redefine your project like this:
+
+```json
+{
+  "id": 1980,
+  "name": "Construction of a skyscraper",
+  "customer": {
+    "collection": "customers",
+    "id": 888,
+    "projectCode": "SKYSCRAPER-999"
+  },
+  "budget": 98000000,
+  "DROSSE": {
+    "ids": [1980, "SKYSCRAPER-999"]
+  }
+}
+```
+
+The company name is not duplicated anymore.
+
+When you've fetched the project document, you can easily query the linked customer by calling the [`db.get.byRef()`](#db-get-byRef) method and pass it the `project.customer` object. Drosse will return the corresponding customer document. You can then overwrite `project.customer` with this result.
 
 
 ### API
 
 Once your documents are stored in the database, here is how you can query them or even dynamically insert new documents programmatically. As you've maybe already read above in the [dynamic mocks section](#dynamic-mocks), when you define a service function, it takes an object as argument and this object contains a `db` property. This `db` property exposes the whole Drosse DB API. Let's have a look to it in detail.
 
+<a name="db-list-all"></a>
 **db.list.all(collection, cleanFields)**
 
 List all documents in a collection.
@@ -673,6 +720,7 @@ List all documents in a collection.
 
 Returns an _Array_ of documents.
 
+<a name="db-list-byId"></a>
 **db.list.byId(collection, id, cleanFields)**
 
 List all documents in a collection that have the provided identifier.
@@ -684,6 +732,7 @@ List all documents in a collection that have the provided identifier.
 
 Returns an _Array_ of documents.
 
+<a name="db-list-byFields"></a>
 **db.list.byFields(collection, fields, value, cleanFields)**
 
 List all documents in a collection having at least one of the provided fields that contains the provided value.
@@ -696,6 +745,7 @@ List all documents in a collection having at least one of the provided fields th
 
 Returns an _Array_ of documents.
 
+<a name="db-list-byField"></a>
 **db.list.byField(collection, field, value, cleanFields)**
 
 List all documents in a collection having the provided field that contains the provided value.
@@ -708,6 +758,7 @@ List all documents in a collection having the provided field that contains the p
 
 Returns an _Array_ of documents.
 
+<a name="db-list-find"></a>
 **db.list.find(collection, query, cleanFields)**
 
 List all documents in a collection matching the provided query.
@@ -719,6 +770,7 @@ List all documents in a collection matching the provided query.
 
 Returns an _Array_ of documents.
 
+<a name="db-list-where"></a>
 **db.list.where(collection, searchFn, cleanFields)**
 
 List all documents in a collection for which the searchFn callback returns a truthy value
@@ -729,6 +781,90 @@ List all documents in a collection for which the searchFn callback returns a tru
 | cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
 
 Returns an _Array_ of documents.
+
+<a name="db-get-byId"></a>
+**db.get.byId(collection, id, cleanFields)**
+
+Find first document in a collection that have the provided identifier.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| id                      | _Required_ | Mixed     | A [document identifier](#db-identify)                |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns a document.
+
+<a name="db-get-byFields"></a>
+**db.get.byFields(collection, fields, value, cleanFields)**
+
+Find first document in a collection having at least one of the provided fields that contains the provided value.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| fields                  | _Required_ | String[]  | A list of fields                |
+| value                   | _Required_ | Mixed     | A value to test for. Should be a string or number               |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns a document.
+
+<a name="db-get-byField"></a>
+**db.get.byField(collection, field, value, cleanFields)**
+
+Find first document in a collection having the provided field that contains the provided value.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| field                   | _Required_ | String    | A field                         |
+| value                   | _Required_ | Mixed     | A value to test for. Should be a string or number               |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns a document.
+
+<a name="db-get-find"></a>
+**db.get.find(collection, query, cleanFields)**
+
+Find first document in a collection matching the provided query.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| query                   | _Required_ | Object    | A lokiJS query object           |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns a document.
+
+<a name="db-get-where"></a>
+**db.get.where(collection, searchFn, cleanFields)**
+
+Find first document in a collection for which the searchFn callback returns a truthy value
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| collection              | _Required_ | String    | The collection name             |
+| searchFn                | _Required_ | Function  | A function that will be called for each document and take the document in argument.           |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns a document.
+
+<a name="db-get-byRef"></a>
+**db.get.byRef(refObj, dynamicId, cleanFields)**
+
+Find first document in a collection matching the provided query.
+| Argument                | Required   | Type      | Description                     |
+|-------------------------|------------|-----------|---------------------------------|
+| refObj                  | _Required_ | Object    | An object that contains a `collection` property and an `id` property. See [Ref documents](#db-ref) documentation.             |
+| dynamicId               | _Optional_ | Mixed     | A [document identifier](#db-identify)           |
+| cleanFields             | _Optional_ | Array     | A list of properties you want to exclude from each returned document                 |
+
+Returns a document.
+
+```js
+const getDetailedProject = projectId => {
+  const myProject = db.get.byId('projects', projectId)
+  myProject.customer = db.get.byRef(myProject.customer)
+  return myProject
+}
+
+const detailedProject = getDetailedProject(1980)
+```
 
 
 <a name="drosserc"></a>
