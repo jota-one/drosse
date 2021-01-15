@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added documentation and examples for the proxy feature.
+- Added documentation for the assets feature.
+- Added documentation for the template feature.
+- Added documentation for the DB api.
 
 ## [1.9.0] - 2021-01-13
 ### Changed
