@@ -200,12 +200,12 @@ module.exports = function () {
         )
       },
 
-      byRef(refObj, dynamicId) {
+      byRef(refObj, dynamicId, cleanFields = []) {
         const { collection, id: refId } = refObj
         const id = dynamicId || refId
         return {
           ...lodash.omit(refObj, ['collection', 'id']),
-          ...this.byId(collection, id),
+          ...this.byId(collection, id, cleanFields),
         }
       },
 
