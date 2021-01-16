@@ -9,10 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the proxy configuration to make it actually usable intuitively. From now, the URL path to where the proxy is defined is removed from the proxied path.
 
 ### Added
+- Added `db drop` command in the REPL CLI.
 - Added documentation and examples for the proxy feature.
 - Added documentation for the assets feature.
 - Added documentation for the template feature.
 - Added documentation for the DB api.
+
+### Fixed
+- Fix db.get.byRef to not overwrite custom content with generic content
 
 ## [1.9.0] - 2021-01-13
 ### Changed
