@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO -->
+    <title>WebSlides: Making HTML presentations easy</title>
+    <meta name="description" content="WebSlides is the easiest way to make HTML presentations, portfolios, and landings. Just essential features.">
+
+    <!-- URL CANONICAL -->
+    <!-- <link rel="canonical" href="http://your-url.com/"> -->
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,700,700i%7CMaitree:200,300,400,600,700&amp;subset=latin-ext" rel="stylesheet">
+
+    <!-- CSS WebSlides -->
+    <link rel="stylesheet" type='text/css' media='all' href="static/css/webslides.css">
+
+    <!-- Optional - CSS SVG Icons (Font Awesome) -->
+    <link rel="stylesheet" type='text/css' media='all' href="static/css/svg-icons.css">
+
+    <!-- Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#333333">
+
+  </head>
+  <body>
+    <header role="banner">
+      <nav role="navigation">
+        <p class="logo"><a href="index.html" title="Drosse">Drosse</a></p>
+        <ul>
+          <li class="github">
+            <a rel="external" href="https://github.com/jota-one/drosse" title="Github">
+              <svg class="fa-github">
+                <use xlink:href="#fa-github"></use>
+              </svg>
+              <em>Drosse</em>
+            </a>
+          </li>
+          <li class="npm npm-icon">
+            <a rel="external" href="https://www.npmjs.com/package/@jota-one/drosse" title="NPM">
+              <svg class="npm-icon" viewBox="0 0 26 25" width="26" height="25">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.03104 0H23.3586C24.3728 0 25.1948 0.822059 25.1948 1.83621V23.1638C25.1948 24.1779 24.3728 25 23.3586 25H2.03104C1.01694 25 0.194824 24.1779 0.194824 23.1638V1.83621C0.194824 0.822059 1.01694 0 2.03104 0ZM12.7361 19.9688H5.51983L5.53821 5.54539L19.9524 5.56377L19.9433 19.978H16.3351L16.3443 9.16268H12.7453L12.7361 19.9688Z"/>
+              </svg>
+              <em>Drosse</em>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main role="main">
+      <article id="webslides" class="horizontal">
+        <!-- Quick Guide
+          - Each parent <section> in the <article id="webslides"> element is an individual slide.
+          - Vertical sliding = <article id="webslides" class="vertical">
+          - <div class="wrap"> = container 90% / <div class="wrap size-50"> = 45%;
+        -->
+
+        <section>
+         <span class="background" style="background-image:url('https://source.unsplash.com/Us8dszDXx28')"></span>
+          <!--.wrap = container (width: 90%) -->
+          <div class="wrap aligncenter">
+            <h1><strong>Frontendlers could ❤️ backend</strong></h1>
+            <p class="text-intro">If they can make it themselves<br>
+              with a great mocking tool.
+            </p>
+            <p>
+              <a href="../" class="button zoomIn" title="Use Drosse for free">
+                <svg class="fa-external-link">
+                  <use xlink:href="#fa-external-link"></use>
+                </svg>
+                Drosse website
+              </a>
+            </p>
+          </div>
+        </section>
+        <section class="frame bg-apple aligncenter slide current">
+          <div class="wrap">
+            <h2 class="text-landing">What is Drosse ?</h2>
+          </div>
+        </section>
+        <section>
+          <div class="wrap">
+            <h2>Drosse is a mock server that runs on Node.js</h2>
+          </div>
+        </section>
+        <section class="frame bg-apple aligncenter slide current">
+          <div class="wrap">
+            <h2 class="text-landing">Why Drosse ?</h2>
+          </div>
+        </section>
+        <section>
+          <div class="wrap">
+            <h2>Drosse aims to help Frontend developers to mock their backend and test their frontend code without being dependent of the backend.</h2>
+          </div>
+        </section>
+        <section class="frame bg-apple aligncenter slide current">
+          <div class="wrap">
+            <h2 class="text-landing">Okay but why ?</h2>
+          </div>
+        </section>
+        <section>
+          <div class="wrap">
+            <h2>💩 because this happens:</h2>
+            <ul>
+              <li>The backend is difficult to run on your own computer</li>
+              <li>You don’t always have a correct internet connection (work in a train, work on a sunny island, work in a bunker)</li>
+              <li>You need to develop the frontend BEFORE the backend is ready</li>
+              <li>You hate your backend teammate and don’t want to have anything to do with them (try to fix that, buddy… drosse is not THAT magic!)</li>
+            </ul>
+          </div>
+        </section>
+        <section class="frame bg-apple aligncenter slide current">
+          <div class="wrap">
+            <h2 class="text-landing">How can Drosse help you ?</h2>
+          </div>
+        </section>
+        <section>
+          <div class="wrap">
+            <h3>Key features</h3>
+            <ul class="flexblock features">
+              <li>
+                <div>
+                  <h2>
+                    <span>✈️</span>
+                    Works offline
+                  </h2>
+                  (cool for a mock server)
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>🐱</span>
+                    Standalone OR integrated
+                  </h2>
+                  Choose your level of integration in your FE
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>⚙️</span>
+                    API mocks
+                  </h2>
+                  Mock your API endpoints
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>🖼️</span>
+                    Static mocks
+                  </h2>
+                  Mock your static assets
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>🦄</span>
+                    Dynamic mocks!
+                  </h2>
+                  Stateful mock server with in-memory database
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>💻</span>
+                    CLI
+                  </h2>
+                  Interactive & extensible CLI
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section>
+          <div class="wrap">
+            <h3>Not key features, but still super cool</h3>
+            <ul class="flexblock features">
+              <li>
+                <div>
+                  <h2>
+                    <span>🦥</span>
+                    Throttling
+                  </h2>
+                  slow down your mocked backend to mimic the real shitty one
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>🔀</span>
+                    Proxy
+                  </h2>
+                  redirect chosen endpoints to other domains
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>📖</span>
+                    Awesome logs
+                  </h2>
+                  enjoy nice logs in the console
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>👷‍♂️</span>
+                    Built-in & custom middlewares
+                  </h2>
+                  configure your server with tons of middlewares (express-style)
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>🎨</span>
+                    Templates
+                  </h2>
+                  Use templates to stay DRY
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h2>
+                    <span>🚿</span> Cascade everything
+                  </h2>
+                  All your configs cascade to the sub nodes
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <section class="frame bg-apple aligncenter slide current">
+          <div class="wrap">
+            <h2 class="text-landing">How much ?</h2>
+          </div>
+        </section>
+        <section>
+          <div class="wrap">
+            <h2>Drosse is open source, free and can run in any plateform (you just need Node.js).</h2>
+          </div>
+        </section>
+
+        <section class="frame bg-apple">
+          <span class="background dark" style="background-image:url('https://source.unsplash.com/DIIuLXAnCmU')"></span>
+          <div class="wrap">
+            <div class="content-right">
+              <h2 class="text-emoji">Give it a try.</h2>
+              <p>
+                <a href="../" class="button zoomIn" title="Use Drosse for free">
+                  <svg class="fa-external-link">
+                    <use xlink:href="#fa-external-link"></use>
+                  </svg>
+                  Drosse website
+                </a>
+              </p>
+            </div>
+          </div>
+        </section>
+
+      </article>
+      <!-- end article -->
+    </main>
+    <!-- end main -->
+
+   <!-- A global footer
+
+     <footer role="contentinfo">
+      <div class="wrap">
+        <p>An <a href="https://github.com/webslides/webslides">open source solution</a>, by <a href="https://twitter.com/webslides">@webslides</a>.</p>
+      </div>
+    </footer>  -->
+
+    <!-- Required -->
+    <script src="static/js/webslides.js"></script>
+    <script>
+      window.ws = new WebSlides();
+    </script>
+
+    <!-- OPTIONAL - svg-icons.js (fontastic.me - Font Awesome as svg icons) -->
+    <script defer src="static/js/svg-icons.js"></script>
+
+  </body>
+</html>

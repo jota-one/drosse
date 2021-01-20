@@ -24,7 +24,7 @@ morgan.token('url', function (req, res) {
 })
 
 morgan.token('proxied', function (req, res) {
-  return res.get('x-proxied') ? c.cyanBright('🏓 proxied') : ''
+  return res.get('x-proxied') ? c.cyanBright('🔀 proxied') : ''
 })
 
 const color = status => {

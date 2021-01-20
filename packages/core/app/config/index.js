@@ -11,7 +11,7 @@ module.exports = {
     assetsPath: 'assets',
     servicesPath: 'services',
     staticPath: 'static',
-    database: 'mocks.db',
+    database: 'mocks.json',
     reservedRoutes: { ui: '/UI' },
   },
   middlewares: ['body-parser-json', 'morgan'],

@@ -1,11 +1,5 @@
 const vorpal = require('@moleculer/vorpal')()
-
-vorpal
-  .command('addNode <parent> <name>', 'Add a node to drosse routes')
-  .action(function (args, cb) {
-    console.log(args)
-    cb()
-  })
+const commands = require('../commands')
 
 module.exports = function () {
   return {
@@ -15,6 +9,7 @@ module.exports = function () {
     },
 
     start() {
+      this.extend(commands)
       vorpal.delimiter('📣$').show()
     },
   }

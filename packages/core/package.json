@@ -1,6 +1,6 @@
 {
   "name": "@jota-one/drosse",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Mock your backend the right way.",
   "main": "app/index.js",
   "bin": {
@@ -9,13 +9,6 @@
   },
   "scripts": {
     "serve": "./bin/serve.js"
-  },
-  "pkg": {
-    "scripts": [
-      "bin/*.js",
-      "cmd/*.js",
-      "app/**/*.js"
-    ]
   },
   "repository": {
     "type": "git",

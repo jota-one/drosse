@@ -1,0 +1,271 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+body {
+  position: relative;
+}
+
+p > a {
+  @apply text-green-500;
+}
+
+code.file {
+  @apply text-indigo-500;
+}
+
+code.handler {
+  @apply text-blue-500;
+}
+
+code.setting {
+  @apply text-yellow-700;
+}
+
+/* ************************ */
+/* Hero background
+/* ************************ */
+.hero-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.15;
+  z-index: -1;
+}
+
+.hero-bg:before,
+.hero-bg:after {
+  content: '';
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.hero-bg:before {
+  top: 25rem;
+  left: calc(50% - 15rem);
+  width: 15rem;
+  height: 15rem;
+  background: rgb(52,246,107);
+  filter: blur(2rem);
+  z-index: 1;
+  mix-blend-mode: luminosity;
+}
+
+.hero-bg:after {
+  top: 15rem;
+  right: calc(50% - 25rem);
+  width: 25rem;
+  height: 25rem;
+  background: deepskyblue;
+  filter: blur(5rem);
+  z-index: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .hero-bg {
+    opacity: 0.075;
+  }
+}
+
+/* ************************ */
+/* Terminal
+/* ************************ */
+.terminal {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  background-color: rgb(10,10,10 ,0.9);
+  border-top: 1px solid rgba(255,255,255, 0.125);
+  border-bottom: 1px solid rgba(255,255,255, 0.125);
+  box-shadow: 0 0.25rem 1.5rem rgba(0,0,0, 0.4);
+}
+
+.terminal--window {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.terminal--ratio {
+  height: 0;
+  min-width: 100vw;
+  max-width: 50rem;
+  padding-bottom: 100%;
+}
+
+.terminal--shell {
+  position: absolute;
+  top: 1.75rem;
+  bottom: 2rem;
+  overflow: auto;
+  right: 0;
+  left: 0;
+}
+
+.terminal .line {
+  display: none;
+}
+
+.terminal .line.visible {
+  display: block;
+}
+
+.terminal .line-date {
+  @apply text-gray-600;
+}
+
+@media screen and (min-width: 560px) {
+  .terminal--ratio {
+    min-width: calc(100vw - 8rem);
+  }
+}
+
+@media screen and (min-width: 640px) {
+  .terminal {
+    border-left: 1px solid rgba(255,255,255, 0.125);
+    border-right: 1px solid rgba(255,255,255, 0.125);
+    border-radius: 0.4rem;
+  }
+
+  .terminal--ratio {
+    padding-bottom: 75%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .terminal--ratio {
+    min-width: 35rem;
+    padding-bottom: 60%;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .terminal--ratio {
+    min-width: 40rem;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .terminal--ratio {
+    min-width: 40rem;
+  }
+}
+
+/* ************************ */
+/* Features
+/* ************************ */
+.features li {
+  flex-basis: 100%;
+  overflow: hidden;
+  @apply p-6 mb-8 text-base text-gray-600 dark:text-gray-500;
+}
+
+.features h3 {
+  @apply flex items-center mb-4 font-extrabold text-xl lg:text-2xl text-gray-700 dark:text-gray-400 -ml-3;
+}
+
+.features h3 svg {
+  @apply w-8 h-8 mr-2 ml-2;
+}
+
+.features p {
+  margin-top: 1.5rem;
+}
+
+.features p:first-of-type {
+  @apply text-black dark:text-gray-400;
+}
+
+.features p:not(:first-of-type) {
+  @apply text-gray-500 dark:text-gray-600;
+}
+
+@media screen and (min-width: 1024px) {
+  .features li {
+    flex-basis: 50%;
+  }
+}
+
+/* ************************ */
+/* Code blocks
+/* ************************ */
+pre.codeblock {
+  position: relative;
+  padding-top: 2rem !important;
+  margin-top: 1.5rem !important;
+  border-radius: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+pre.codeblock:not(.opened) {
+  height: 0;
+  margin-bottom: -0.5rem !important;
+  background: transparent;
+  overflow: hidden !important;
+}
+
+pre.codeblock:before {
+  content: '▷ ' attr(title);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  cursor: pointer;
+}
+
+pre.codeblock:not(.opened):before {
+  background: #2d2d2d;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+pre.codeblock code {
+  display: none;
+  font-size: 0.8rem;
+}
+
+pre.codeblock.opened {
+  height: auto;
+}
+
+pre.codeblock.opened:before {
+  content: '▽ ' attr(title);
+}
+
+pre.codeblock.opened code {
+  display: block;
+}
+
+/* ************************ */
+/* More link
+/* ************************ */
+a.more {
+  @apply inline-flex items-center text-xs font-bold uppercase block mt-6 text-green-700;
+}
+
+a.more svg {
+  margin-top: -0.1rem;
+  margin-left: 0.4rem;
+  transition: color 0.1s ease-in-out, margin 0.1s ease-in-out;
+}
+
+a.more:hover {
+  @apply text-green-500;
+}
+
+a.more:hover svg {
+  margin-left: 0.7rem;
+}

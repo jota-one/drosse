@@ -128,7 +128,14 @@ const createRoute = function (def, root, defHierarchy) {
 
     this.proxies.push({
       path: path.join('/'),
-      context: { target: def.proxy, changeOrigin: true, onProxyReq: restream },
+      context: {
+        target: def.proxy,
+        changeOrigin: true,
+        pathRewrite: {
+          [path.join('/')]: '/',
+        },
+        onProxyReq: restream,
+      },
     })
   }
 
