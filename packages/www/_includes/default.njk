@@ -20,7 +20,17 @@
     <meta property="og:image:url" content="https://drosse.dev/assets/og.png">
   </head>
   <body class="text-md md:text-lg text-gray-800 dark:text-gray-300 dark:bg-gray-800">
-    <header></header>
+    <header>
+      <div class="container mx-auto px-8 pt-8 -mb-16 xl:px-12 2xl:px-32 lg:-mb-20 opacity-50">
+        <button
+          class="theme-switcher"
+          onclick="document.querySelector('html').classList.toggle('dark')"
+        >
+          {% icon name="moon", size=32, cssClass="light" %}
+          {% icon name="sun", size=32, cssClass="dark" %}
+        </button>
+      </div>
+    </header>
     {% block content %}
       {{ content | safe }}
     {% endblock %}
@@ -59,5 +69,10 @@
         </div>
       </div>
     </footer>
+    <script>
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector('html').classList.add('dark')
+      }
+    </script>
   </body>
 </html>

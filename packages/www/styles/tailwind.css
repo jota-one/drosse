@@ -28,6 +28,28 @@ code.setting {
   @apply text-yellow-700;
 }
 
+/**/
+.theme-switcher {
+  outline: none !important;
+  padding-bottom: 1rem;
+}
+
+.theme-switcher .light {
+  display: block;
+}
+
+.theme-switcher .dark {
+  display: none;
+}
+
+.dark .theme-switcher .light {
+  display: none;
+}
+
+.dark .theme-switcher .dark {
+  display: block;
+}
+
 /* ************************ */
 /* Hero background
 /* ************************ */
