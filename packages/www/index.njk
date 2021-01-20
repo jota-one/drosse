@@ -98,9 +98,9 @@
             <span class="text-gray-600"></span>
             Mocks root: <span class="text-pink-600">/Users/jorinho/staticjson</span>
           </code>
-          <code class="line">
+          {# <code class="line">
             📣
-          </code>
+          </code> #}
         </div>
       </div>
     </div>
@@ -455,12 +455,13 @@
     var runCmdEl = document.querySelector('#cmd-run')
     var runCmdOutputEl = document.querySelectorAll('.terminal--shell .line')
 
-    new Typed(runCmdEl, {
+    var t = new Typed(runCmdEl, {
       strings: ["npx drosse serve -- -r ~/staticjson"],
-      typeSpeed: 40,
+      typeSpeed: 30,
       loop: false,
       startDelay: 1000,
       onComplete: function() {
+
         var i = 0
         var pad = function(input) {
           var str = input.toString()
@@ -470,6 +471,8 @@
             return str
           }
         }
+
+        document.querySelector('.typed-cursor').style.display = 'none'
 
         var interval = window.setInterval(function() {
           if (i === runCmdOutputEl.length -1) {
@@ -494,7 +497,7 @@
 
           el.classList.add('visible')
           i++
-        }, 100)
+        }, 50)
       }
     })
   </script>
