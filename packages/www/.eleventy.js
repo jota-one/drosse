@@ -11,12 +11,13 @@ module.exports = function (config) {
   config.addPassthroughCopy({
     './_tmp/style.css': './style.css',
     './assets': './assets',
-    './favicon.ico': './favicon.ico'
+    './favicon.ico': './favicon.ico',
+    './node_modules/typed.js/lib/typed.min.js': './assets/typed.min.js'
   })
 
-  config.addShortcode('version', () => String(Date.now()))
   config.addShortcode('icon', iconShortCode)
   config.addShortcode('more', url => `<a class="more" href="${url}" target="_blank" title="more info" aria-label="more info">More info ${iconShortCode({ name: 'arrow-right', size:20 })}</a>`)
+  config.addShortcode('version', () => String(Date.now()))
 
   config.addTransform("htmlmin", (content, outputPath) => {
     if (

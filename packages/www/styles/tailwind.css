@@ -115,6 +115,14 @@ code.setting {
   display: none;
 }
 
+.terminal .line.visible {
+  display: block;
+}
+
+.terminal .line-date {
+  @apply text-gray-600;
+}
+
 @media screen and (min-width: 560px) {
   .terminal--ratio {
     min-width: calc(100vw - 8rem);

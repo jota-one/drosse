@@ -5,6 +5,7 @@
 {% block head %}
   <link async href="/assets/prism.css" rel="stylesheet" />
   <script async src="/assets/prism.js"></script>
+  <script async src="/assets/typed.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -49,53 +50,53 @@
         <div class="terminal--shell px-6 py-4 flex flex-col text-xs  md:text-sm text-gray-400">
           <code>
             <span class="text-green-400">$</span>
-            npx drosse serve -- -r ~/staticjson
+            <span id="cmd-run"></span>
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="line-date"></span>
             <span class="text-blue-500">-> Middlewares:</span>
           </code>
           <code class="line">
             [ 'body-parser-json', 'morgan' ]
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="line-date"></span>
             <span class="text-green-400">-> GET /api/users/premiums</span>
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="line-date"></span>
             <span class="text-green-400">-> GET /api/users/aliens</span>
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="line-date"></span>
             <span class="text-green-400">-> POST /api/users/:id/activate</span>
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="line-date"></span>
             <span class="text-green-400">-> GET /api/users/:id</span>
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="line-date"></span>
             <span class="text-green-400">-> DELETE /api/users/:id</span>
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="line-date"></span>
             <span class="text-green-400">-> GET /api/users</span>
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="line-date"></span>
             App <span class="text-pink-600">Example JSON static app</span> running at:
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span></span>
+            <span class="line-date"></span></span>
             <span class="text-blue-500">- http://localhost:8001</span>
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="line-date"></span>
             <span class="text-blue-500">- http://192.168.1.100:8001
           </code>
           <code class="line">
-            <span class="text-gray-600">20:30:12</span>
+            <span class="text-gray-600"></span>
             Mocks root: <span class="text-pink-600">/Users/jorinho/staticjson</span>
           </code>
           <code class="line">
@@ -449,5 +450,53 @@
       </ul>
     </div>
   </div>
+
+  <script>
+    var runCmdEl = document.querySelector('#cmd-run')
+    var runCmdOutputEl = document.querySelectorAll('.terminal--shell .line')
+
+    new Typed(runCmdEl, {
+      strings: ["npx drosse serve -- -r ~/staticjson"],
+      typeSpeed: 40,
+      loop: false,
+      startDelay: 1000,
+      onComplete: function() {
+        var i = 0
+        var pad = function(input) {
+          var str = input.toString()
+          try {
+            return str.padStart(2, '0')
+          } catch (e) {
+            return str
+          }
+        }
+
+        var interval = window.setInterval(function() {
+          if (i === runCmdOutputEl.length -1) {
+            window.clearInterval(interval)
+
+            window.setTimeout(function() {
+              runCmdOutputEl.forEach(function(line) {
+                //line.classList.remove('visible')
+              })
+            }, 2000)
+          }
+
+          var el = runCmdOutputEl[i]
+          var h = pad((new Date()).getHours())
+          var m = pad((new Date()).getMinutes())
+          var s = pad((new Date()).getSeconds())
+          var dateEl = el.querySelector('.line-date')
+
+          if (dateEl) {
+            dateEl.innerText = h + ':' + m+ ':' + s
+          }
+
+          el.classList.add('visible')
+          i++
+        }, 100)
+      }
+    })
+  </script>
 
 {% endblock %}
