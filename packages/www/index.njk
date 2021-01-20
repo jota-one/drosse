@@ -5,7 +5,6 @@
 {% block head %}
   <link async href="/assets/prism.css" rel="stylesheet" />
   <script async src="/assets/prism.js"></script>
-  <script async src="/assets/typed.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -451,6 +450,7 @@
     </div>
   </div>
 
+  <script src="/assets/typed.min.js"></script>
   <script>
     var runCmdEl = document.querySelector('#cmd-run')
     var runCmdOutputEl = document.querySelectorAll('.terminal--shell .line')
