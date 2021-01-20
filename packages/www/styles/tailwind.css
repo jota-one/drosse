@@ -185,10 +185,6 @@ code.setting {
   @apply text-black dark:text-gray-400;
 }
 
-.features p:not(:first-of-type) {
-  @apply text-gray-500 dark:text-gray-600;
-}
-
 @media screen and (min-width: 1024px) {
   .features li {
     flex-basis: 50%;
