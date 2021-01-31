@@ -43,11 +43,11 @@
       <div class="terminal text-sm">
         <div class="terminal--ratio"></div>
         <div class="terminal--window flex items-center p-3 space-x-1.5">
-          <div class="w-3 h-3 rounded-full bg-gray-600"></div>
-          <div class="w-3 h-3 rounded-full bg-gray-600"></div>
-          <div class="w-3 h-3 rounded-full bg-gray-600"></div>
+          <div class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+          <div class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+          <div class="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"></div>
         </div>
-        <div class="terminal--shell px-6 py-4 flex flex-col text-xs  md:text-sm text-gray-400">
+        <div class="terminal--shell px-6 py-4 flex flex-col text-xs  md:text-sm text-gray-500 dark:text-gray-400">
           <code>
             <span class="text-green-400">$</span>
             <span id="cmd-run"></span>
@@ -274,7 +274,8 @@
             handy if you need to mock multimedia content.
           </p>
           <p>
-            By using a file path as value instead of <code>true</code>, you
+            By using a file path as value instead of
+            <code class="setting">true</code>, you
             can even have a basic URL rewrite mechanism.
           </p>
           {% more "https://github.com/jota-one/drosse/tree/master/packages/core#assets" %}
@@ -287,7 +288,7 @@
           <p>
             Dynamic parameters in routes is a common use case in REST APIs.
             You can define those with a colon (e.g. <code>/api/users/:id</code>)
-            in the <code>routes.json</code> file.
+            in the <code class="file">routes.json</code> file.
           </p>
           <p>
             If you want a single file to match any value of the dynamic param,

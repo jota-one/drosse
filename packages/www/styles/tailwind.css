@@ -28,7 +28,9 @@ code.setting {
   @apply text-yellow-700;
 }
 
-/**/
+/* ************************ */
+/* Theme switcher
+/* ************************ */
 .theme-switcher {
   outline: none !important;
   padding-bottom: 1rem;
@@ -92,10 +94,9 @@ code.setting {
   z-index: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  .hero-bg {
-    opacity: 0.075;
-  }
+
+.dark .hero-bg {
+  opacity: 0.075;
 }
 
 /* ************************ */
@@ -105,9 +106,14 @@ code.setting {
   position: relative;
   flex: 1;
   width: 100%;
-  background-color: rgb(10,10,10 ,0.9);
-  border-top: 1px solid rgba(255,255,255, 0.125);
-  border-bottom: 1px solid rgba(255,255,255, 0.125);
+  background-color: rgba(245,245,245 ,0.9);
+  border: 1px solid rgba(0,0,0, 0.125);
+  box-shadow: 0 0.25rem 1.5rem rgba(0,0,0, 0.2);
+}
+
+.dark .terminal {
+  background-color: rgba(10,10,10 ,0.9);
+  border: 1px solid rgba(255,255,255, 0.125);
   box-shadow: 0 0.25rem 1.5rem rgba(0,0,0, 0.4);
 }
 
@@ -142,6 +148,10 @@ code.setting {
 }
 
 .terminal .line-date {
+  @apply text-gray-400;
+}
+
+.dark .terminal .line-date {
   @apply text-gray-600;
 }
 
