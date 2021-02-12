@@ -2,6 +2,10 @@
   "api": {
     "users": {
       "DROSSE": {
+        "throttle": {
+          "min": 3000,
+          "max": 3000
+        },
         "get": {
           "body": [{
             "id": 1,
@@ -45,6 +49,15 @@
               }
             }
           }
+        }
+      }
+    },
+    "countries-slow": {
+      "DROSSE": {
+        "proxy": "https://restcountries.eu/rest/v2",
+        "throttle": {
+          "min": 2000,
+          "max": 4000
         }
       }
     }
