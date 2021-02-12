@@ -16,15 +16,22 @@ const getThrottle = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
+const getThrottleMiddleware = def => {
+  return (req, res, next) => {
+    if (!def.throttle) {
+      return next()
+    }
+    setTimeout(
+      next,
+      getThrottle(def.throttle.min || 0, def.throttle.max || def.throttle.min)
+    )
+  }
+}
+
 const setRoute = function (app, def, verb, root) {
   app[verb](
     '/' + root.join('/'),
-    (req, res, next) => {
-      if (!def.throttle) {
-        return next()
-      }
-      setTimeout(next, getThrottle(def.throttle.min, def.throttle.max))
-    },
+    getThrottleMiddleware(def),
     (req, res, next) => {
       let response
 
@@ -136,6 +143,7 @@ const createRoute = function (def, root, defHierarchy) {
         },
         onProxyReq: restream,
       },
+      def,
     })
   }
 
@@ -202,11 +210,12 @@ const createProxies = app => {
     return
   }
 
-  app.proxies.forEach(({ path, context }) => {
-    app.use(
-      path || '/',
-      proxy.createProxyMiddleware({ ...context, logLevel: 'warn' })
-    )
+  app.proxies.forEach(({ path, context, def }) => {
+    const middlewares = [
+      getThrottleMiddleware(def),
+      proxy.createProxyMiddleware({ ...context, logLevel: 'warn' }),
+    ]
+    app.use(path || '/', middlewares)
 
     logger.info(`-> PROXY   ${path || '/'} => ${context.target}`)
   })
