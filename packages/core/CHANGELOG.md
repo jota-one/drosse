@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 empty
 
+## [1.11.1] - 2021-02-18
+### Added
+- Support for async services
+
 ## [1.11.0] - 2021-02-12
 ### Added
 - Allow throttle for proxied routes
@@ -80,7 +84,8 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/1.11.0...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/1.11.1...develop
+[1.11.1]: https://github.com/jota-one/drosse/compare/1.11.0...1.11.1
 [1.11.0]: https://github.com/jota-one/drosse/compare/1.10.0...1.11.0
 [1.10.0]: https://github.com/jota-one/drosse/compare/1.9.0...1.10.0
 [1.9.0]: https://github.com/jota-one/drosse/compare/1.8.0...1.9.0
