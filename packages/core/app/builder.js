@@ -32,13 +32,13 @@ const setRoute = function (app, def, verb, root) {
   app[verb](
     '/' + root.join('/'),
     getThrottleMiddleware(def),
-    (req, res, next) => {
+    async (req, res, next) => {
       let response
 
       if (def.service) {
         const api = require('./api')(req, res)
         const service = loadService(root, verb)
-        response = service(api)
+        response = await service(api)
       }
 
       if (def.static) {
