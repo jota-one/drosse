@@ -3,6 +3,7 @@ const c = require('ansi-colors')
 const ip = require('ip')
 const express = require('express')
 const stoppable = require('stoppable')
+const lodash = require('lodash')
 const getPort = require('get-port')
 const config = require('./config')
 const logger = require('./logger')
@@ -48,6 +49,11 @@ const initServer = async args => {
   middlewares.list().forEach(mw => {
     if (typeof mw !== 'function') {
       mw = require('./middlewares/' + mw)
+    }
+
+    // if the middleware signature has 4 arguments, we assume that the first one is the Drosse `api`
+    if (mw.length === 4) {
+      mw = lodash.curry(mw)(require('./api')())
     }
     app.use(mw)
   })
