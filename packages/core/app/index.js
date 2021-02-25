@@ -33,6 +33,12 @@ const initServer = async args => {
   loadUuid()
   process.send({ event: 'uuid', data: state.get('uuid') })
 
+  // extend express app
+  const configureExpress = state.get('configureExpress')
+  if (typeof configureExpress === 'function') {
+    configureExpress(app)
+  }
+
   // run some checks
   if (!checkRoutesFile()) {
     logger.error(

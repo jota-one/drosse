@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 empty
 
+## [1.11.3] - 2021-02-25
+### Added
+- Added new `configureExpress` property in `.drosserc.js` to define custom configurations on the `express` app instance.
+
 ## [1.11.2] - 2021-02-24
 ### Changed
 - App middlewares can now take a fourth argument (at the first place) and will then be curried and having the drosse API injected into the middleware function
@@ -88,7 +92,8 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/1.11.2...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/1.11.3...develop
+[1.11.3]: https://github.com/jota-one/drosse/compare/1.11.2...1.11.3
 [1.11.2]: https://github.com/jota-one/drosse/compare/1.11.1...1.11.2
 [1.11.1]: https://github.com/jota-one/drosse/compare/1.11.0...1.11.1
 [1.11.0]: https://github.com/jota-one/drosse/compare/1.10.0...1.11.0
