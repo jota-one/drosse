@@ -9,6 +9,7 @@ module.exports = {
     collectionsPath: 'collections',
     shallowCollections: [],
     assetsPath: 'assets',
+    hooverServicesPath: 'hoovers',
     servicesPath: 'services',
     staticPath: 'static',
     database: 'mocks.json',

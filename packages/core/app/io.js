@@ -64,6 +64,22 @@ const loadService = (routePath, verb) => {
 
   return require(serviceFile)
 }
+const loadHooverService = routePath => {
+  const serviceFile =
+    path.join(
+      state.get('root'),
+      state.get('hooverServicesPath'),
+      routePath.filter(el => el[0] !== ':').join('.')
+    ) + '.js'
+
+  if (!fs.existsSync(serviceFile)) {
+    return function () {
+      logger.error(`hoover service [${serviceFile}] not found`)
+    }
+  }
+
+  return require(serviceFile)
+}
 
 const findStatic = (
   root,
@@ -155,6 +171,7 @@ module.exports = {
   checkRoutesFile,
   loadRcFile,
   loadService,
+  loadHooverService,
   loadStatic,
   loadUuid,
   routes,

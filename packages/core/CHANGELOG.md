@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 empty
 
+## [1.12.0] - 2021-02-26
+### Added
+- new route option 'hoover' to use along with 'proxy'. Allow to save proxied route response body as a drosse mock content.
+
+### Changed
+- Pass drosse config (state) and db to the vorpal CLI. Which allows to make db queries in CLI commands.
+
 ## [1.11.3] - 2021-02-25
 ### Added
 - Added new `configureExpress` property in `.drosserc.js` to define custom configurations on the `express` app instance.
@@ -93,6 +100,7 @@ TODO
 TODO
 
 [Unreleased]: https://github.com/jota-one/drosse/compare/1.11.3...develop
+[1.12.0]: https://github.com/jota-one/drosse/compare/1.11.3...1.12.0
 [1.11.3]: https://github.com/jota-one/drosse/compare/1.11.2...1.11.3
 [1.11.2]: https://github.com/jota-one/drosse/compare/1.11.1...1.11.2
 [1.11.1]: https://github.com/jota-one/drosse/compare/1.11.0...1.11.1

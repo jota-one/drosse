@@ -5,7 +5,8 @@ module.exports = function () {
   return {
     extend(callback) {
       const state = require('./state')()
-      callback(vorpal, state.get())
+      const db = require('./db')()
+      callback(vorpal, { config: state.get(), db })
     },
 
     start() {
