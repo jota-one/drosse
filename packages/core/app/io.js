@@ -171,6 +171,7 @@ module.exports = {
   checkRoutesFile,
   loadRcFile,
   loadService,
+  loadHooverService,
   loadStatic,
   loadUuid,
   routes,

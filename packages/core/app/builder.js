@@ -6,7 +6,7 @@ const logger = require('./logger')
 const useParser = require('./use/parser')
 const useTemplates = require('./use/templates')
 const useState = require('./use/state')
-const { loadService, loadStatic } = require('./io')
+const { loadService, loadHooverService, loadStatic } = require('./io')
 
 const { parse } = useParser()
 const state = useState()
@@ -133,6 +133,43 @@ const createRoute = function (def, root, defHierarchy) {
 
     const path = [''].concat(root)
 
+    let onProxyRes
+    if (def.hoover) {
+      const hooverService = loadHooverService(root)
+
+      onProxyRes = function (proxyRes, req, res) {
+        const zlib = require('zlib')
+        const bodyChunks = []
+
+        proxyRes.on('data', chunk => {
+          bodyChunks.push(chunk)
+        })
+
+        proxyRes.on('end', () => {
+          const body = Buffer.concat(bodyChunks)
+          if (
+            proxyRes.headers['content-type'] &&
+            proxyRes.headers['content-type'].includes('application/json')
+          ) {
+            const isGzip = res.getHeader('content-encoding') === 'gzip'
+            const str = isGzip
+              ? zlib.gunzipSync(body).toString()
+              : body.toString()
+
+            try {
+              const json = JSON.parse(str)
+              const api = require('./api')(req, res)
+              hooverService(json, api)
+            } catch (e) {
+              console.log('Hoover error: could not encode string to JSON')
+              console.log(str)
+              console.log(e)
+            }
+          }
+        })
+      }
+    }
+
     this.proxies.push({
       path: path.join('/'),
       context: {
@@ -142,6 +179,7 @@ const createRoute = function (def, root, defHierarchy) {
           [path.join('/')]: '/',
         },
         onProxyReq: restream,
+        onProxyRes,
       },
       def,
     })
