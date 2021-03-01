@@ -6,7 +6,7 @@ const logger = require('./logger')
 const useParser = require('./use/parser')
 const useTemplates = require('./use/templates')
 const useState = require('./use/state')
-const { loadService, loadHooverService, loadStatic } = require('./io')
+const { loadService, loadScraperService, loadStatic } = require('./io')
 
 const { parse } = useParser()
 const state = useState()
@@ -134,8 +134,8 @@ const createRoute = function (def, root, defHierarchy) {
     const path = [''].concat(root)
 
     let onProxyRes
-    if (def.hoover) {
-      const hooverService = loadHooverService(root)
+    if (def.scraper) {
+      const scraperService = loadScraperService(root)
 
       onProxyRes = function (proxyRes, req, res) {
         const zlib = require('zlib')
@@ -159,9 +159,9 @@ const createRoute = function (def, root, defHierarchy) {
             try {
               const json = JSON.parse(str)
               const api = require('./api')(req, res)
-              hooverService(json, api)
+              scraperService(json, api)
             } catch (e) {
-              console.log('Hoover error: could not encode string to JSON')
+              console.log('Scraper error: could not encode string to JSON')
               console.log(str)
               console.log(e)
             }

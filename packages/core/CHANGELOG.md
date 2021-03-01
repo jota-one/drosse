@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 empty
 
+## [1.13.0] - 2021-03-01
+### Changed
+- renamed 'hoover' feature to 'scraper'
+
 ## [1.12.0] - 2021-02-26
 ### Added
 - new route option 'hoover' to use along with 'proxy'. Allow to save proxied route response body as a drosse mock content.
