@@ -3,14 +3,6 @@
   "version": "1.11.0",
   "description": "Manage your drosses visually.",
   "bin": "dist/server/index.js",
-  "pkg": {
-    "assets": [
-      "dist/**/*",
-      "node_modules/@jota-one/drosse/bin/*.js",
-      "node_modules/@jota-one/drosse/cmd/*.js",
-      "node_modules/@jota-one/drosse/app/**/*.js"
-    ]
-  },
   "scripts": {
     "drosse": "npx drosse serve",
     "start": "node dist/server",
