@@ -1,13 +1,14 @@
 const proxy = require('http-proxy-middleware')
 const express = require('express')
 const path = require('path')
-const { isEmpty, isString } = require('lodash')
+const { isEmpty, isString, difference } = require('lodash')
 const logger = require('./logger')
 const useParser = require('./use/parser')
 const useTemplates = require('./use/templates')
 const useState = require('./use/state')
-const { loadService, loadScraperService, loadStatic } = require('./io')
+const useIo = require('./use/io')
 
+const { loadService, loadScraperService, loadStatic, loadScraped } = useIo()
 const { parse } = useParser()
 const state = useState()
 const templates = useTemplates()
@@ -34,6 +35,7 @@ const setRoute = function (app, def, verb, root) {
     getThrottleMiddleware(def),
     async (req, res, next) => {
       let response
+      let applyTemplate = true
 
       if (def.service) {
         const api = require('./api')(req, res)
@@ -42,15 +44,37 @@ const setRoute = function (app, def, verb, root) {
       }
 
       if (def.static) {
-        response = loadStatic(root, req.params, verb)
+        try {
+          const { params, query } = req
+          response = loadStatic({ routePath: root, params, verb, query })
+          if (!response) {
+            response = loadScraped({ routePath: root, params, verb, query })
+            applyTemplate = false
+
+            if (!response) {
+              applyTemplate = true
+              response = {
+                drosse: `loadStatic: file not found with routePath = ${root.join(
+                  '/'
+                )}`,
+              }
+            }
+          }
+        } catch (e) {
+          response = {
+            drosse: e.message,
+          }
+        }
       }
 
       if (def.body) {
         response = def.body
+        applyTemplate = true
       }
 
       // Don't apply any template if the responseType is 'file'.
       if (
+        applyTemplate &&
         def.responseType !== 'file' &&
         def.template &&
         Object.keys(def.template).length
@@ -126,7 +150,7 @@ const createRoute = function (def, root, defHierarchy) {
     })
   }
 
-  if (def.proxy) {
+  if (def.proxy || def.scraper) {
     if (!this.proxies) {
       this.proxies = []
     }
@@ -135,7 +159,34 @@ const createRoute = function (def, root, defHierarchy) {
 
     let onProxyRes
     if (def.scraper) {
-      const scraperService = loadScraperService(root)
+      let tmpProxy = def.proxy
+      if (!tmpProxy) {
+        tmpProxy = defHierarchy.reduce((acc, item) => {
+          if (item.proxy) {
+            return {
+              proxy: item.proxy,
+              path: item.path,
+            }
+          } else {
+            if (!acc) {
+              return acc
+            }
+            const subpath = difference(item.path, acc.path)
+            return {
+              proxy: acc.proxy.split('/').concat(subpath).join('/'),
+              path: item.path,
+            }
+          }
+        }, null)
+        def.proxy = tmpProxy && tmpProxy.proxy
+      }
+      let scraperService
+      if (def.scraper.service) {
+        scraperService = loadScraperService(root)
+      } else if (def.scraper.static) {
+        const useScraper = require('./use/scraper')
+        scraperService = useScraper().staticService
+      }
 
       onProxyRes = function (proxyRes, req, res) {
         const zlib = require('zlib')
@@ -170,19 +221,21 @@ const createRoute = function (def, root, defHierarchy) {
       }
     }
 
-    this.proxies.push({
-      path: path.join('/'),
-      context: {
-        target: def.proxy,
-        changeOrigin: true,
-        pathRewrite: {
-          [path.join('/')]: '/',
+    if (def.proxy) {
+      this.proxies.push({
+        path: path.join('/'),
+        context: {
+          target: def.proxy,
+          changeOrigin: true,
+          pathRewrite: {
+            [path.join('/')]: '/',
+          },
+          onProxyReq: restream,
+          onProxyRes,
         },
-        onProxyReq: restream,
-        onProxyRes,
-      },
-      def,
-    })
+        def,
+      })
+    }
   }
 
   return inheritance

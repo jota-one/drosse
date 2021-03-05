@@ -4,11 +4,11 @@ const rrdir = require('rrdir')
 const { isEmpty } = require('lodash')
 const { v4: uuidv4 } = require('uuid')
 const { replace } = require('@jota-one/replacer')
-const useState = require('./use/state')
-const useMiddleware = require('./use/middlewares')
-const useTemplates = require('./use/templates')
-const useCommands = require('./use/commands')
-const logger = require('./logger')
+const useState = require('./state')
+const useMiddleware = require('./middlewares')
+const useTemplates = require('./templates')
+const useCommands = require('./commands')
+const logger = require('../logger')
 const state = useState()
 const middlewares = useMiddleware()
 const templates = useTemplates()
@@ -81,75 +81,38 @@ const loadScraperService = routePath => {
   return require(serviceFile)
 }
 
-const findStatic = (
-  root,
-  files,
-  routePath,
-  params = {},
-  verb = null,
-  skipVerb = false
-) => {
-  const comparePath = filePath => filePath.replace(root, '').substr(1)
-
-  let staticFile = replace(
-    path.join(
-      state.get('root'),
-      state.get('staticPath'),
-      routePath
-        .join('.')
-        .concat(verb && !skipVerb ? `.${verb}` : '')
-        .replace(/:([^\\/\\.]+)/gim, '{$1}')
-    ),
-    params
+const writeScrapedFile = async (filename, content) => {
+  const root = path.join(state.get('root'), state.get('scrapedPath'))
+  await fs.promises.writeFile(
+    path.join(root, filename),
+    JSON.stringify(content),
+    'utf-8'
   )
-  staticFile = staticFile.concat(
-    staticFile.slice(-5) === '.json' ? '' : '.json'
-  )
-
-  const foundFiles = files.filter(
-    file =>
-      comparePath(file.path).replace(/\//gim, '.') === comparePath(staticFile)
-  )
-
-  if (foundFiles.length > 1) {
-    const error = `findStatic: more than 1 file found for:\n[${staticFile}]:\n${foundFiles
-      .map(f => f.path)
-      .join('\n')}`
-
-    logger.error(error)
-    return { drosse: error }
-  }
-
-  if (foundFiles.length === 1) {
-    staticFile = foundFiles[0].path
-    logger.info(`findStatic: file used: ${staticFile}`)
-  }
-
-  if (foundFiles.length === 0) {
-    logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
-
-    if (verb && !skipVerb) {
-      return findStatic(root, files, routePath, params, verb, true)
-    }
-
-    // retry by removing the first param of the list
-    if (!isEmpty(params)) {
-      logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
-      const newParams = Object.keys(params)
-        .slice(1)
-        .reduce((acc, name) => ({ ...acc, [name]: params[name] }), {})
-      return findStatic(root, files, routePath, newParams, verb)
-    }
-    return { drosse: `file [${staticFile}] not found.` }
-  }
-
-  return require(staticFile)
+  return true
 }
 
-const loadStatic = (routePath, params = {}, verb = null, skipVerb = false) => {
+const loadStatic = ({
+  routePath,
+  params = {},
+  query = {},
+  verb = null,
+  skipVerb = false,
+}) => {
   const root = path.join(state.get('root'), state.get('staticPath'))
   const files = rrdir.sync(root)
-  return findStatic(root, files, routePath, params, verb, skipVerb)
+  return findStatic(root, files, routePath, params, verb, skipVerb, query)
+}
+
+const loadScraped = ({
+  routePath,
+  params = {},
+  query = {},
+  verb = null,
+  skipVerb = false,
+}) => {
+  const root = path.join(state.get('root'), state.get('scrapedPath'))
+  const files = rrdir.sync(root)
+  return findStatic(root, files, routePath, params, verb, skipVerb, query)
 }
 
 const loadUuid = () => {
@@ -167,12 +130,107 @@ const routes = () => {
   return JSON.parse(content)
 }
 
-module.exports = {
-  checkRoutesFile,
-  loadRcFile,
-  loadService,
-  loadScraperService,
-  loadStatic,
-  loadUuid,
-  routes,
+const getStaticFileName = (routePath, params = {}, verb = null, query = {}) => {
+  const queryPart = Object.entries(query)
+    .sort(([name1], [name2]) => {
+      return name1 > name2 ? 1 : -1
+    })
+    .reduce((acc, [name, value]) => {
+      return acc.concat(`${name}=${value}`)
+    }, [])
+    .join('&')
+
+  let filename = replace(
+    routePath
+      .join('.')
+      .concat(verb ? `.${verb.toLowerCase()}` : '')
+      .replace(/:([^\\/\\.]+)/gim, '{$1}')
+      .concat(queryPart ? `&&${queryPart}` : ''),
+    params
+  )
+
+  filename = filename.concat(filename.slice(-5) === '.json' ? '' : '.json')
+
+  return filename
+}
+
+const findStatic = (
+  root,
+  files,
+  routePath,
+  params = {},
+  verb = null,
+  skipVerb = false,
+  query = {}
+) => {
+  const comparePath = filePath => filePath.replace(root, '').substr(1)
+
+  const filename = getStaticFileName(
+    routePath,
+    params,
+    !skipVerb && verb,
+    query
+  )
+  let staticFile = path.join(root, filename)
+
+  const foundFiles = files.filter(
+    file =>
+      comparePath(file.path).replace(/\//gim, '.') === comparePath(staticFile)
+  )
+
+  if (foundFiles.length > 1) {
+    const error = `findStatic: more than 1 file found for:\n[${staticFile}]:\n${foundFiles
+      .map(f => f.path)
+      .join('\n')}`
+
+    throw new Error(error)
+  }
+
+  if (foundFiles.length === 1) {
+    staticFile = foundFiles[0].path
+    logger.info(`findStatic: file used: ${staticFile}`)
+  }
+
+  if (foundFiles.length === 0) {
+    logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
+
+    // try without the query string if there was any
+    if (!isEmpty(query)) {
+      return findStatic(root, files, routePath, params, verb, skipVerb)
+    }
+
+    // if a verb was provided and not yet skipped, try to skip it
+    if (verb && !skipVerb) {
+      return findStatic(root, files, routePath, params, verb, true, query)
+    }
+
+    // retry by removing the first param of the list
+    if (!isEmpty(params)) {
+      logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
+      const newParams = Object.keys(params)
+        .slice(1)
+        .reduce((acc, name) => ({ ...acc, [name]: params[name] }), {})
+      return findStatic(root, files, routePath, newParams, verb)
+    }
+
+    // really didn't find any file matching conditions
+    return false
+  }
+
+  return require(staticFile)
+}
+
+module.exports = function useIo() {
+  return {
+    checkRoutesFile,
+    getStaticFileName,
+    loadRcFile,
+    loadService,
+    loadScraperService,
+    loadStatic,
+    loadScraped,
+    loadUuid,
+    routes,
+    writeScrapedFile,
+  }
 }

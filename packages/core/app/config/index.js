@@ -11,6 +11,7 @@ module.exports = {
     assetsPath: 'assets',
     scraperServicesPath: 'scrapers',
     servicesPath: 'services',
+    scrapedPath: 'scraped',
     staticPath: 'static',
     database: 'mocks.json',
     reservedRoutes: { ui: '/UI' },
