@@ -12,13 +12,14 @@ const useState = require('./use/state')
 const useMiddlewares = require('./use/middlewares')
 const useCommands = require('./use/commands')
 const useDb = require('./use/db')
-const { checkRoutesFile, loadUuid, loadRcFile, routes } = require('./io')
+const useIo = require('./use/io')
 const { createRoutes } = require('./builder')
 
 const app = express()
 const state = useState()
 const middlewares = useMiddlewares()
 const db = useDb()
+const { checkRoutesFile, loadUuid, loadRcFile, routes } = useIo()
 
 process.send = process.send || function () {}
 
@@ -42,9 +43,9 @@ const initServer = async args => {
   // run some checks
   if (!checkRoutesFile()) {
     logger.error(
-      `Please create a "${state.get('routesFile')}.json" or a "${state.get(
+      `Please create a "${state.get(
         'routesFile'
-      )}.js" file in this directory: ${state.get('root')}, and restart.`
+      )}.json" file in this directory: ${state.get('root')}, and restart.`
     )
     process.exit()
   }
