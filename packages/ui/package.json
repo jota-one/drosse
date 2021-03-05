@@ -1,6 +1,6 @@
 {
   "name": "@jota-one/drosse-ui",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "description": "Manage your drosses visually.",
   "bin": "dist/server/index.js",
   "pkg": {
@@ -31,7 +31,7 @@
   },
   "homepage": "https://drosse.dev",
   "dependencies": {
-    "@jota-one/drosse": "^1.12.0",
+    "@jota-one/drosse": "^1.13.0",
     "ansi-to-html": "^0.6.14",
     "body-parser": "^1.19.0",
     "core-js": "^3.6.5",
