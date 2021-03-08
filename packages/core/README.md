@@ -998,6 +998,7 @@ module.exports = {
 | `middlewares`        | **['body-parser-json', 'morgan']** | List of global middlewares. Drosse provides 3 built-in middlewares, 2 being added by default. The third is 'open-cors'. |
 | `templates`          | **{}**          | Templates to be used in `routes.json`. See [templates](#templates) documentation. |
 | `errorHandler`       | **(empty)**     | A custom express error handler. Must be a function with the following signature: function (err, req, res, next) { ... } (see [express documentation](https://expressjs.com/en/guide/error-handling.html#the-default-error-handler)) |
+| `configureExpress`   | **(empty)**     | Used to set custom instructions to the express app. Must be a function with the following signature: function (app) {}. `app` being the express instance. |
 | `commands`           | **(empty)**     | Used to extend Drosse CLI with custom commands. Must be a function with the following signature: function (vorpal, drosse) { ... }. See [the cli](#cli) documentation. |
 
 ### Custom middlewares
