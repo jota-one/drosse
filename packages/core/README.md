@@ -986,6 +986,7 @@ module.exports = {
 |----------------------|---------------|-------------|
 | `name`               | **(empty)**     | The name of your app. Mostly used to recognize it in your console or in [drosse UI](https://github.com/jota-one/drosse-ui). |
 | `port`               | **8000**        | The port on which your mock server will run.<br>If not specified in `.drosserc.js` and already in use, Drosse will use the next available port if finds (8001, 8002, etc.) |
+| `baseUrl`            | **(empty)**     | A prefix that will be added to each route path |
 | `routesFile`         | **routes**      | Name of the routes definition file. |
 | `collectionsPath`    | **collections** | Relative path to the loki collections directory from your mocks directory. |
 | `shallowCollections` | **[]**          | List of collections that should be recreated/overriden on each server restart. |
@@ -1091,7 +1092,7 @@ If we take the same example as for the services. For a `GET /api/users/:id/super
 
 Your service must export a function which takes 2 parameters. The first one is the response of your scraped endpoint. It will be a JS object. The second one is the same `api` object as the one you get in a normal Drosse service.
 
-This gives you then access to the `db` object, the whole drosse `config` object, the `req`, etc... 
+This gives you then access to the `db` object, the whole drosse `config` object, the `req`, etc...
 
 ```js
 module.exports = function (json, { db, config, req }) {
