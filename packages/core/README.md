@@ -475,13 +475,14 @@ To define a `static mock`, simply set the `static` property of your `DROSSE` obj
 }
 ```
 
-With such a definition, when you call `GET /api/users/65`, drosse will look for a specific JSON file in the `static` subdirectory of your mocks directory.
+With such a definition, when you call `GET /api/users/65?withDetails=1`, drosse will look for a specific JSON file in the `static` subdirectory of your mocks directory.
 
 :fire: You can redefine this `static` directory name in your `.drosserc.js` file ([see below](#drosserc)).
 
 Drosse will look for different filenames, from the more precise to the more generic until it finds one that matches. Let's keep the above example and see which filenames will be looked for:
 
 ```
+api.users.65.get&&withDetails=1.json
 api.users.65.get.json
 api.users.65.json
 api.users.{id}.json
@@ -506,7 +507,7 @@ If we try to call `GET /api/users/3` and we have defined the following static mo
 ```
 api.users.1.json
 api.users.2.json
-api.users{id}.json
+api.users.{id}.json
 ```
 
 ```bash
@@ -520,7 +521,9 @@ api.users{id}.json
 1:17:27 AM loadStatic: tried with [/some/path/mymocks/static/api.users.3.json]. File not found.
 1:17:27 AM loadStatic: tried with [/some/path/mymocks/static/api.users.{id}.get.json]. File not found.
 ```
-You can see above that the system has first tried with the very precise `api.users.3.get.json` (resolved parameter + verb). Then it tries the same without verb (`api.users.3.json`). As it still fails, it tries without resolving the parameter, but again with the verb (`api.users.{id}.get.json`) and finally find a corresponding mock file with `api.users.{id}.json`. Of course this last one is not logged as it was found.
+You can see above that the system has first tried with the most precise `api.users.3.get.json` (resolved parameter + verb). Then it tries the same without verb (`api.users.3.json`). As it still fails, it tries without resolving the parameter, but again with the verb (`api.users.{id}.get.json`) and finally find a corresponding mock file with `api.users.{id}.json`. Of course this last one is not logged as it was found.
+
+:bulb: if Drosse really doesn't find any file corresponding to the requested endpoint, it will give an ultimate look in the `scraped` static files. More on this in the __endpoints scraping__ dedicated section ([-> right here](#endpoints-scraping)).
 
 <a name="dynamic-mocks"></a>
 ## Services (aka dynamic mocks)
@@ -983,16 +986,20 @@ module.exports = {
 |----------------------|---------------|-------------|
 | `name`               | **(empty)**     | The name of your app. Mostly used to recognize it in your console or in [drosse UI](https://github.com/jota-one/drosse-ui). |
 | `port`               | **8000**        | The port on which your mock server will run.<br>If not specified in `.drosserc.js` and already in use, Drosse will use the next available port if finds (8001, 8002, etc.) |
+| `baseUrl`            | **(empty)**     | A prefix that will be added to each route path |
 | `routesFile`         | **routes**      | Name of the routes definition file. |
 | `collectionsPath`    | **collections** | Relative path to the loki collections directory from your mocks directory. |
 | `shallowCollections` | **[]**          | List of collections that should be recreated/overriden on each server restart. |
 | `assetsPath`         | **assets**      | Relative path to the assets directory from your mocks directory. |
 | `servicesPath`       | **services**    | Relative path to the services directory from your mocks directory. |
 | `staticPath`         | **static**      | Relative path to the static files directory from your mocks directory. |
+| `scraperServicesPath`| **scrapers**    | Relative path to the scraper services files directory from your mocks directory. |
+| `scrapedPath`        | **scraped**     | Relative path to the scraped files directory from your mocks directory. |
 | `database`           | **mocks.db**    | Name of your loki database dump file. |
 | `middlewares`        | **['body-parser-json', 'morgan']** | List of global middlewares. Drosse provides 3 built-in middlewares, 2 being added by default. The third is 'open-cors'. |
 | `templates`          | **{}**          | Templates to be used in `routes.json`. See [templates](#templates) documentation. |
 | `errorHandler`       | **(empty)**     | A custom express error handler. Must be a function with the following signature: function (err, req, res, next) { ... } (see [express documentation](https://expressjs.com/en/guide/error-handling.html#the-default-error-handler)) |
+| `configureExpress`   | **(empty)**     | Used to set custom instructions to the express app. Must be a function with the following signature: function (app) {}. `app` being the express instance. |
 | `commands`           | **(empty)**     | Used to extend Drosse CLI with custom commands. Must be a function with the following signature: function (vorpal, drosse) { ... }. See [the cli](#cli) documentation. |
 
 ### Custom middlewares
@@ -1021,6 +1028,80 @@ module.exports = function (api, req, res, next) {
 }
 ```
 
+<a name="endpoints-scraping"></a>
+## Endpoints scraping
+Do you remember, back in the days, these webscrapers ? You just turn them on then browse a website and they will eventually save the whole website on your machine? Well Drosse provides something similar, but a little less brutal as you can define precisely which endpoint you would like to scrape.
+
+:warning: Endpoint scraping come along with the `proxy` feature. You won't scrape your own defined mocks, right?
+
+There are 2 ways to scrape your proxied endpoints responses. The `static` and the `dynamic`.
+
+### Static scraping
+The easiest one. Just indicate in your `routes.json` file, which endpoint you want to scrape.
+
+```json
+    "countries": {
+      "DROSSE": {
+        "proxy": "https://restcountries.eu/rest/v2"
+      },
+      "name": {
+        "DROSSE": {
+          "scraper": {
+            "static": true
+          }
+        }
+      }
+    }
+```
+In the snippet above, we've told Drosse to scrape any call to the `.../countries/name/....` endpoint.
+
+Concretely, it means that Drosse will copy & save the response of any of those calls into a static JSON file in the `scraped` directory of your `mocks`.
+
+:fire: As usual, you can redefine this `scraped` directory name in your `.drosserc.js` file ([see above](#drosserc)).
+
+This can be a convenient way to populate your mocks contents if the backend API already exists. Just configure your mocks to proxy the existing API and activate the scraper. When you have enought contents, remove the proxy and redefine your mocked routes as `static` mocks.
+
+Ideally you would rework your scraped contents and create relevant `static` file mocks out of it, maybe add some `templates`, etc. But you can also let them as they are, in the `scraped` directory: Drosse will always fallback on this directory if it doesn't find any match in the `static` directory.
+
+### Dynamic scraping
+The dynamic scraping will let you rework the scraped content and save it exactly how and where you want to.
+
+```json
+    "countries": {
+      "DROSSE": {
+        "proxy": "https://restcountries.eu/rest/v2"
+      },
+      "name": {
+        "DROSSE": {
+          "scraper": {
+            "service": true
+          }
+        }
+      }
+    }
+```
+
+In contrast with the Static scraping, you simply have to replace the `static` by `service`; see above.
+
+When Drosse encounter that configuration, it will look for a dedicated scraper service in the `scrapers` directory. The file must be named accordingly with the scraped endpoint. It's the same logic as for the normal `services` naming. You take each route node, remove the path parameters and replace `/` with `.`. And you ignore the verb.
+
+If we take the same example as for the services. For a `GET /api/users/:id/superpowers/:name` the scraper service file will be `api.users.superpowers.js`. No parameters, no verb.
+
+
+:fire: As always, the scrapers directory can be renamed in the `.drosserc.js` file, with the `scraperServicesPath` property ([see above](#drosserc)).
+
+Your service must export a function which takes 2 parameters. The first one is the response of your scraped endpoint. It will be a JS object. The second one is the same `api` object as the one you get in a normal Drosse service.
+
+This gives you then access to the `db` object, the whole drosse `config` object, the `req`, etc...
+
+```js
+module.exports = function (json, { db, config, req }) {
+  // rework your json
+  // save it in the database
+  // create a proper JSON file in the `collections` directory to have your scraped content automatically reloaded in your DB even if you delete your db file.
+}
+```
+
 <a name="cli"></a>
 ## The CLI
 
@@ -1032,6 +1113,7 @@ This feature is still under active development, but you can already create your 
 - Cascading Proxies
 - Fallback to static JSON mocks
 - In-memory db
+- Endpoints scraping
 - Seamless integration to your project OR
 - Standalone global mode
 

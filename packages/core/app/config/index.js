@@ -5,6 +5,7 @@ module.exports = {
   state: {
     name: 'Drosse mock server',
     port: 8000,
+    baseUrl: '',
     routesFile: 'routes',
     collectionsPath: 'collections',
     shallowCollections: [],
