@@ -31,7 +31,7 @@ const getThrottleMiddleware = def => {
 
 const setRoute = function (app, def, verb, root) {
   app[verb](
-    `${state.get('baseUrl')}/${root.join('/')}`,
+    `${state.get('basePath')}/${root.join('/')}`,
     getThrottleMiddleware(def),
     async (req, res, next) => {
       let response
@@ -98,7 +98,7 @@ const setRoute = function (app, def, verb, root) {
   )
 
   logger.success(
-    `-> ${verb.toUpperCase().padEnd(7)} ${state.get('baseUrl')}/${root.join(
+    `-> ${verb.toUpperCase().padEnd(7)} ${state.get('basePath')}/${root.join(
       '/'
     )}`
   )

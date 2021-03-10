@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.13.2] - 2021-03-10
+### Added
+- added a `basePath` config
+
 ## [1.13.1] - 2021-03-09
 ### Added
 - added a `baseUrl` config
@@ -110,7 +114,8 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/1.13.1...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/1.13.2...develop
+[1.13.2]: https://github.com/jota-one/drosse/compare/1.13.1...1.13.2
 [1.13.1]: https://github.com/jota-one/drosse/compare/1.13.0...1.13.1
 [1.13.0]: https://github.com/jota-one/drosse/compare/1.12.0...1.13.0
 [1.12.0]: https://github.com/jota-one/drosse/compare/1.11.3...1.12.0

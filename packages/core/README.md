@@ -986,7 +986,8 @@ module.exports = {
 |----------------------|---------------|-------------|
 | `name`               | **(empty)**     | The name of your app. Mostly used to recognize it in your console or in [drosse UI](https://github.com/jota-one/drosse-ui). |
 | `port`               | **8000**        | The port on which your mock server will run.<br>If not specified in `.drosserc.js` and already in use, Drosse will use the next available port if finds (8001, 8002, etc.) |
-| `baseUrl`            | **(empty)**     | A prefix that will be added to each route path |
+| `baseUrl`            | **(empty)**     | The base URL (ex. http://my.domain.com) for the routes |
+| `basePath`           | **(empty)**     | A prefix (ex. /api/v2) that will be added to each route path |
 | `routesFile`         | **routes**      | Name of the routes definition file. |
 | `collectionsPath`    | **collections** | Relative path to the loki collections directory from your mocks directory. |
 | `shallowCollections` | **[]**          | List of collections that should be recreated/overriden on each server restart. |
