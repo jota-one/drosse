@@ -365,7 +365,7 @@
             Proxying
           </h3>
           <p>
-            Routes can be proxied to other services via the
+            Routes can be proxied to other endpoints via the
             <code class="setting">proxy</code> setting, which is applied to
             child routes as well unless otherwise specified.
           </p>
@@ -417,6 +417,20 @@
           </p>
           {% more "https://github.com/jota-one/drosse/tree/master/packages/core#templates" %}
         </li>
+        <li id="scraping">
+          <h3>
+            {% icon name="template", color="cyan" %}
+            Scraping
+          </h3>
+          <p>
+            Along with the Proxying feature, Drosse lets you scrape the proxied endpoint and
+            save the scraped content into its database or in static files.
+          </p>
+          <p>
+            There are several levels of scraping. For more information, check the docs.
+          </p>
+          {% more "https://github.com/jota-one/drosse/tree/master/packages/core#endpoints-scraping" %}
+        </li>
         <li id="repl">
           <h3>
             {% icon name="terminal", color="lime" %}
@@ -437,7 +451,7 @@
           <h3>
             {% icon name="monitor", color="mediumaquamarine" %}
             Desktop UI app
-            <span class="p-1 text-xs font-base border-2 rounded-md -mt-2 ml-2 text-green-500 border-green-500">coming soon</span>
+            <span class="p-1 text-xs font-base border-2 rounded-md -mt-2 ml-2 text-green-500 border-green-500">coming soon...ish</span>
           </h3>
           <p>
             Oh and we are very close to ship a desktop application where
