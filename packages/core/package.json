@@ -4,11 +4,10 @@
   "description": "Mock your backend the right way.",
   "main": "app/index.js",
   "bin": {
-    "drosse": "./bin/drosse.js",
-    "drosse-serve": "./bin/serve.js"
+    "drosse": "./bin/drosse.js"
   },
   "scripts": {
-    "serve": "./bin/serve.js"
+    "serve": "./bin/drosse.js serve"
   },
   "repository": {
     "type": "git",

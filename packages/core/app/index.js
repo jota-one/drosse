@@ -10,7 +10,6 @@ const logger = require('./logger')
 const openCors = require('./middlewares/open-cors')
 const useState = require('./use/state')
 const useMiddlewares = require('./use/middlewares')
-const useCommands = require('./use/commands')
 const useDb = require('./use/db')
 const useIo = require('./use/io')
 const { createRoutes } = require('./builder')
@@ -31,8 +30,11 @@ const initServer = async args => {
   loadRcFile()
 
   // load uuid from the .uuid file (create it if needed), needed for the UI
-  loadUuid()
-  process.send({ event: 'uuid', data: state.get('uuid') })
+  // only do it if routesFile exists to prevent creating useless .uuid file
+  if (checkRoutesFile()) {
+    loadUuid()
+    process.send({ event: 'uuid', data: state.get('uuid') })
+  }
 
   // extend express app
   const configureExpress = state.get('configureExpress')
@@ -146,7 +148,7 @@ const onStart = drosse => {
     logger.debug(`Mocks root: ${c.magenta(state.get('root'))}`)
     console.log()
 
-    useCommands().start()
+    process.send({ event: 'ready' })
   }, 100)
 
   // advertise UI of our presence
@@ -179,15 +181,6 @@ module.exports = async args => {
     })
   }
 
-  const exitHandler = arg => {
-    setTimeout(() => {
-      if (typeof arg === 'object') {
-        console.log(arg)
-      }
-      process.exit()
-    }, 0)
-  }
-
   process.on('message', ({ event, data }) => {
     if (event === 'start') {
       logger.warn('Server started by UI')
@@ -197,22 +190,6 @@ module.exports = async args => {
       stop()
     }
   })
-
-  // handle process exits and tell UI we are down
-  process.stdin.resume()
-
-  // app closes
-  process.on('exit', exitHandler)
-
-  // catch ctrl+c event
-  process.on('SIGINT', exitHandler)
-
-  // catch "kill pid" (for example: nodemon restart)
-  process.on('SIGUSR1', exitHandler)
-  process.on('SIGUSR2', exitHandler)
-
-  // catch uncaught exceptions
-  process.on('uncaughtException', exitHandler)
 
   return { drosse, routes, inherited, start, stop }
 }
