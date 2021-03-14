@@ -1,5 +1,5 @@
 const config = require('../config')
-const _ = require('lodash')
+const { merge, pick } = require('lodash')
 
 let state = JSON.parse(JSON.stringify(config.state))
 
@@ -15,7 +15,9 @@ module.exports = function () {
       return state
     },
     merge(conf) {
-      state = _.merge(state, conf)
+      // merge only authorized (aka already defined) keys into the state
+      const keysWhitelist = Object.keys(state)
+      state = merge(state, pick(conf, keysWhitelist))
     },
   }
 }
