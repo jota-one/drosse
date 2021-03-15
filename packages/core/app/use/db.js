@@ -9,102 +9,88 @@ let db
 
 module.exports = function () {
   const state = useState()
+  const collectionsPath = () =>
+    path.join(state.get('root'), state.get('collectionsPath'))
+  const normalizedPath = filePath =>
+    filePath.replace(collectionsPath(), '').substr(1)
 
-  const defineCollectionsList = () => {
-    const readdirp = require('readdirp')
-    const streamToPromise = require('stream-to-promise')
-
-    return streamToPromise(
-      readdirp(path.join(state.get('root'), state.get('collectionsPath')), {
-        fileFilter: ['*.json'],
+  const loadAllMockFiles = async () => {
+    const res = await require('rrdir').async(collectionsPath())
+    return res
+      .filter(entry => !entry.directory && entry.path.endsWith('json'))
+      .map(entry => {
+        entry.path = normalizedPath(entry.path)
+        return entry
       })
-    )
+  }
+
+  const handleCollection = (name, alreadyHandled, newCollections) => {
+    const shallowCollections = state.get('shallowCollections')
+    const coll = db.getCollection(name)
+
+    if (coll) {
+      if (newCollections.includes(name)) {
+        return coll
+      }
+
+      if (!shallowCollections.includes(name)) {
+        if (alreadyHandled.includes(name)) {
+          return false
+        }
+        logger.warn(
+          '📦 collection',
+          name,
+          "already exists and won't be overriden."
+        )
+        alreadyHandled.push(name)
+        return false
+      }
+
+      if (alreadyHandled.includes(name)) {
+        return coll
+      }
+      logger.warn(
+        '🌊 collection',
+        name,
+        'already exists and will be overriden.'
+      )
+      db.removeCollection(name)
+      alreadyHandled.push(name)
+    }
+
+    newCollections.push(name)
+    return db.addCollection(name)
   }
 
   const loadContents = async () => {
     const fs = require('fs').promises
-    const dirname = path.join(state.get('root'), state.get('collectionsPath'))
-    const shallowCollections = state.get('shallowCollections')
+    const files = await loadAllMockFiles()
+    const handled = []
+    const newCollections = []
 
-    const res = await defineCollectionsList()
-    const collectionList = lodash
-      .chain(res)
-      .map(file => {
-        const collection = file.path.split(path.sep).slice(0, -1).join(path.sep)
-        return collection || file.path.split('.').slice(0, -1).join('.')
-      })
-      .uniq()
-      .map(file => file.split(path.sep).join('.'))
-      .value()
-
-    return Promise.all(
-      collectionList.map(name => {
-        let coll = db.getCollection(name)
-
-        if (coll) {
-          if (!shallowCollections.includes(name)) {
-            logger.warn(
-              '📦 collection',
-              name,
-              "already exists and won't be overriden."
-            )
-            return false
-          } else {
-            logger.warn(
-              '🌊 collection',
-              name,
-              'already exists and will be overriden.'
-            )
-            db.removeCollection(name)
-          }
-        }
-        coll = db.addCollection(name)
-
-        const filesPath = path.join(dirname, name.split('.').join(path.sep))
-        return fs
-          .readdir(filesPath)
-          .catch(e => {
-            logger.warn(e.path, 'is not a directory.')
-            logger.warn('I try as a JSON file...')
-            fs.readFile(e.path + '.json', 'utf-8').then(content => {
-              const files = JSON.parse(content)
-              if (!Array.isArray(files)) {
-                logger.error(
-                  'Cannot import collection file into db. It must be an array.'
-                )
-              }
-              files.forEach(file => coll.insert(file))
-              logger.success(
-                `Collection successfully imported. ${files.length} files imported.`
-              )
-            })
-            return [] // so that the next then doesn't do anything...
-          })
-          .then(filenames =>
-            Promise.all(
-              filenames
-                .filter(filename => filename.endsWith('json'))
-                .map(filename =>
-                  fs
-                    .readFile(path.join(filesPath, filename), 'utf-8')
-                    .then(content => {
-                      logger.success(
-                        `loaded ${filename} into collection ${name}`
-                      )
-                      return coll.insert(JSON.parse(content))
-                    })
-                )
-            )
-          )
-      })
-    )
+    for (const entry of files) {
+      const filename = entry.path.split(path.sep).pop()
+      const fileContent = await fs.readFile(
+        path.join(collectionsPath(), entry.path),
+        'utf-8'
+      )
+      const content = JSON.parse(fileContent)
+      const collectionName = Array.isArray(content)
+        ? entry.path.slice(0, -5).split(path.sep).join('.')
+        : entry.path.split(path.sep).slice(0, -1).join('.')
+      const coll = handleCollection(collectionName, handled, newCollections)
+      if (coll) {
+        coll.insert(content)
+        logger.success(`loaded ${filename} into collection ${collectionName}`)
+      }
+    }
   }
 
   const clean = (...fields) => result =>
     lodash.omit(result, config.db.reservedFields.concat(fields || []))
 
   const service = {
-    loadDb: function () {
+    loadDb() {
       return new Promise((resolve, reject) => {
         try {
           db = new Loki(path.join(state.get('root'), state.get('database')), {

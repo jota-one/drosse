@@ -11,6 +11,7 @@ const openCors = require('./middlewares/open-cors')
 const useState = require('./use/state')
 const useMiddlewares = require('./use/middlewares')
 const useDb = require('./use/db')
+const useTemplates = require('./use/templates')
 const useIo = require('./use/io')
 const { createRoutes } = require('./builder')
 
@@ -18,16 +19,44 @@ const app = express()
 const state = useState()
 const middlewares = useMiddlewares()
 const db = useDb()
-const { checkRoutesFile, loadUuid, loadRcFile, routes } = useIo()
+const { checkRoutesFile, loadUuid, getUserConfig, routes } = useIo()
 
 process.send = process.send || function () {}
 
 const initServer = async args => {
+  // very first action -> set the 'root' directory in the state. Will be useful for further operations.
   state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
-  middlewares.set(config.middlewares)
 
-  // check for some users configuration in a drosserc.js file
-  loadRcFile()
+  // check for some users configuration in a drosserc.js file and update state
+  const userConfig = getUserConfig()
+  state.merge(userConfig)
+
+  // run some checks
+  if (!checkRoutesFile()) {
+    logger.error(
+      `Please create a "${state.get(
+        'routesFile'
+      )}.json" file in this directory: ${state.get('root')}, and restart.`
+    )
+    process.exit()
+  }
+
+  // start and populate database as early as possible
+  await db.loadDb()
+
+  // set other user defined properties that are not part of the state
+  if (userConfig.commands) {
+    useCommands().extend(userConfig.commands)
+  }
+
+  middlewares.set(config.middlewares)
+  if (userConfig.middlewares) {
+    middlewares.append(userConfig.middlewares)
+  }
+
+  if (userConfig.templates) {
+    useTemplates().merge(userConfig.templates)
+  }
 
   // load uuid from the .uuid file (create it if needed), needed for the UI
   // only do it if routesFile exists to prevent creating useless .uuid file
@@ -40,16 +69,6 @@ const initServer = async args => {
   const configureExpress = state.get('configureExpress')
   if (typeof configureExpress === 'function') {
     configureExpress(app)
-  }
-
-  // run some checks
-  if (!checkRoutesFile()) {
-    logger.error(
-      `Please create a "${state.get(
-        'routesFile'
-      )}.json" file in this directory: ${state.get('root')}, and restart.`
-    )
-    process.exit()
   }
 
   // register custom global middlewares
@@ -67,15 +86,13 @@ const initServer = async args => {
     app.use(mw)
   })
 
-  // if everything is well configured, load database and create the routes
+  // if everything is well configured, create the routes
   const ioRoutes = routes()
-  const errorHandler = state.get('errorHandler')
 
-  await db.loadDb()
   const inherited = createRoutes(app, ioRoutes)
 
-  if (errorHandler) {
-    app.use(errorHandler)
+  if (state.get('errorHandler')) {
+    app.use(state.get('errorHandler'))
   }
 
   // notify the UI for every request made
