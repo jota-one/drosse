@@ -1,5 +1,6 @@
 const config = require('../config')
-const { merge, pick } = require('lodash')
+const merge = require('lodash/merge')
+const pick = require('lodash/pick')
 
 let state = JSON.parse(JSON.stringify(config.state))
 
