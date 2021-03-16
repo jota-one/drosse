@@ -65,7 +65,11 @@ const start = () => {
         d.advertise(data)
         break
       case 'ready':
-        require('../app/use/commands')().start()
+        // if (userConfig.commands) {
+        //   useCommands().extend(userConfig.commands)
+        // }
+        // console.log('userConfig', data)
+        require('../app/use/commands')(data).start()
         break
       default:
         d.send(event, data)

@@ -45,10 +45,6 @@ const initServer = async args => {
   await db.loadDb()
 
   // set other user defined properties that are not part of the state
-  if (userConfig.commands) {
-    useCommands().extend(userConfig.commands)
-  }
-
   middlewares.set(config.middlewares)
   if (userConfig.middlewares) {
     middlewares.append(userConfig.middlewares)
@@ -60,10 +56,8 @@ const initServer = async args => {
 
   // load uuid from the .uuid file (create it if needed), needed for the UI
   // only do it if routesFile exists to prevent creating useless .uuid file
-  if (checkRoutesFile()) {
-    loadUuid()
-    process.send({ event: 'uuid', data: state.get('uuid') })
-  }
+  loadUuid()
+  process.send({ event: 'uuid', data: state.get('uuid') })
 
   // extend express app
   const configureExpress = state.get('configureExpress')
@@ -114,11 +108,9 @@ const initServer = async args => {
   app.get(state.get('reservedRoutes').ui, openCors, (req, res) => {
     res.send({ routes: ioRoutes, inherited })
   })
-
-  return { routes: ioRoutes, inherited }
 }
 
-const initDrosse = async args => {
+const initDiscoverConfig = async args => {
   const ipAddress = ip.address()
   const proto = 'http'
   const hosts = ['localhost', ipAddress]
@@ -150,43 +142,47 @@ const initDrosse = async args => {
   }
 }
 
-const onStart = drosse => {
+const onStart = discoverConfig => {
   const getAddress = (proto, host, port) => `${proto}://${host}:${port}`
 
   setTimeout(() => {
     console.log()
     logger.debug(
-      `App ${drosse.name ? c.magenta(drosse.name) + ' ' : ''}running at:`
+      `App ${
+        discoverConfig.name ? c.magenta(discoverConfig.name) + ' ' : ''
+      }running at:`
     )
-    drosse.hosts.forEach(host => {
-      logger.info(' -', getAddress(drosse.proto, host, drosse.port))
+    discoverConfig.hosts.forEach(host => {
+      logger.info(
+        ' -',
+        getAddress(discoverConfig.proto, host, discoverConfig.port)
+      )
     })
     console.log()
     logger.debug(`Mocks root: ${c.magenta(state.get('root'))}`)
     console.log()
 
-    process.send({ event: 'ready' })
+    process.send({ event: 'ready', data: state.get() })
   }, 100)
 
   // advertise UI of our presence
-  process.send({ event: 'advertise', data: drosse })
-  process.send({ event: 'up', data: drosse })
+  process.send({ event: 'advertise', data: discoverConfig })
+  process.send({ event: 'up', data: discoverConfig })
 }
 
 const init = async args => {
-  const server = await initServer(args)
-  const drosse = await initDrosse(args)
-  return { ...server, drosse }
+  await initServer(args)
+  return initDiscoverConfig(args)
 }
 
 // start server
 module.exports = async args => {
-  const { drosse, routes, inherited } = await init(args)
+  const discoverConfig = await init(args)
   let server
 
   const start = async () => {
-    server = app.listen(drosse.port, '0.0.0.0', () => {
-      onStart(drosse)
+    server = app.listen(discoverConfig.port, '0.0.0.0', () => {
+      onStart(discoverConfig)
     })
     stoppable(server, 100)
   }
@@ -194,7 +190,7 @@ module.exports = async args => {
   const stop = () => {
     server.stop(() => {
       logger.warn('Server stopped by UI')
-      process.send({ event: 'downUI', data: drosse })
+      process.send({ event: 'downUI', data: discoverConfig })
     })
   }
 
@@ -206,7 +202,11 @@ module.exports = async args => {
     if (event === 'stop') {
       stop()
     }
+
+    if (event === 'cmd') {
+      console.log('do something with', data)
+    }
   })
 
-  return { drosse, routes, inherited, start, stop }
+  return { start }
 }
