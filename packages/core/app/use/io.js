@@ -20,12 +20,14 @@ const checkRoutesFile = () => {
   return false
 }
 
-const getUserConfig = () => {
-  const rcFile = path.join(state.get('root'), '.drosserc.js')
-  if (fs.existsSync(rcFile)) {
+const getUserConfig = async root => {
+  const rcFile = path.join(root || state.get('root') || '', '.drosserc.js')
+  try {
+    await fs.promises.stat(rcFile)
     return require(rcFile)
+  } catch (e) {
+    return {}
   }
-  return {}
 }
 
 const loadService = (routePath, verb) => {

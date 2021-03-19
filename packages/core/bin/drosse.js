@@ -5,6 +5,7 @@ const { fork } = require('child_process')
 const path = require('path')
 const yargs = require('yargs')
 const Discover = require('node-discover')
+const useIo = require('../app/use/io')
 
 const d = new Discover({ advertisement: {} })
 const cmd = yargs.argv._[0]
@@ -56,7 +57,11 @@ const start = () => {
     }
   })
 
-  app.on('message', ({ event, data }) => {
+  app.on('message', async ({ event, data }) => {
+    console.log('hey message', event)
+    const io = useIo()
+    let userConfig
+    const cli = require('../app/use/cli')(data, app, forked)
     switch (event) {
       case 'uuid':
         uuid = data
@@ -65,11 +70,11 @@ const start = () => {
         d.advertise(data)
         break
       case 'ready':
-        // if (userConfig.commands) {
-        //   useCommands().extend(userConfig.commands)
-        // }
-        // console.log('userConfig', data)
-        require('../app/use/commands')(data).start()
+        userConfig = await io.getUserConfig(data.root)
+        if (userConfig.cli) {
+          cli.extend(userConfig.cli)
+        }
+        cli.start()
         break
       default:
         d.send(event, data)
@@ -95,6 +100,12 @@ if (cmd === 'serve') {
       setTimeout(() => {
         forked.kill('SIGINT')
       }, 200)
+    }
+  })
+
+  d.join('cmd', data => {
+    if (data.uuid === uuid) {
+      forked.send({ event: 'cmd', data })
     }
   })
 }

@@ -19,6 +19,7 @@ module.exports = {
     reservedRoutes: { ui: '/UI' },
     uuid: '',
   },
+  commands: {},
   middlewares: ['body-parser-json', 'morgan'],
   templates: {},
 }

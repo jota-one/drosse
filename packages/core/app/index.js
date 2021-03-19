@@ -12,6 +12,7 @@ const useState = require('./use/state')
 const useMiddlewares = require('./use/middlewares')
 const useDb = require('./use/db')
 const useTemplates = require('./use/templates')
+const useCommand = require('./use/command')
 const useIo = require('./use/io')
 const { createRoutes } = require('./builder')
 
@@ -20,6 +21,7 @@ const state = useState()
 const middlewares = useMiddlewares()
 const db = useDb()
 const { checkRoutesFile, loadUuid, getUserConfig, routes } = useIo()
+const { executeCommand } = useCommand()
 
 process.send = process.send || function () {}
 
@@ -28,7 +30,7 @@ const initServer = async args => {
   state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
 
   // check for some users configuration in a drosserc.js file and update state
-  const userConfig = getUserConfig()
+  const userConfig = await getUserConfig()
   state.merge(userConfig)
 
   // run some checks
@@ -52,6 +54,10 @@ const initServer = async args => {
 
   if (userConfig.templates) {
     useTemplates().merge(userConfig.templates)
+  }
+
+  if (userConfig.commands) {
+    useCommand().merge(userConfig.commands(require('./api')()))
   }
 
   // load uuid from the .uuid file (create it if needed), needed for the UI
@@ -194,7 +200,7 @@ module.exports = async args => {
     })
   }
 
-  process.on('message', ({ event, data }) => {
+  process.on('message', async ({ event, data }) => {
     if (event === 'start') {
       logger.warn('Server started by UI')
     }
@@ -204,7 +210,8 @@ module.exports = async args => {
     }
 
     if (event === 'cmd') {
-      console.log('do something with', data)
+      const result = await executeCommand(data)
+      process.send({ event: 'cmdDone', data: result })
     }
   })
 
