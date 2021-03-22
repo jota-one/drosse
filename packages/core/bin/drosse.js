@@ -58,10 +58,7 @@ const start = () => {
   })
 
   app.on('message', async ({ event, data }) => {
-    console.log('hey message', event)
-    const io = useIo()
-    let userConfig
-    const cli = require('../app/use/cli')(data, app, forked)
+    let io, userConfig, cli
     switch (event) {
       case 'uuid':
         uuid = data
@@ -70,6 +67,8 @@ const start = () => {
         d.advertise(data)
         break
       case 'ready':
+        io = useIo()
+        cli = require('../app/use/cli')(data, app, forked)
         userConfig = await io.getUserConfig(data.root)
         if (userConfig.cli) {
           cli.extend(userConfig.cli)
