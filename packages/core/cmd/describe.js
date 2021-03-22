@@ -20,7 +20,6 @@ module.exports = {
       data: { drosse },
     })
 
-    console.log({ drosse })
     process.exit(0)
   },
 }

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2021-03-22
+### Changed
+- Drosse runs now at 2 different layers. When it's started, it will start the express app in a child process and keep the CLI on the parent process. This will be helpful to offer a better control on the express app from external tools, like e2e testing frameworks or the upcoming Drosse-UI. And this separates as well the CLI (vorpal) layer, which needs to stay an Interface and not be mixed with business logic, from the pure app commands layer.
+
 ## [1.13.2] - 2021-03-10
 ### Added
 - added a `basePath` config
@@ -114,7 +118,8 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/1.13.2...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/2.0.0...develop
+[2.0.0]: https://github.com/jota-one/drosse/compare/1.13.2...2.0.0
 [1.13.2]: https://github.com/jota-one/drosse/compare/1.13.1...1.13.2
 [1.13.1]: https://github.com/jota-one/drosse/compare/1.13.0...1.13.1
 [1.13.0]: https://github.com/jota-one/drosse/compare/1.12.0...1.13.0

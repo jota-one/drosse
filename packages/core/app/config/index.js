@@ -17,7 +17,9 @@ module.exports = {
     staticPath: 'static',
     database: 'mocks.json',
     reservedRoutes: { ui: '/UI' },
+    uuid: '',
   },
+  commands: {},
   middlewares: ['body-parser-json', 'morgan'],
   templates: {},
 }

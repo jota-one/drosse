@@ -5,13 +5,8 @@ const { isEmpty } = require('lodash')
 const { v4: uuidv4 } = require('uuid')
 const { replace } = require('@jota-one/replacer')
 const useState = require('./state')
-const useMiddleware = require('./middlewares')
-const useTemplates = require('./templates')
-const useCommands = require('./commands')
 const logger = require('../logger')
 const state = useState()
-const middlewares = useMiddleware()
-const templates = useTemplates()
 
 const checkRoutesFile = () => {
   const filePath = path.join(
@@ -25,26 +20,13 @@ const checkRoutesFile = () => {
   return false
 }
 
-const loadRcFile = () => {
-  templates.set([])
-  const rcFile = path.join(state.get('root'), '.drosserc.js')
-
-  if (fs.existsSync(rcFile)) {
-    const userConfig = require(rcFile)
-
-    if (userConfig.commands) {
-      useCommands().extend(userConfig.commands)
-    }
-
-    if (userConfig.middlewares) {
-      middlewares.append(userConfig.middlewares)
-    }
-
-    if (userConfig.templates) {
-      templates.add(userConfig.templates)
-    }
-
-    state.merge(userConfig)
+const getUserConfig = async root => {
+  const rcFile = path.join(root || state.get('root') || '', '.drosserc.js')
+  try {
+    await fs.promises.stat(rcFile)
+    return require(rcFile)
+  } catch (e) {
+    return {}
   }
 }
 
@@ -163,7 +145,7 @@ const findStatic = (
   skipVerb = false,
   query = {}
 ) => {
-  const comparePath = filePath => filePath.replace(root, '').substr(1)
+  const normalizedPath = filePath => filePath.replace(root, '').substr(1)
 
   const filename = getStaticFileName(
     routePath,
@@ -175,7 +157,8 @@ const findStatic = (
 
   const foundFiles = files.filter(
     file =>
-      comparePath(file.path).replace(/\//gim, '.') === comparePath(staticFile)
+      normalizedPath(file.path).replace(/\//gim, '.') ===
+      normalizedPath(staticFile)
   )
 
   if (foundFiles.length > 1) {
@@ -224,7 +207,7 @@ module.exports = function useIo() {
   return {
     checkRoutesFile,
     getStaticFileName,
-    loadRcFile,
+    getUserConfig,
     loadService,
     loadScraperService,
     loadStatic,
