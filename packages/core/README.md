@@ -678,7 +678,7 @@ Assuming you have a `customers` collection with this customer document in it.
     "zip": "00001",
     "town": "North Pole City"
   },
-  "activity": "Secretely conquer the world by not being evil... at first."
+  "activity": "Secretely conquer the world by not being evil... at first.",
   "DROSSE": {
     "ids": [1980, "SKYSCRAPER-999"]
   }
