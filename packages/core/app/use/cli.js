@@ -1,7 +1,7 @@
 const vorpal = require('@moleculer/vorpal')()
-const cli = require('../commands')
+const cli = require('../cli')
 
-module.exports = function (config, app, forked) {
+module.exports = function (config, app, forked, restart) {
   const runCommand = async (name, params, commandExecutionTimeout = 5000) => {
     return new Promise((resolve, reject) => {
       const sendResponse = ({ event, data }) => {
@@ -21,7 +21,7 @@ module.exports = function (config, app, forked) {
   }
   return {
     extend(callback) {
-      callback(vorpal, { config, runCommand })
+      callback(vorpal, { config, runCommand, restart })
     },
 
     start() {

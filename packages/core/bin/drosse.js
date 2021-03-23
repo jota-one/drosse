@@ -9,7 +9,7 @@ const useIo = require('../app/use/io')
 
 const d = new Discover({ advertisement: {} })
 const cmd = yargs.argv._[0]
-let forked, uuid
+let forked, uuid, io, cli
 
 const exitHandler = () => {
   d.send('down', { uuid })
@@ -58,7 +58,7 @@ const start = () => {
   })
 
   app.on('message', async ({ event, data }) => {
-    let io, userConfig, cli
+    let userConfig
     switch (event) {
       case 'uuid':
         uuid = data
@@ -67,8 +67,11 @@ const start = () => {
         d.advertise(data)
         break
       case 'ready':
+        if (io) {
+          break
+        }
         io = useIo()
-        cli = require('../app/use/cli')(data, app, forked)
+        cli = require('../app/use/cli')(data, app, forked, restart)
         userConfig = await io.getUserConfig(data.root)
         if (userConfig.cli) {
           cli.extend(userConfig.cli)
@@ -80,7 +83,21 @@ const start = () => {
     }
   })
 
+  console.log(`process started: ${app.pid}`)
+
   return app
+}
+
+const stop = () => {
+  forked.send({ event: 'stop' })
+  setTimeout(() => {
+    forked.kill('SIGINT')
+  }, 200)
+}
+
+const restart = () => {
+  stop()
+  setTimeout(() => (forked = start()), 1000)
 }
 
 forked = start()
@@ -95,10 +112,7 @@ if (cmd === 'serve') {
 
   d.join('stop', duuid => {
     if (duuid === uuid) {
-      forked.send({ event: 'stop' })
-      setTimeout(() => {
-        forked.kill('SIGINT')
-      }, 200)
+      stop()
     }
   })
 
