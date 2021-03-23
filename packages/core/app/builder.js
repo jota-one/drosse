@@ -40,7 +40,11 @@ const setRoute = function (app, def, verb, root) {
       if (def.service) {
         const api = require('./api')(req, res)
         const service = loadService(root, verb)
-        response = await service(api)
+        try {
+          response = await service(api)
+        } catch (e) {
+          return next(e)
+        }
       }
 
       if (def.static) {
