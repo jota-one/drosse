@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Added a 'restart' function in the CLI context
+- Added drosse version on startup
 
 ### Fixed
 - Error handling in services
