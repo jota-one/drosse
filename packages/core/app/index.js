@@ -15,6 +15,7 @@ const useTemplates = require('./use/templates')
 const useCommand = require('./use/command')
 const useIo = require('./use/io')
 const { createRoutes } = require('./builder')
+const version = require('../package.json').version
 
 const app = express()
 const state = useState()
@@ -137,6 +138,7 @@ const initDiscoverConfig = async args => {
 
   return {
     isDrosse: true,
+    version,
     uuid,
     name,
     proto,
@@ -156,7 +158,7 @@ const onStart = discoverConfig => {
     logger.debug(
       `App ${
         discoverConfig.name ? c.magenta(discoverConfig.name) + ' ' : ''
-      }running at:`
+      }(version ${c.magenta(discoverConfig.version)}) running at:`
     )
     discoverConfig.hosts.forEach(host => {
       logger.info(

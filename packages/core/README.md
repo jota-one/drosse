@@ -984,24 +984,25 @@ module.exports = {
 ### All configuration keys
 | Key                  | Default value | Description |
 |----------------------|---------------|-------------|
-| `name`               | **(empty)**     | The name of your app. Mostly used to recognize it in your console or in [drosse UI](https://github.com/jota-one/drosse-ui). |
-| `port`               | **8000**        | The port on which your mock server will run.<br>If not specified in `.drosserc.js` and already in use, Drosse will use the next available port if finds (8001, 8002, etc.) |
-| `baseUrl`            | **(empty)**     | The base URL (ex. http://my.domain.com) for the routes |
-| `basePath`           | **(empty)**     | A prefix (ex. /api/v2) that will be added to each route path |
-| `routesFile`         | **routes**      | Name of the routes definition file. |
-| `collectionsPath`    | **collections** | Relative path to the loki collections directory from your mocks directory. |
-| `shallowCollections` | **[]**          | List of collections that should be recreated/overriden on each server restart. |
-| `assetsPath`         | **assets**      | Relative path to the assets directory from your mocks directory. |
-| `servicesPath`       | **services**    | Relative path to the services directory from your mocks directory. |
-| `staticPath`         | **static**      | Relative path to the static files directory from your mocks directory. |
-| `scraperServicesPath`| **scrapers**    | Relative path to the scraper services files directory from your mocks directory. |
-| `scrapedPath`        | **scraped**     | Relative path to the scraped files directory from your mocks directory. |
-| `database`           | **mocks.db**    | Name of your loki database dump file. |
+| `name`               | **(empty)**       | The name of your app. Mostly used to recognize it in your console or in [drosse UI](https://github.com/jota-one/drosse-ui). |
+| `port`               | **8000**          | The port on which your mock server will run.<br>If not specified in `.drosserc.js` and already in use, Drosse will use the next available port if finds (8001, 8002, etc.) |
+| `baseUrl`            | **(empty)**       | The base URL (ex. http://my.domain.com) for the routes |
+| `basePath`           | **(empty)**       | A prefix (ex. /api/v2) that will be added to each route path |
+| `routesFile`         | **routes**        | Name of the routes definition file. |
+| `collectionsPath`    | **collections**   | Relative path to the loki collections directory from your mocks directory. |
+| `shallowCollections` | **[]**            | List of collections that should be recreated/overriden on each server restart. |
+| `assetsPath`         | **assets**        | Relative path to the assets directory from your mocks directory. |
+| `servicesPath`       | **services**      | Relative path to the services directory from your mocks directory. |
+| `staticPath`         | **static**        | Relative path to the static files directory from your mocks directory. |
+| `scraperServicesPath`| **scrapers**      | Relative path to the scraper services files directory from your mocks directory. |
+| `scrapedPath`        | **scraped**       | Relative path to the scraped files directory from your mocks directory. |
+| `database`           | **mocks.db**      | Name of your loki database dump file. |
+| `dbAdapter`          | **LokiFsAdapter** | IO adapter to use for database persistence. |
 | `middlewares`        | **['body-parser-json', 'morgan']** | List of global middlewares. Drosse provides 3 built-in middlewares, 2 being added by default. The third is 'open-cors'. |
-| `templates`          | **{}**          | Templates to be used in `routes.json`. See [templates](#templates) documentation. |
-| `errorHandler`       | **(empty)**     | A custom express error handler. Must be a function with the following signature: function (err, req, res, next) { ... } (see [express documentation](https://expressjs.com/en/guide/error-handling.html#the-default-error-handler)) |
-| `configureExpress`   | **(empty)**     | Used to set custom instructions to the express app. Must be a function with the following signature: function (app) {}. `app` being the express instance. |
-| `commands`           | **(empty)**     | Used to extend Drosse CLI with custom commands. Must be a function with the following signature: function (vorpal, drosse) { ... }. See [the cli](#cli) documentation. |
+| `templates`          | **{}**            | Templates to be used in `routes.json`. See [templates](#templates) documentation. |
+| `errorHandler`       | **(empty)**       | A custom express error handler. Must be a function with the following signature: function (err, req, res, next) { ... } (see [express documentation](https://expressjs.com/en/guide/error-handling.html#the-default-error-handler)) |
+| `configureExpress`   | **(empty)**       | Used to set custom instructions to the express app. Must be a function with the following signature: function (app) {}. `app` being the express instance. |
+| `commands`           | **(empty)**       | Used to extend Drosse CLI with custom commands. Must be a function with the following signature: function (vorpal, drosse) { ... }. See [the cli](#cli) documentation. |
 
 ### Custom middlewares
 
