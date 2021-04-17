@@ -16,6 +16,7 @@ module.exports = {
     scrapedPath: 'scraped',
     staticPath: 'static',
     database: 'mocks.json',
+    dbAdapter: 'LokiFsAdapter',
     reservedRoutes: { ui: '/UI' },
     uuid: '',
   },
