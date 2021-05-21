@@ -1,0 +1,95 @@
+a {
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+p > a {
+    color: var(--c-green);
+}
+
+a.button {
+    display: inline-flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    background: var(--c-green);
+    border-radius: 0.35rem;
+
+    &:hover {
+        background: var(--c-green-dark);
+    }
+
+    &.icon-arrow-right:before {
+        content: '';
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-right: 0.5rem;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.5 11.726V13.274H19.5279L15.2709 17.531L16.37 18.6301L22.5 12.5L16.37 6.37L15.2709 7.46907L19.5279 11.726H2.5Z' fill='white' %3E%3C/path%3E%3C/svg%3E");
+    }
+
+    .dark & {
+        color: var(--c-gray-darker);
+
+        &.icon-arrow-right:before {
+            content: '';
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.5rem;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 25' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.5 11.726V13.274H19.5279L15.2709 17.531L16.37 18.6301L22.5 12.5L16.37 6.37L15.2709 7.46907L19.5279 11.726H2.5Z' fill='var(--c-gray-darker)' %3E%3C/path%3E%3C/svg%3E");
+        }
+    }
+}
+
+code {
+    font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+
+code.file {
+    color: var(--c-indigo);
+}
+
+code.handler {
+    color: var(--c-blue);
+}
+
+code.setting {
+    color: var(--c-orange);
+}
+
+svg.fill-current {
+    fill: currentColor;
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+
+    @media (--s) {
+        max-width: 640px;
+    }
+
+    @media (--m) {
+        max-width: 768px;
+    }
+
+    @media (--l) {
+        max-width: 1024px;
+    }
+
+    @media (--xl) {
+        max-width: 1300px;
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+.spacer {
+    flex: 1;
+}

@@ -1,0 +1,50 @@
+pre.codeblock {
+    position: relative;
+    padding-top: 2rem !important;
+    margin-top: 1.5rem !important;
+    border-radius: 0.25rem;
+    border-radius: 0.25rem;
+    }
+
+    pre.codeblock:not(.opened) {
+    height: 0;
+    margin-bottom: -0.5rem !important;
+    background: transparent;
+    overflow: hidden !important;
+    }
+
+pre.codeblock:before {
+    content: '▷ ' attr(title);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    cursor: pointer;
+}
+
+pre.codeblock:not(.opened):before {
+    background: #2d2d2d;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+pre.codeblock code {
+    display: none;
+    font-size: 0.8rem;
+}
+
+pre.codeblock.opened {
+    height: auto;
+}
+
+pre.codeblock.opened:before {
+    content: '▽ ' attr(title);
+}
+
+pre.codeblock.opened code {
+    display: block;
+}

@@ -1,0 +1,27 @@
+.features li {
+    flex-basis: 100%;
+    overflow: hidden;
+    @apply p-6 mb-8 text-base text-gray-600 dark:text-gray-500;
+}
+
+.features h3 {
+    @apply flex items-center mb-4 font-extrabold text-xl lg:text-2xl text-gray-700 dark:text-gray-400 -ml-3;
+}
+
+.features h3 svg {
+    @apply w-8 h-8 mr-2 ml-2;
+}
+
+.features p {
+    margin-top: 1.5rem;
+}
+
+.features p:first-of-type {
+    @apply text-black dark:text-gray-400;
+}
+
+@media (--l) {
+    .features li {
+        flex-basis: 50%;
+    }
+}

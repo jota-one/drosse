@@ -1,0 +1,39 @@
+footer {
+    background: var(--c-green-light);
+
+    .dark & {
+        background: var(--c-gray-darker);
+    }
+    
+    .container {
+        display: flex;
+        flex-direction: row;
+        alig-items: center;
+        padding: 3rem;
+        border-top: 1px dashed var(--c-green);
+
+        .dark & {
+            border-top-color: var(--c-gray);
+        }
+    }
+
+    a {
+        color: var(--c-gray);
+
+        &:hover {
+            color: var(--c-green);
+        }
+
+        .dark & {
+            color: var(--c-green);
+
+            &:hover {
+                color: var(--c-gray);
+            }
+        }
+
+        &:first-child {
+            margin-right: 1rem;
+        }
+    }
+}
