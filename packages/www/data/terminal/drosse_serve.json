@@ -17,17 +17,6 @@
                 "<span class=opacity-75>js:now</span> <span class=blue>- http://192.168.1.100:8001</span>",
                 "Mocks root: <span class=pink>/Users/jorinho/my-app</span>"
             ]
-        },
-        {
-            "command": "yesh yesh yoh!",
-            "output": [
-                "To the berat yoh!"
-            ],
-            "options": {
-                "typeSpeed": 60,
-                "loop": true,
-                "startDelay": 5000
-            }
         }
     ]
 }
