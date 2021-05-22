@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* margin-bottom: 1rem; */
+    margin-top: -1rem;
 
     @media (--l) {
         flex-direction: row;
@@ -48,6 +48,12 @@
     }
 
     j-terminal {
+        margin: 0 -2.25rem;
+
+        @media (--xs) {
+            margin: 0;
+        }
+
         @media (--l) {
             max-width: 36rem;
         }

@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% import "macros.html" as macros %}
+
 {% block hero %}
 <section class="hero container">
   <div class="hero-bg"></div>
   <div class="text">
-      <h1>
-          <j-drosse-logo></j-drosse-logo>
-          <span class="hidden">Drosse</span>
-          <b class="sub">The ultimate mock server</b>
-      </h1>
-      <j-npm-button command="npm i -D @jota-one/drosse"></j-npm-button>
+    <h1>
+      <j-drosse-logo></j-drosse-logo>
+      <span class="hidden">Drosse</span>
+      <b class="sub">The ultimate mock server</b>
+    </h1>
+    <j-npm-button command="npm i -D @jota-one/drosse"></j-npm-button>
   </div>
   {{ macros::terminal(session="data/terminal/drosse_serve.json") }}
 </section>
@@ -35,15 +36,13 @@
     </p>
   </div>
   <br>
-  <a
-      href="https://github.com/jota-one/drosse/tree/master/packages/core"
-      target="_blank"
-      class="button icon-arrow-right"
-  >
-      Check the docs
+  <a href="https://github.com/jota-one/drosse/tree/master/packages/core" target="_blank"
+    class="button icon-arrow-right">
+    Check the docs
   </a>
 </section>
 {% endblock hero %}
+
 {% block content %}
-  {{ section.content | safe }}
+{{ section.content | safe }}
 {% endblock content %}

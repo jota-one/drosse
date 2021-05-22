@@ -5,12 +5,19 @@
     padding-bottom: 4rem;
 
     h2 {
+        padding: 0 2rem;
+        text-align: center;
         font-size: 1.3rem;
-        font-weight: 300;
+        font-weight: 400;
     }
 
     & > div {
         display: flex;
+        flex-direction: column;
+
+        @media (--l) {
+            flex-direction: row;
+        }
 
         p {
             padding: 0 3rem;

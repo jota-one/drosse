@@ -119,13 +119,17 @@
       width: 100%;
       padding-bottom: 100%;
 
+      @media (--xs) {
+        padding-bottom: 75%;
+      }
+
       @media (--s) {
-        padding-bottom: 70%;
+        padding-bottom: 65%;
         min-width: 35rem;
       }
 
       @media (--m) {
-        padding-bottom: 60%;
+        padding-bottom: 62.5%;
       }
     }
   }
