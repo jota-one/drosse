@@ -92,8 +92,8 @@ const initServer = async args => {
 
   const inherited = createRoutes(app, ioRoutes)
 
-  if (state.get('errorHandler')) {
-    app.use(state.get('errorHandler'))
+  if (userConfig.errorHandler) {
+    app.use(userConfig.errorHandler)
   }
 
   // notify the UI for every request made
