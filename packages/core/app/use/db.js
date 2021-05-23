@@ -93,7 +93,12 @@ module.exports = function () {
     loadDb() {
       return new Promise((resolve, reject) => {
         try {
+          const AdapterName = state.get('dbAdapter')
+          const adapter = Loki[AdapterName]
+            ? new Loki[AdapterName]()
+            : new AdapterName()
           db = new Loki(path.join(state.get('root'), state.get('database')), {
+            adapter,
             autosave: true,
             autosaveInterval: 4000,
             autoload: true,
