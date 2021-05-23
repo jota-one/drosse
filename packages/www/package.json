@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "cd frontend && rollup -c",
+    "dev": "run-p dev:backend dev:frontend",
+    "dev:frontend": "cd frontend && rollup -c -w",
+    "dev:backend": "zola serve",
     "start": "sirv public"
   },
   "keywords": [],
@@ -18,6 +20,7 @@
     "@rollup/plugin-node-resolve": "^11.0.0",
     "autoprefixer": "^10.2.5",
     "lodash": "^4.17.21",
+    "npm-run-all": "^4.1.5",
     "postcss": "^8.2.7",
     "postcss-custom-media": "^8.0.0",
     "postcss-import": "^14.0.0",

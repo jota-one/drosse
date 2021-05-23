@@ -1,2 +1,2 @@
-{% set data = load_data(path=session) -%}
-<j-terminal steps="{{ data.steps | json_encode() }}"/>
+{% import "macros.html" as macros %}
+{{ macros::terminal(session=session) }}

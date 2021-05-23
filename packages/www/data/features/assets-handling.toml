@@ -1,0 +1,6 @@
+title = "Assets handling"
+doc = "https://github.com/jota-one/drosse/tree/master/packages/core#assets"
+
+[icon]
+name = "media"
+color = "slategray"

@@ -1,0 +1,6 @@
+title = "Data persistence"
+doc = "https://github.com/jota-one/drosse/tree/master/packages/core#drosse-db-api"
+
+[icon]
+name = "database"
+color = "violet"

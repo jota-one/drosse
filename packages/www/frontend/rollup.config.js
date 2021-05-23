@@ -37,7 +37,7 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: '../static/assets/bundle.js'
+		file: '../static/bundle/bundle.js'
 	},
 	plugins: [
 		json(),
@@ -69,7 +69,7 @@ export default {
 
 		// Watch the `public` directory and refresh the
 		// browser on changes when not in production
-		!production && livereload('../static/assets'),
+		!production && livereload('../static/bundle'),
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify

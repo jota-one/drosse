@@ -1,0 +1,19 @@
+title = "Proxying"
+doc = "https://github.com/jota-one/drosse/tree/master/packages/core#proxies"
+
+[icon]
+name = "proxy"
+color = "cyan"
+
+[code]
+title = "fallback via proxy"
+language = "json"
+content = """
+// Drosse running on localhost:8000
+{
+  "DROSSE": {
+    "proxy": "http://localhost:7000"
+  },
+  "api": {
+    "users": {
+  ..."""

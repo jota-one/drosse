@@ -1,27 +1,44 @@
-.features li {
-    flex-basis: 100%;
-    overflow: hidden;
-    @apply p-6 mb-8 text-base text-gray-600 dark:text-gray-500;
-}
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 
-.features h3 {
-    @apply flex items-center mb-4 font-extrabold text-xl lg:text-2xl text-gray-700 dark:text-gray-400 -ml-3;
-}
+    @media (--l) {
+        padding: 0 2rem;
+    }
 
-.features h3 svg {
-    @apply w-8 h-8 mr-2 ml-2;
-}
+    .feature {
+        padding: 2rem 3rem 1rem;
+        margin: 0;
+        flex-basis: 100%;
+        overflow: hidden;
 
-.features p {
-    margin-top: 1.5rem;
-}
+        @media (--l) {
+            flex-basis: 50%;
+        }
+    }
 
-.features p:first-of-type {
-    @apply text-black dark:text-gray-400;
-}
+    h3 {
+        display: flex;
+        align-items: center;
+        margin: 0;
 
-@media (--l) {
-    .features li {
-        flex-basis: 50%;
+        j-icon {
+            padding: 0.3rem 0.5rem 0 0;
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+
+    p {
+        margin-top: 1.5rem;
+
+        &:not(:first-of-type) {
+            color: gray;
+        }
     }
 }

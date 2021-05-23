@@ -30,7 +30,7 @@ const load = (component, targetSelector, props = []) => {
 
 new Styles({ target: document.body })
 load(DrosseLogo, 'j-drosse-logo')
-load(Icon, 'j-icon', ['name', 'size'])
+load(Icon, 'j-icon', ['name', 'size', 'color'])
 load(NpmButton, 'j-npm-button', ['command'])
 load(Terminal, 'j-terminal', ['steps'])
 load(ThemeSwitcher, 'j-theme-switcher', ['defaultTheme'])

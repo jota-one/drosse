@@ -1,5 +1,5 @@
 footer {
-    background: var(--c-green-light);
+    background: var(--c-gray-light);
 
     .dark & {
         background: var(--c-gray-darker);
@@ -11,24 +11,16 @@ footer {
         alig-items: center;
         padding: 3rem;
         border-top: 1px dashed var(--c-green);
-
-        .dark & {
-            border-top-color: var(--c-gray);
-        }
     }
 
     a {
-        color: var(--c-gray);
+        color: var(--c-green);
 
         &:hover {
-            color: var(--c-green);
-        }
+            color: var(--c-gray);
 
-        .dark & {
-            color: var(--c-green);
-
-            &:hover {
-                color: var(--c-gray);
+            .dark & {
+                color: var(--c-gray-light);
             }
         }
 

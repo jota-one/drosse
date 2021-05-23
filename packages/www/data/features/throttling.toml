@@ -1,0 +1,6 @@
+title = "Throttling"
+doc = "https://github.com/jota-one/drosse/tree/master/packages/core#throttling"
+
+[icon]
+name = "time"
+color = "orange"
