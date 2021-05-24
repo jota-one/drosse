@@ -1,7 +1,7 @@
 .codeblock {
     position: relative;
     height: 2rem;
-    background: #f5f2f0;
+    background: white;
     padding: 1rem;
     margin: 2rem 0;
     border-radius: 0.25rem;
@@ -30,6 +30,11 @@
         display: none;
         font-size: 0.8rem !important;
         white-space: pre !important;
+        background: white !important;
+
+        .dark & {
+            background: #2d2d2d !important;
+        }
     }
 
     &.opened {
