@@ -1,6 +1,6 @@
 {
   "name": "@jota-one/drosse",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Mock your backend the right way.",
   "main": "app/index.js",
   "bin": {
@@ -37,7 +37,7 @@
     "get-port": "^5.1.1",
     "http-proxy-middleware": "^1.0.4",
     "ip": "^1.1.5",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "lokijs": "^1.5.9",
     "morgan": "^1.10.0",
     "node-discover": "^1.1.3",
