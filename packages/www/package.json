@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cd frontend && rollup -c",
+    "build": "run-s build:frontend build:backend",
+    "build:frontend": "cd frontend && rollup -c && cd ..",
+    "build:backend": "zola build",
     "dev": "run-p dev:backend dev:frontend",
     "dev:frontend": "cd frontend && rollup -c -w",
     "dev:backend": "zola serve",
