@@ -1,0 +1,44 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<title>
+  {{ config.title }}
+</title>
+
+<link rel="canonical" href="{{ current_url | safe }}" />
+
+<meta property="og:title" content="Drosse">
+<meta property="og:url" content="https://drosse.dev/">
+<meta property="og:description" content="{{ config.description }}">
+<meta property="og:image" content="https://drosse.dev/assets/og.png">
+<meta property="og:image:url" content="https://drosse.dev/assets/og.png">
+
+<meta name="description" content="{{ config.description }}" />
+
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/bundle/bundle.css" type="text/css" async />
+{#
+<link rel="stylesheet" async href="/assets/prism.light.css" />
+<link rel="stylesheet" async href="/assets/prism.dark.css" /> #}
+
+<script async src="/assets/prism.js"></script>
+
+<script>
+  window.addEventListener('themeSwitched', function (event) {
+    var id = 'prism-theme'
+    var link = document.getElementById(id)
+
+    if (!link) {
+      link = document.createElement('link')
+      link.id = id
+      link.rel = 'stylesheet'
+      link.type = 'text/css'
+      link.async = true
+      link.href = `/assets/prism.${event.detail.theme}.css`
+      document.head.appendChild(link)
+    } else {
+      link.href = `/assets/prism.${event.detail.theme}.css`
+    }
+  })
+</script>

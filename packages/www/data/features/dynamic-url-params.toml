@@ -1,0 +1,21 @@
+title = "Dynamic URL params"
+doc = "https://github.com/jota-one/drosse/tree/master/packages/core#inline-mocks"
+
+[icon]
+name = "variable"
+color = "royalblue"
+
+[code]
+title = "dynamic param value"
+language = "json"
+content = """
+// routes.json
+{
+  ":id": {
+    "DROSSE": {
+      "get": {
+        "body": {
+          "id": "{id}",
+          "name": "User {id}"
+        }
+      ..."""

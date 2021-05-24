@@ -1,0 +1,30 @@
+# The URL the site will be built for
+base_url = "https://drosse.dev"
+
+# The site title and description; used in feeds by default.
+title = "Drosse"
+description = "The ultimate mock server"
+
+# The default language; used in feeds.
+default_language = "en"
+
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = false
+
+# When set to "true", the generated HTML files are minified.
+minify_html = true
+
+# Whether to build a search index to be used later on by a JavaScript library
+build_search_index = false
+
+# Whether external links are to be opened in a new tab
+# If this is true, a `rel="noopener"` will always automatically be added for security reasons
+external_links_target_blank = true
+
+[markdown]
+# Whether to do syntax highlighting
+# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
+highlight_code = false
+
+[extra]
+# Put all your custom variables here

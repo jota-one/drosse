@@ -1,0 +1,51 @@
+.codeblock {
+    position: relative;
+    height: 2rem;
+    background: white;
+    padding: 1rem;
+    margin: 2rem 0;
+    border-radius: 0.25rem;
+    border-radius: 0.25rem;
+
+    .dark & {
+        background: #2d2d2d;
+    }
+
+    &:before {
+        content: '▷ ' attr(title);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        opacity: 0.75;
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+        cursor: pointer;
+    }
+
+    code {
+        display: none;
+        font-size: 0.8rem !important;
+        white-space: pre !important;
+        background: white !important;
+
+        .dark & {
+            background: #2d2d2d !important;
+        }
+    }
+
+    &.opened {
+        height: auto;
+
+        &:before {
+            content: '▽ ' attr(title);
+        }
+        
+        code {
+            display: block;
+        }
+    }
+}

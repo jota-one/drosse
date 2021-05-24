@@ -1,0 +1,6 @@
+title = "Dynamic mocks"
+doc = "https://github.com/jota-one/drosse/tree/master/packages/core#services-aka-dynamic-mocks"
+
+[icon]
+name = "file-js"
+color = "limegreen"
