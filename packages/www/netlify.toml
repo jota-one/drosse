@@ -1,0 +1,10 @@
+[build]
+publish = "public"
+command = "npm run build"
+
+[build.environment]
+ZOLA_VERSION = "0.13.0"
+NODE_VERSION = "12.19.0"
+
+[context.deploy-preview]
+command = "zola build --base-url $DEPLOY_PRIME_URL"
