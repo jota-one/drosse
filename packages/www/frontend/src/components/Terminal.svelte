@@ -176,27 +176,27 @@
     display: block;
   }
 
-  :global(.blue) {
+  :global .blue {
     color: rgb(59, 130, 246);
   }
 
-  :global(.green) {
+  :global .green {
     color: rgb(74, 222, 128);
   }
 
-  :global(.pink) {
+  :global .pink {
     color: rgb(219, 39, 119);
   }
 
-  :global(.opacity-75) {
+  :global .opacity-75 {
     opacity: 0.5;
   }
 
-  :global(.opacity-50) {
+  :global .opacity-50 {
     opacity: 0.5;
   }
 
-  :global(.opacity-25) {
+  :global .opacity-25 {
     opacity: 0.25;
   }
 
