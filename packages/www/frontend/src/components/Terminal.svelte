@@ -79,6 +79,7 @@
 </script>
 
 <div class="terminal">
+  <div class="ratio" />
   <div class="window">
     <div />
     <div />
@@ -102,17 +103,16 @@
   .terminal {
     position: relative;
     width: 100%;
-    background-color: rgba(245, 245, 245, 0.9);
-    border: 1px solid rgba(0, 0, 0, 0.125);
+    background-color: var(
+      --j-terminal-background-color,
+      rgba(245, 245, 245, 0.9)
+    );
+    border: 1px solid var(--j-terminal-border-color, rgba(0, 0, 0, 0.125));
     border-radius: 0.35rem;
-    box-shadow: 0 0.25rem 1.5rem rgb(0 0 0 / 20%);
+    box-shadow: 0 0.25rem 1.5rem
+      var(--j-terminal-box-shadow-color, rgb(0 0 0 / 20%));
 
-    :global(.dark) & {
-      border-color: rgba(255, 255, 255, 0.125);
-      background-color: rgba(10, 10, 10, 0.9);
-    }
-
-    &:after {
+    .ratio {
       content: '';
       display: block;
       height: 0;
@@ -147,11 +147,7 @@
       height: 0.65rem;
       margin-right: 0.375rem;
       border-radius: 50%;
-      background: rgb(200, 200, 200);
-
-      :global(.dark) & {
-        background: rgb(80, 80, 80);
-      }
+      background: var(--j-terminal-window-dots-color, rgb(200, 200, 200));
     }
   }
 
@@ -164,11 +160,7 @@
     left: 0;
     padding: 1rem 1.5rem 1.5rem;
     font-size: 0.825rem;
-    color: rgb(113, 113, 113);
-
-    :global(.dark) & {
-      color: rgb(160, 160, 160);
-    }
+    color: var(--j-terminal-text-color, rgb(113, 113, 113));
   }
 
   .command:not(.show),
