@@ -1,0 +1,6 @@
+title = "Scraping"
+doc = "https://github.com/jota-one/drosse/tree/master/packages/core#endpoints-scraping"
+
+[icon]
+name = "scrape"
+color = "mediumvioletred"

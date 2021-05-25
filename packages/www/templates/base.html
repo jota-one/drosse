@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include "partials/head.html" %}
+</head>
+
+<body>
+  {% include "partials/header.html" %}
+  <article>
+    {% block hero %}{% endblock hero %}
+    <main>
+      <div class="container">
+        {% block content %}{% endblock content %}
+      </div>
+    </main>
+  </article>
+  {% include "partials/footer.html" %}
+  <script src="/bundle/bundle.js"></script>
+</body>
+
+</html>

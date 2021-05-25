@@ -1,0 +1,27 @@
+title = "Cascading configs"
+doc = "https://github.com/jota-one/drosse/tree/master/packages/core#usage"
+
+[icon]
+name = "graph"
+color = "slateblue"
+
+[code]
+title = "cascading config"
+language = "json"
+content = """
+{
+  "api": {
+  "users": {
+    "DROSSE": {
+      "throttle": { // activate throttle plugin
+        "min": 100,
+        "max": 1000
+      }
+    },
+    "jorinho": { // inherits throttle from `users`
+      "detail": {
+        "DROSSE": {
+          "throttle": { // overwritten!
+            "min": 2000,
+            "max": 2500
+            ..."""
