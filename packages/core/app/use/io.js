@@ -26,6 +26,8 @@ const getUserConfig = async root => {
     await fs.promises.stat(rcFile)
     return require(rcFile)
   } catch (e) {
+    console.log('Could not load any user config.')
+    console.error(e)
     return {}
   }
 }
