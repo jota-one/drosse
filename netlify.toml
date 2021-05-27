@@ -1,6 +1,6 @@
 [build]
 base = "packages/www/"
-publish = "packages/www/public"
+publish = "public"
 command = "npm run build"
 
 [build.environment]
