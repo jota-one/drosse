@@ -5,7 +5,7 @@ const parse = ({ routes, root = [], hierarchy = [], onRouteDef }) => {
   let inherited = []
   const localHierarchy = [].concat(hierarchy)
   if (routes.DROSSE) {
-    localHierarchy.push(routes.DROSSE)
+    localHierarchy.push({ ...routes.DROSSE, path: root })
   }
   Object.entries(routes)
     .filter(([path]) => path !== 'DROSSE')

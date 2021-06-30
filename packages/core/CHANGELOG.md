@@ -4,8 +4,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-empty
+# [Unreleased]
+### Added
+- Added log message if the .drosserc.js file isn't loaded for some reason.
+
+## [2.2.0] - 2021-05-25
+### Fixed
+- custom errorHandler was not loaded
+- dependencies issues
+
+## [2.1.0] - 2021-04-17
+### Added
+- Added a 'restart' function in the CLI context
+- Added drosse version on startup
+- Added a `dbAdapter` config property to allow database persistence adapter change. Supports custom adapters.
+
+### Fixed
+- Error handling in services
+
+## [2.0.0] - 2021-03-22
+### Changed
+- Drosse runs now at 2 different layers. When it's started, it will start the express app in a child process and keep the CLI on the parent process. This will be helpful to offer a better control on the express app from external tools, like e2e testing frameworks or the upcoming Drosse-UI. And this separates as well the CLI (vorpal) layer, which needs to stay an Interface and not be mixed with business logic, from the pure app commands layer.
+
+## [1.13.2] - 2021-03-10
+### Added
+- added a `basePath` config
+
+## [1.13.1] - 2021-03-09
+### Added
+- added a `baseUrl` config
+
+## [1.13.0] - 2021-03-05
+### Added
+- auto scraping mode, no service needed
+- fallback from static files to scraped files
+
+### Changed
+- renamed 'hoover' feature to 'scraper'
+
+## [1.12.0] - 2021-02-26
+### Added
+- new route option 'hoover' to use along with 'proxy'. Allow to save proxied route response body as a drosse mock content.
+
+### Changed
+- Pass drosse config (state) and db to the vorpal CLI. Which allows to make db queries in CLI commands.
+
+## [1.11.3] - 2021-02-25
+### Added
+- Added new `configureExpress` property in `.drosserc.js` to define custom configurations on the `express` app instance.
+
+## [1.11.2] - 2021-02-24
+### Changed
+- App middlewares can now take a fourth argument (at the first place) and will then be curried and having the drosse API injected into the middleware function
+
+## [1.11.1] - 2021-02-18
+### Added
+- Support for async services
 
 ## [1.11.0] - 2021-02-12
 ### Added
@@ -80,7 +134,17 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/1.11.0...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/2.2.0...develop
+[2.2.0]: https://github.com/jota-one/drosse/compare/2.1.0...2.2.0
+[2.1.0]: https://github.com/jota-one/drosse/compare/2.0.0...2.1.0
+[2.0.0]: https://github.com/jota-one/drosse/compare/1.13.2...2.0.0
+[1.13.2]: https://github.com/jota-one/drosse/compare/1.13.1...1.13.2
+[1.13.1]: https://github.com/jota-one/drosse/compare/1.13.0...1.13.1
+[1.13.0]: https://github.com/jota-one/drosse/compare/1.12.0...1.13.0
+[1.12.0]: https://github.com/jota-one/drosse/compare/1.11.3...1.12.0
+[1.11.3]: https://github.com/jota-one/drosse/compare/1.11.2...1.11.3
+[1.11.2]: https://github.com/jota-one/drosse/compare/1.11.1...1.11.2
+[1.11.1]: https://github.com/jota-one/drosse/compare/1.11.0...1.11.1
 [1.11.0]: https://github.com/jota-one/drosse/compare/1.10.0...1.11.0
 [1.10.0]: https://github.com/jota-one/drosse/compare/1.9.0...1.10.0
 [1.9.0]: https://github.com/jota-one/drosse/compare/1.8.0...1.9.0

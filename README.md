@@ -1,11 +1,13 @@
-<img src="https://raw.githubusercontent.com/jota-one/drosse/master/packages/core/Drosse.svg" style="width:350px;max-width:100%;margin: 25px 0;"/>
+<img src="https://raw.githubusercontent.com/jota-one/drosse/master/packages/core/Drosse.svg" width="250">
 
-Welcome in the monorepo root of the Drosse project.
+## A stateful and programmable mock server written in javascript.
 
-Please head to one of our project:
+→ **[https://drosse.dev](https://drosse.dev)** :sailboat:
 
-:point_right: [Drosse core](packages/core)
+This repository includes 3 projects:
 
-:point_right: [Drosse ui](packages/ui)
+- [**The core project**](packages/core) holds the code of the mock server itself, included the CLI. It also contains the documentation of all Drosse's features.
 
-:point_right: [Drosse website](packages/www)
+- [**The UI project**](packages/ui) holds the source code of the upcoming desktop application to manage Drosse instances.
+
+- [**The www project**](packages/www) holds the source code of the showcase website

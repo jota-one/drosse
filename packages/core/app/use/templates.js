@@ -3,8 +3,8 @@ let state = config.templates
 
 module.exports = function () {
   return {
-    add(tpl) {
-      state = { ...state, ...tpl }
+    merge(tpls) {
+      state = { ...state, ...tpls }
     },
 
     set(tpl) {

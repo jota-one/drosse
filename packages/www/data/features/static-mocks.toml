@@ -1,0 +1,28 @@
+title = "Static mocks"
+doc =  "https://github.com/jota-one/drosse/tree/master/packages/core#static-mocks-in-separated-files"
+
+[icon]
+name = "json"
+color = "limegreen"
+
+[code]
+title = "inline + static modes"
+language = "json"
+content = """
+//routes.json
+{
+  "api": {
+    "users": {
+      "DROSSE": {
+        "get": {
+          "body": [{ // inline mocks
+            "id": 1,
+            "name": "Tadai"
+          }]
+        }
+      },
+      "jorinho": {
+        "get": {
+          "static": true // static (in-file) mocks
+                         // => ./static/api.users.jorinho.get.json
+        ..."""
