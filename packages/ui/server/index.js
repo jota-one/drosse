@@ -284,7 +284,8 @@ if (env === 'production') {
   app.use('/', express.static(join(__dirname, '..')))
 }
 
-getPort({ port: getPort.makeRange(5000, 9999), host: '0.0.0.0' }).then(port => {
+getPort({ port: getPort.makeRange(5000, 9999), host: 'localhost' }).then(port => {
+  console.log({port})
   if (env !== 'production') {
     fs.writeFileSync('.env.local', `VUE_APP_PORT=${port}`, 'utf8')
   }

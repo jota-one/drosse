@@ -1,4 +1,5 @@
-import useParser from '@jota-one/drosse/app/use/parser'
+// TODO Fix local (lerna) dependency to core/parser lib
+import useParser from '../../../core/app/use/parser'
 
 const VERBS = ['delete', 'get', 'patch', 'post', 'put']
 const HANDLERS = ['body', 'proxy', 'service', 'static']
