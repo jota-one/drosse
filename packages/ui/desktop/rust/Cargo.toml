@@ -1,0 +1,11 @@
+[package]
+name = "drosse-ui"
+version = "0.1.0"
+authors = ["Tadai <tadai@jota.one>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+socket2 = { version = "0.3.19", features = ["reuseport"] }
+serde_json = "1.0"
