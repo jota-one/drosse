@@ -29,6 +29,12 @@ const getThrottleMiddleware = def => {
   }
 }
 
+const getProxy = function (def) {
+  return typeof def.proxy === 'string'
+    ? { target: def.proxy }
+    : def.proxy      
+}
+
 const setRoute = function (app, def, verb, root) {
   app[verb](
     `${state.get('basePath')}/${root.join('/')}`,
@@ -233,7 +239,7 @@ const createRoute = function (def, root, defHierarchy) {
       this.proxies.push({
         path: path.join('/'),
         context: {
-          target: def.proxy,
+          ...getProxy(def),
           changeOrigin: true,
           pathRewrite: {
             [path.join('/')]: '/',
