@@ -87,6 +87,9 @@ const initServer = async args => {
     app.use(mw)
   })
 
+  app.use(express.urlencoded({ extended: true }))
+  app.use(express.json())
+
   // if everything is well configured, create the routes
   const ioRoutes = routes()
 
