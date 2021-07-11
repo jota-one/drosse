@@ -21,6 +21,6 @@ module.exports = {
     uuid: '',
   },
   commands: {},
-  middlewares: ['body-parser-json', 'morgan'],
+  middlewares: ['morgan'],
   templates: {},
 }
