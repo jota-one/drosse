@@ -178,7 +178,7 @@ const createRoute = function (def, root, defHierarchy) {
         tmpProxy = defHierarchy.reduce((acc, item) => {
           if (item.proxy) {
             return {
-              proxy: item.proxy,
+              proxy: getProxy(item),
               path: item.path,
             }
           } else {
@@ -186,8 +186,12 @@ const createRoute = function (def, root, defHierarchy) {
               return acc
             }
             const subpath = difference(item.path, acc.path)
+            const proxy = getProxy(acc)
+            
+            proxy.target = proxy.target.split('/').concat(subpath).join('/')
+
             return {
-              proxy: acc.proxy.split('/').concat(subpath).join('/'),
+              proxy,
               path: item.path,
             }
           }
