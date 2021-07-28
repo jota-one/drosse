@@ -5,7 +5,7 @@
             "command": "npx drosse serve -- -r ~/my-app",
             "output": [
                 "<span class=opacity-75>js:now</span> <span class=blue>-> Middlewares:</span>",
-                "[ 'body-parser-json', 'morgan' ]",
+                "[ 'morgan' ]",
                 "<span class=opacity-75>js:now</span> <span class=green>-> GET /api/users/premiums</span>",
                 "<span class=opacity-75>js:now</span> <span class=green>-> GET /api/users/aliens</span>",
                 "<span class=opacity-75>js:now</span> <span class=green>-> POST /api/users/:id/activate</span>",
