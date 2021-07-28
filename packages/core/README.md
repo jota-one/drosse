@@ -3,6 +3,37 @@
 ## What is it ?
 > Drosse is the last mock server you'll ever need.
 
+## Table of contents
+* [Installation](#installation)
+* [Usage](#usage)
+    * [As npm dependency in your node project](#as-npm-dependency-in-your-node-project)
+    * [As a global npm package](#as-a-global-npm-package)
+    * [As a Docker image](#as-a-docker-image)
+* [The routes.json file](#the-routesjson-file)
+    * [The DROSSE object](#the-drosse-object)
+    * [Throttling](#throttling)
+    * [Proxies](#proxies)
+    * [Assets](#assets)
+    * [Templates](#templates)
+* [Inline mocks](#inline-mocks)
+* [Static mocks (in separated files)](#static-mocks-in-separated-files)
+* [Services (aka dynamic mocks)](#services-aka-dynamic-mocks)
+    * [The service file](#the-service-file)
+* [Drosse db API](#drosse-db-api)
+    * [Identify your documents](#identify-your-documents)
+    * [Reference documents](#reference-documents)
+    * [API](#api)
+* [The .drosserc.js file (configure your Drosse)](#the-drossercjs-file-configure-your-drosse)
+    * [All configuration keys](#all-configuration-keys)
+    * [Custom middlewares](#custom-middlewares)
+* [Endpoints scraping](#endpoints-scraping)
+    * [Static scraping](#static-scraping)
+    * [Dynamic scraping](#dynamic-scraping)
+* [The CLI](#the-cli)
+* [Features](#features)
+* [In progress](#in-progress)
+* [Future features](#future-features)
+
 ## Installation
 ### As [npm](https://www.npmjs.com/package/@jota-one/drosse) dependency in your node project
 
