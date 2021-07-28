@@ -46,7 +46,7 @@ npm install --save-dev @jota-one/drosse
 {
   "name": "my-node-project",
   "scripts": {
-    "mock-server": "npx drosse-serve -r path/to/mocks-directory"
+    "mock-server": "npx drosse serve -r path/to/mocks-directory"
   },
   "devDependencies": {
     "@jota-one/drosse": "^1.0.0"
