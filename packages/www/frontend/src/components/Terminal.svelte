@@ -129,7 +129,7 @@
       }
 
       @media (--m) {
-        padding-bottom: 62.5%;
+        padding-bottom: 57.5%;
       }
     }
   }
@@ -161,6 +161,10 @@
     padding: 1rem 1.5rem 1.5rem;
     font-size: 0.825rem;
     color: var(--j-terminal-text-color, rgb(113, 113, 113));
+
+    @media (--xl) {
+      font-size: 0.785rem;
+    }
   }
 
   .command:not(.show),
