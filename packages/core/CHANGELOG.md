@@ -5,8 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 # [Unreleased]
+
+## [2.3.0] - 2021-08-30
 ### Added
 - Added log message if the .drosserc.js file isn't loaded for some reason.
+- Added new 'rs' command in CLI to restart the server
+
+### Changed
+- Simplified startup script. If no `-r` or `--root` param is provided, the first term passed after the command name will be taken as root directory.
 
 ## [2.2.0] - 2021-05-25
 ### Fixed
