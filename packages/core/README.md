@@ -46,7 +46,7 @@ npm install --save-dev @jota-one/drosse
 {
   "name": "my-node-project",
   "scripts": {
-    "mock-server": "npx drosse serve -r path/to/mocks-directory"
+    "mock-server": "npx drosse serve path/to/mocks-directory"
   },
   "devDependencies": {
     "@jota-one/drosse": "^1.0.0"
@@ -60,9 +60,13 @@ npm install --save-dev @jota-one/drosse
 npm i -g @jota-one/drosse
 ```
 
-2. Run it via the `serve` command and your drosse folder as root via the `-r` param.
+2. Run it via the `serve` command and your drosse folder as root via the `-r` param or directly as a value after the `serve` command.
 ```
 drosse serve -r /path/to/my/my/mocks
+```
+or
+```
+drosse serve /path/to/my/my/mocks
 ```
 
 ### As a [Docker image](https://hub.docker.com/r/jotaone/drosse)
@@ -1141,6 +1145,11 @@ module.exports = function (json, { db, config, req }) {
 Drosse, once started, is a REPL console where you can type commands. It uses [Vorpal](https://github.com/dthree/vorpal).
 
 This feature is still under active development, but you can already create your own commands and register them in the `.drosserc.js`.
+
+### Built-in commands
+`rs`: restarts the server
+
+`db drop`: Resets the database to the initial state (json files) and restarts the server.
 
 ## Features
 - Cascading Proxies

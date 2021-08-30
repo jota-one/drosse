@@ -1,19 +1,3 @@
-# Change Log
-
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
-
-# [2.3.0](https://github.com/jota-one/drosse/compare/v1.10.5...v2.3.0) (2021-08-30)
-
-
-### Features
-
-* **www with zola+svelte:** update deps ([7f5a0e6](https://github.com/jota-one/drosse/commit/7f5a0e69c35222b30bf97c2cfd09c1c06652d61f))
-
-
-
-
-
 # Changelog
 All notable changes to this project will be documented in this file.
 
@@ -21,8 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 # [Unreleased]
+
+## [2.3.0] - 2021-08-30
 ### Added
 - Added log message if the .drosserc.js file isn't loaded for some reason.
+- Added new 'rs' command in CLI to restart the server
+
+### Changed
+- Simplified startup script. If no `-r` or `--root` param is provided, the first term passed after the command name will be taken as root directory.
 
 ## [2.2.0] - 2021-05-25
 ### Fixed
