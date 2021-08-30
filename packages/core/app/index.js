@@ -28,7 +28,10 @@ process.send = process.send || function () {}
 
 const initServer = async args => {
   // very first action -> set the 'root' directory in the state. Will be useful for further operations.
-  state.set('root', (args.root && path.resolve(args.root)) || path.resolve('.'))
+  state.set(
+    'root',
+    path.resolve(args.root || (args._.length > 2 && args._[2]) || '.')
+  )
 
   // check for some users configuration in a drosserc.js file and update state
   const userConfig = await getUserConfig()
