@@ -11,7 +11,8 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "diff": "lerna diff",
-    "version": "lerna version --conventional-commits --yes"
+    "version": "lerna version --conventional-commits --no-changelog --yes",
+    "hotfix": "lerna version patch --yes"
   },
   "devDependencies": {
     "eslint": "^7.29.0",
