@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # [Unreleased]
 
+## [2.3.1] - 2021-08-31
+### Fixed
+- Fix an issue when running the `rs` command in CLI. The server was restarted with CLI context lost.
+
 ## [2.3.0] - 2021-08-30
 ### Added
 - Added log message if the .drosserc.js file isn't loaded for some reason.
@@ -140,7 +144,9 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/2.2.0...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/2.3.1...develop
+[2.3.1]: https://github.com/jota-one/drosse/compare/2.3.0...2.3.1
+[2.3.0]: https://github.com/jota-one/drosse/compare/2.2.0...2.3.0
 [2.2.0]: https://github.com/jota-one/drosse/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/jota-one/drosse/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/jota-one/drosse/compare/1.13.2...2.0.0
