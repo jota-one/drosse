@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.1] - 2021-08-31
 ### Fixed
+- Fix an issue when running the `exit` command in CLI. A node sub-process was staying alive when it should have been killed.
 - Fix an issue when running the `rs` command in CLI. The server was restarted with CLI context lost.
 
 ## [2.3.0] - 2021-08-30
