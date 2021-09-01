@@ -13,6 +13,7 @@
     * [The DROSSE object](#the-drosse-object)
     * [Throttling](#throttling)
     * [Proxies](#proxies)
+        * [Advanced proxy settings](#advanced-proxy-settings)
     * [Assets](#assets)
     * [Templates](#templates)
 * [Inline mocks](#inline-mocks)
@@ -281,6 +282,22 @@ Of course you can still define subroutes in a proxied path. They will take prece
 ```
 
 If we call `http://localhost:8000/api/countries/name/switzerland`, Drosse will not proxy the request as there is a fully qualified path in our routes definition. We will then get the response defined just above and not a proxied response.
+
+#### Advanced proxy settings
+
+If you need advanced proxy settings, you can use an object instead of a string, like this:
+```json
+    "countries": {
+      "DROSSE": {
+        "proxy": {
+          "target": "https://localhost:8081/api",
+          "secure": false,
+          "ws": true
+        }
+      }
+```
+
+As we use [node-http-proxy](https://www.npmjs.com/package/http-proxy) in the background, please refer to its documentation for [all available options](https://github.com/http-party/node-http-proxy#options).
 
 ### Assets
 
