@@ -21,7 +21,7 @@ module.exports = function (config, app, forked, restart) {
   }
   return {
     extend(callback) {
-      callback(vorpal, { config, runCommand, restart })
+      callback(vorpal, { config, runCommand, restart, app })
     },
 
     start() {

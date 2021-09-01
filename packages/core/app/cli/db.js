@@ -7,5 +7,5 @@ module.exports = function (vorpal, { config, restart }) {
     return restart()
   }
 
-  vorpal.command('db drop', 'Delete the database file').action(dropDatabase)
+  vorpal.command('db drop', 'Delete the database file.').action(dropDatabase)
 }
