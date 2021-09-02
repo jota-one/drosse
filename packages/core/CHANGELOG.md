@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# [Unreleased]
+## [Unreleased]
+### Fixed
+- The curly braces parameters are really replaced inside static json now.
+
+### Changed
+- Reworked the proxy workflow to modularize response hooks + used http-proxy-middleware built-in response handler.
+
+### Added
+- Added a proxy response hook to transform hateoas links and remove their baseUrl (useful to avoid CORS issue when calling an hateoas API through Drosse's proxy)
 
 ## [2.3.1] - 2021-08-31
 ### Fixed

@@ -1,4 +1,7 @@
-const proxy = require('http-proxy-middleware')
+const {
+  createProxyMiddleware,
+  responseInterceptor,
+} = require('http-proxy-middleware')
 const express = require('express')
 const path = require('path')
 const { isEmpty, isString, difference } = require('lodash')
@@ -30,9 +33,7 @@ const getThrottleMiddleware = def => {
 }
 
 const getProxy = function (def) {
-  return typeof def.proxy === 'string'
-    ? { target: def.proxy }
-    : def.proxy      
+  return typeof def.proxy === 'string' ? { target: def.proxy } : def.proxy
 }
 
 const setRoute = function (app, def, verb, root) {
@@ -56,9 +57,14 @@ const setRoute = function (app, def, verb, root) {
       if (def.static) {
         try {
           const { params, query } = req
-          response = loadStatic({ routePath: root, params, verb, query })
+          response = await loadStatic({ routePath: root, params, verb, query })
           if (!response) {
-            response = loadScraped({ routePath: root, params, verb, query })
+            response = await loadScraped({
+              routePath: root,
+              params,
+              verb,
+              query,
+            })
             applyTemplate = false
 
             if (!response) {
@@ -168,10 +174,41 @@ const createRoute = function (def, root, defHierarchy) {
     if (!this.proxies) {
       this.proxies = []
     }
+    const proxyResHooks = []
 
     const path = [''].concat(root)
 
-    let onProxyRes
+    const onProxyReq = function (proxyReq, req, res) {
+      res.set('x-proxied', true)
+
+      // restream body, if any
+      if (req.body) {
+        const bodyData = JSON.stringify(req.body)
+        // If content-type is application/x-www-form-urlencoded -> we need to change to application/json
+        proxyReq.setHeader('Content-Type', 'application/json')
+        proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData))
+        // stream the content
+        proxyReq.write(bodyData)
+      }
+    }
+
+    const applyProxyRes = function (hooks = []) {
+      if (hooks.length === 0) {
+        return
+      }
+      return responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+        const response = responseBuffer.toString('utf8') // convert buffer to string
+        try {
+          const json = JSON.parse(response)
+          hooks.forEach(hook => hook(json, req, res))
+          return JSON.stringify(json)
+        } catch (e) {
+          console.log('Response error: could not encode string to JSON')
+          console.log(response)
+          console.log(e)
+        }
+      })
+    }
     if (def.scraper) {
       let tmpProxy = def.proxy
       if (!tmpProxy) {
@@ -187,7 +224,7 @@ const createRoute = function (def, root, defHierarchy) {
             }
             const subpath = difference(item.path, acc.path)
             const proxy = getProxy(acc)
-            
+
             proxy.target = proxy.target.split('/').concat(subpath).join('/')
 
             return {
@@ -206,40 +243,22 @@ const createRoute = function (def, root, defHierarchy) {
         scraperService = useScraper().staticService
       }
 
-      onProxyRes = function (proxyRes, req, res) {
-        const zlib = require('zlib')
-        const bodyChunks = []
-
-        proxyRes.on('data', chunk => {
-          bodyChunks.push(chunk)
-        })
-
-        proxyRes.on('end', () => {
-          const body = Buffer.concat(bodyChunks)
-          if (
-            proxyRes.headers['content-type'] &&
-            proxyRes.headers['content-type'].includes('application/json')
-          ) {
-            const isGzip = res.getHeader('content-encoding') === 'gzip'
-            const str = isGzip
-              ? zlib.gunzipSync(body).toString()
-              : body.toString()
-
-            try {
-              const json = JSON.parse(str)
-              const api = require('./api')(req, res)
-              scraperService(json, api)
-            } catch (e) {
-              console.log('Scraper error: could not encode string to JSON')
-              console.log(str)
-              console.log(e)
-            }
-          }
-        })
-      }
+      proxyResHooks.push((json, req, res) => {
+        const api = require('./api')(req, res)
+        scraperService(json, api)
+      })
     }
 
     if (def.proxy) {
+      // add some response rewriter if any
+      if (def.proxy.responseRewriters) {
+        def.proxy.selfHandleResponse = true
+        def.proxy.responseRewriters.forEach(rewriterName => {
+          const path = './middlewares/json-response/' + rewriterName
+          proxyResHooks.push(require(path))
+        })
+      }
+
       this.proxies.push({
         path: path.join('/'),
         context: {
@@ -248,8 +267,8 @@ const createRoute = function (def, root, defHierarchy) {
           pathRewrite: {
             [path.join('/')]: '/',
           },
-          onProxyReq: restream,
-          onProxyRes,
+          onProxyReq,
+          onProxyRes: applyProxyRes(proxyResHooks),
         },
         def,
       })
@@ -282,18 +301,6 @@ const createRoutes = (app, routes) => {
   return result
 }
 
-const restream = function (proxyReq, req, res) {
-  res.set('x-proxied', true)
-  if (req.body) {
-    const bodyData = JSON.stringify(req.body)
-    // If content-type is application/x-www-form-urlencoded -> we need to change to application/json
-    proxyReq.setHeader('Content-Type', 'application/json')
-    proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData))
-    // stream the content
-    proxyReq.write(bodyData)
-  }
-}
-
 const createAssets = app => {
   if (!app.assets) {
     return
@@ -322,7 +329,7 @@ const createProxies = app => {
   app.proxies.forEach(({ path, context, def }) => {
     const middlewares = [
       getThrottleMiddleware(def),
-      proxy.createProxyMiddleware({ ...context, logLevel: 'warn' }),
+      createProxyMiddleware({ ...context, logLevel: 'warn' }),
     ]
     app.use(path || '/', middlewares)
 

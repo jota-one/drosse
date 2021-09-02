@@ -75,7 +75,7 @@ const writeScrapedFile = async (filename, content) => {
   return true
 }
 
-const loadStatic = ({
+const loadStatic = async ({
   routePath,
   params = {},
   query = {},
@@ -84,10 +84,10 @@ const loadStatic = ({
 }) => {
   const root = path.join(state.get('root'), state.get('staticPath'))
   const files = rrdir.sync(root)
-  return findStatic(root, files, routePath, params, verb, skipVerb, query)
+  return findStatic({ root, files, routePath, params, verb, skipVerb, query })
 }
 
-const loadScraped = ({
+const loadScraped = async ({
   routePath,
   params = {},
   query = {},
@@ -96,7 +96,7 @@ const loadScraped = ({
 }) => {
   const root = path.join(state.get('root'), state.get('scrapedPath'))
   const files = rrdir.sync(root)
-  return findStatic(root, files, routePath, params, verb, skipVerb, query)
+  return findStatic({ root, files, routePath, params, verb, skipVerb, query })
 }
 
 const loadUuid = () => {
@@ -138,16 +138,28 @@ const getStaticFileName = (routePath, params = {}, verb = null, query = {}) => {
   return filename
 }
 
-const findStatic = (
+const findStatic = async ({
   root,
   files,
   routePath,
   params = {},
   verb = null,
   skipVerb = false,
-  query = {}
-) => {
+  query = {},
+  initial = null,
+}) => {
+  const fs = require('fs').promises
   const normalizedPath = filePath => filePath.replace(root, '').substr(1)
+
+  // if initial is null, it's the very first call (before recursion), we save the initial parameters for
+  // further replacements in the file content, once found.
+  if (initial === null) {
+    initial = {
+      params,
+      query,
+      verb,
+    }
+  }
 
   const filename = getStaticFileName(
     routePath,
@@ -171,22 +183,34 @@ const findStatic = (
     throw new Error(error)
   }
 
-  if (foundFiles.length === 1) {
-    staticFile = foundFiles[0].path
-    logger.info(`findStatic: file used: ${staticFile}`)
-  }
-
   if (foundFiles.length === 0) {
     logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
 
     // try without the query string if there was any
     if (!isEmpty(query)) {
-      return findStatic(root, files, routePath, params, verb, skipVerb)
+      return findStatic({
+        root,
+        files,
+        routePath,
+        params,
+        verb,
+        skipVerb,
+        initial,
+      })
     }
 
     // if a verb was provided and not yet skipped, try to skip it
     if (verb && !skipVerb) {
-      return findStatic(root, files, routePath, params, verb, true, query)
+      return findStatic({
+        root,
+        files,
+        routePath,
+        params,
+        verb,
+        skipVerb: true,
+        query,
+        initial,
+      })
     }
 
     // retry by removing the first param of the list
@@ -195,14 +219,29 @@ const findStatic = (
       const newParams = Object.keys(params)
         .slice(1)
         .reduce((acc, name) => ({ ...acc, [name]: params[name] }), {})
-      return findStatic(root, files, routePath, newParams, verb)
+      return findStatic({
+        root,
+        files,
+        routePath,
+        params: newParams,
+        verb,
+        initial,
+      })
     }
 
     // really didn't find any file matching conditions
     return false
   }
 
-  return require(staticFile)
+  staticFile = foundFiles[0].path
+  logger.info(`findStatic: file used: ${staticFile}`)
+
+  const fileContent = await fs.readFile(staticFile, 'utf-8')
+
+  console.log(fileContent, initial.params)
+  const result = replace(fileContent, initial.params)
+  console.log(result)
+  return JSON.parse(result)
 }
 
 module.exports = function useIo() {
