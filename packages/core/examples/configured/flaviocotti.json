@@ -37,7 +37,13 @@
     },
     "countries": {
       "DROSSE": {
-        "proxy": "https://restcountries.eu/rest/v2"
+        "proxy": {
+          "target": "https://restcountries.eu/rest/v2",
+          "headers": {
+            "x-user": "Luke",
+            "x-roles": "jedi,pilot"
+          }
+        }
       },
       "name": {
         "switzerland": {
@@ -54,7 +60,13 @@
     },
     "countries-slow": {
       "DROSSE": {
-        "proxy": "https://restcountries.eu/rest/v2",
+        "proxy": {
+          "target": "https://restcountries.eu/rest/v2",
+          "headers": {
+            "X-User": "123456-1",
+            "X-Roles": "customer,blabla"
+          }
+        },
         "throttle": {
           "min": 2000,
           "max": 4000

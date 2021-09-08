@@ -4,10 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# [Unreleased]
+## [Unreleased]
+
+## [2.3.2] - 2021-09-08
+### Fixed
+- The curly braces parameters are really replaced inside static json now.
+
+### Changed
+- Reworked the proxy workflow to modularize response hooks + used http-proxy-middleware built-in response handler.
+
+### Added
+- Added a proxy response hook to transform hateoas links and remove their baseUrl (useful to avoid CORS issue when calling an hateoas API through Drosse's proxy)
 
 ## [2.3.1] - 2021-08-31
 ### Fixed
+- Fix an issue when running the `exit` command in CLI. A node sub-process was staying alive when it should have been killed.
 - Fix an issue when running the `rs` command in CLI. The server was restarted with CLI context lost.
 
 ## [2.3.0] - 2021-08-30
@@ -144,7 +155,8 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/2.3.1...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/2.3.2...develop
+[2.3.2]: https://github.com/jota-one/drosse/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/jota-one/drosse/compare/2.3.0...2.3.1
 [2.3.0]: https://github.com/jota-one/drosse/compare/2.2.0...2.3.0
 [2.2.0]: https://github.com/jota-one/drosse/compare/2.1.0...2.2.0
