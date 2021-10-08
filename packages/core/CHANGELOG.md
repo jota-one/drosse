@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.3] - 2021-10-08
+### Fixed
+- Proxy did send GET request with a wrong Content-Length header. Fixed.
+
 ## [2.3.2] - 2021-09-08
 ### Fixed
 - The curly braces parameters are really replaced inside static json now.
