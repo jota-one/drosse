@@ -238,9 +238,7 @@ const findStatic = async ({
 
   const fileContent = await fs.readFile(staticFile, 'utf-8')
 
-  console.log(fileContent, initial.params)
   const result = replace(fileContent, initial.params)
-  console.log(result)
   return JSON.parse(result)
 }
 
