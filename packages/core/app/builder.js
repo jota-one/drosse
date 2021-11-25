@@ -264,6 +264,7 @@ const createRoute = function (def, root, defHierarchy) {
         context: {
           ...getProxy(def),
           changeOrigin: true,
+          selfHandleResponse: Boolean(proxyResHooks.length),
           pathRewrite: {
             [path.join('/')]: '/',
           },
