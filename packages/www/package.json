@@ -1,6 +1,6 @@
 {
 	"name": "@jota-one/drosse-www",
-	"version": "2.3.0",
+	"version": "2.3.4",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
