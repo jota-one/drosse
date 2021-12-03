@@ -198,6 +198,14 @@ module.exports = async args => {
     server = app.listen(discoverConfig.port, '0.0.0.0', () => {
       onStart(discoverConfig)
     })
+
+    // Execute onHttpUpgrade callback to activate websocket connection
+    const onHttpUgrade = state.get('onHttpUpgrade')
+
+    if (typeof onHttpUgrade === 'function') {
+      server.on('upgrade', onHttpUgrade)
+    }
+
     stoppable(server, 100)
   }
 
