@@ -19,9 +19,9 @@ module.exports = {
     dbAdapter: 'LokiFsAdapter',
     reservedRoutes: { ui: '/UI' },
     uuid: '',
-    onHttpUpgrade: null,
   },
   commands: {},
   middlewares: ['morgan'],
   templates: {},
+  onHttpUpgrade: null,
 }

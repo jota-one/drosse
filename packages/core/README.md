@@ -1055,6 +1055,7 @@ module.exports = {
 | `errorHandler`       | **(empty)**       | A custom express error handler. Must be a function with the following signature: function (err, req, res, next) { ... } (see [express documentation](https://expressjs.com/en/guide/error-handling.html#the-default-error-handler)) |
 | `configureExpress`   | **(empty)**       | Used to set custom instructions to the express app. Must be a function with the following signature: function (app) {}. `app` being the express instance. |
 | `commands`           | **(empty)**       | Used to extend Drosse CLI with custom commands. Must be a function with the following signature: function (vorpal, drosse) { ... }. See [the cli](#cli) documentation. |
+| `onHttpUpgrade`      | **null**          | A function that initiates a websocket connection. This is happening once during HTTP protocol upgrade handshake. Must be a function with the following signature: function (request, socket, head) { ... }. |
 
 ### Custom middlewares
 

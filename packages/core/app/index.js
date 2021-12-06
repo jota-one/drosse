@@ -26,6 +26,8 @@ const { executeCommand } = useCommand()
 
 process.send = process.send || function () {}
 
+let onHttpUpgrade
+
 const initServer = async args => {
   // very first action -> set the 'root' directory in the state. Will be useful for further operations.
   state.set(
@@ -35,6 +37,7 @@ const initServer = async args => {
 
   // check for some users configuration in a drosserc.js file and update state
   const userConfig = await getUserConfig()
+  onHttpUpgrade = userConfig.onHttpUpgrade
   state.merge(userConfig)
 
   // run some checks
@@ -200,10 +203,8 @@ module.exports = async args => {
     })
 
     // Execute onHttpUpgrade callback to activate websocket connection
-    const onHttpUgrade = state.get('onHttpUpgrade')
-
-    if (typeof onHttpUgrade === 'function') {
-      server.on('upgrade', onHttpUgrade)
+    if (typeof onHttpUpgrade === 'function') {
+      server.on('upgrade', onHttpUpgrade)
     }
 
     stoppable(server, 100)

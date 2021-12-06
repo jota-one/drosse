@@ -12,8 +12,8 @@ module.exports = {
       ws.send('connected!')
     })
 
-    wss.handleUpgrade(request, socket, head, socket => {
-      wss.emit('connection', socket, request)
+    wss.handleUpgrade(request, socket, head, function (connection) {
+      wss.emit('connection', connection, request)
     })
   },
 }

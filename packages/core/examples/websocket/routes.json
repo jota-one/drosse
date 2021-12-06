@@ -1,7 +1,7 @@
 {
-  "DROSSE": {
-    "get": {
-      "service": true
+  "example": {
+    "DROSSE": {
+      "assets": "index.html"
     }
   }
 }
