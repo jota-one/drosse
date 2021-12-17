@@ -1,6 +1,0 @@
-title = "Extensible REPL CLI"
-doc = "https://github.com/jota-one/drosse/tree/master/packages/core#usage"
-
-[icon]
-name = "terminal"
-color = "lime"
