@@ -1050,7 +1050,7 @@ module.exports = {
 | `scrapedPath`        | **scraped**       | Relative path to the scraped files directory from your mocks directory. |
 | `database`           | **mocks.db**      | Name of your loki database dump file. |
 | `dbAdapter`          | **LokiFsAdapter** | IO adapter to use for database persistence. |
-| `middlewares`        | **['body-parser-json', 'morgan']** | List of global middlewares. Drosse provides 3 built-in middlewares, 2 being added by default. The third is 'open-cors'. |
+| `middlewares`        | **['morgan']** | List of global middlewares. Drosse provides 2 built-in middlewares, 1 being added by default. The second one is 'open-cors'. |
 | `templates`          | **{}**            | Templates to be used in `routes.json`. See [templates](#templates) documentation. |
 | `errorHandler`       | **(empty)**       | A custom express error handler. Must be a function with the following signature: function (err, req, res, next) { ... } (see [express documentation](https://expressjs.com/en/guide/error-handling.html#the-default-error-handler)) |
 | `configureExpress`   | **(empty)**       | Used to set custom instructions to the express app. Must be a function with the following signature: function (app) {}. `app` being the express instance. |
