@@ -1,6 +1,7 @@
 const path = require('path')
 const c = require('ansi-colors')
 const ip = require('ip')
+const http = require('http')
 const express = require('express')
 const stoppable = require('stoppable')
 const lodash = require('lodash')
@@ -16,8 +17,10 @@ const useCommand = require('./use/command')
 const useIo = require('./use/io')
 const { createRoutes } = require('./builder')
 const version = require('../package.json').version
+const api = require('./api')()
 
 const app = express()
+const server = http.createServer(app)
 const state = useState()
 const middlewares = useMiddlewares()
 const db = useDb()
@@ -26,7 +29,7 @@ const { executeCommand } = useCommand()
 
 process.send = process.send || function () {}
 
-let onHttpUpgrade
+let configureExpress, onHttpUpgrade
 
 const initServer = async args => {
   // very first action -> set the 'root' directory in the state. Will be useful for further operations.
@@ -38,6 +41,7 @@ const initServer = async args => {
   // check for some users configuration in a drosserc.js file and update state
   const userConfig = await getUserConfig()
   onHttpUpgrade = userConfig.onHttpUpgrade
+  configureExpress = userConfig.configureExpress
   state.merge(userConfig)
 
   // run some checks
@@ -73,9 +77,8 @@ const initServer = async args => {
   process.send({ event: 'uuid', data: state.get('uuid') })
 
   // extend express app
-  const configureExpress = state.get('configureExpress')
   if (typeof configureExpress === 'function') {
-    configureExpress(app)
+    configureExpress({ server, app, db: api.db })
   }
 
   // register custom global middlewares
@@ -88,7 +91,7 @@ const initServer = async args => {
 
     // if the middleware signature has 4 arguments, we assume that the first one is the Drosse `api`
     if (mw.length === 4) {
-      mw = lodash.curry(mw)(require('./api')())
+      mw = lodash.curry(mw)(api)
     }
     app.use(mw)
   })
@@ -195,10 +198,9 @@ const init = async args => {
 // start server
 module.exports = async args => {
   const discoverConfig = await init(args)
-  let server
 
   const start = async () => {
-    server = app.listen(discoverConfig.port, '0.0.0.0', () => {
+    server.listen(discoverConfig.port, '0.0.0.0', () => {
       onStart(discoverConfig)
     })
 
