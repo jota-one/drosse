@@ -1,5 +1,5 @@
 {
-  "name": "drosse-websocket-example",
+  "name": "drosse-sockjs-example",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,6 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ws": "^8.3.0"
+    "sockjs": "^0.3.24"
   }
 }

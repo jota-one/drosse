@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2021-12-17
+### Added
+Added a sockjs example to demonstrate how Drosse can be extended to mock a realtime backend with websocket/sockjs implementation.
+
+### Changed
+- **BREAKING CHANGE**: The `configureExpress` now takes the object `{ server, app, db}`
+as argument instead of just `app` as it used to be until now, which allows users
+to hook into the http server before it starts (check the [sockjs](./examples/sockjs) example).
+
 ## [2.4.0] - 2021-12-06
 ### Fixed
 - Fix ERR_HTTP_HEADERS_SENT during proxyRes callback.
