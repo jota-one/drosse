@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2021-12-17
+### Removed
+- Removed tags prefixed with `v`.
 ## [2.5.0] - 2021-12-17
 ### Added
-Added a sockjs example to demonstrate how Drosse can be extended to mock a realtime backend with websocket/sockjs implementation.
+- SockJS example to demonstrate how Drosse can be extended on the http Server instance.
 
 ### Changed
 - **BREAKING CHANGE**: The `configureExpress` now takes the object `{ server, app, db}`
@@ -16,11 +19,14 @@ as argument instead of just `app` as it used to be until now, which allows users
 to hook into the http server before it starts (check the [sockjs](./examples/sockjs) example).
 
 ## [2.4.0] - 2021-12-06
+### Added
+- Support for websocket connections.
+- Websocket example to demonstrate how Drosse can be extended to mock a realtime backend with websocket.
+
+## [2.3.4] - 2021-11-25
 ### Fixed
 - Fix ERR_HTTP_HEADERS_SENT during proxyRes callback.
 
-### Added
-- Support for websocket connections.
 ## [2.3.3] - 2021-10-08
 ### Fixed
 - Proxy did send GET request with a wrong Content-Length header. Fixed.
@@ -174,8 +180,11 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/2.4.0...develop
-[2.4.0]: https://github.com/jota-one/drosse/compare/2.3.3...2.4.0
+[Unreleased]: https://github.com/jota-one/drosse/compare/2.5.1...develop
+[2.5.1]: https://github.com/jota-one/drosse/compare/2.5.0...2.5.1
+[2.5.0]: https://github.com/jota-one/drosse/compare/2.4.0...2.5.0
+[2.4.0]: https://github.com/jota-one/drosse/compare/2.3.4...2.4.0
+[2.3.4]: https://github.com/jota-one/drosse/compare/2.3.3...2.3.4
 [2.3.3]: https://github.com/jota-one/drosse/compare/2.3.2...2.3.3
 [2.3.2]: https://github.com/jota-one/drosse/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/jota-one/drosse/compare/2.3.0...2.3.1
