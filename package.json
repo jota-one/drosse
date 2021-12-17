@@ -1,37 +1,50 @@
 {
-  "name": "drosse",
-  "version": "1.9.0",
+  "name": "@jota-one/drosse",
+  "version": "2.5.0",
   "description": "Mock your backend the right way.",
-  "license": "MIT",
-  "author": "Jota",
-  "contributors": [
-    "Tadai <tadai@jota.one>",
-    "Jorinho <jorinho@jota.one>"
-  ],
-  "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "diff": "lerna diff",
-    "version": "lerna version --conventional-commits --no-changelog --yes",
-    "hotfix": "lerna version patch --yes"
+  "main": "app/index.js",
+  "bin": {
+    "drosse": "./bin/drosse.js"
   },
-  "devDependencies": {
-    "eslint": "^7.29.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-promise": "^5.1.1",
-    "eslint-plugin-standard": "^4.1.0",
-    "eslint-plugin-vue": "^7.12.1",
-    "lerna": "^4.0.0",
-    "prettier": "^2.4.1",
-    "standard": "^16.0.4"
+  "scripts": {
+    "serve": "node ./bin/drosse.js serve"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jota-one/drosse.git"
   },
+  "keywords": [
+    "mock",
+    "server",
+    "loki",
+    "dynamic",
+    "feutre",
+    "proxy"
+  ],
+  "author": "Juniors at Work",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/jota-one/drosse/issues"
   },
-  "homepage": "https://drosse.dev"
+  "homepage": "https://drosse.dev",
+  "dependencies": {
+    "@jota-one/replacer": "^0.3.1",
+    "@moleculer/vorpal": "^1.11.5",
+    "ansi-colors": "^4.1.1",
+    "express": "^4.17.1",
+    "get-port": "^5.1.1",
+    "http-proxy-middleware": "^2.0.1",
+    "ip": "^1.1.5",
+    "lodash": "^4.17.21",
+    "lokijs": "^1.5.12",
+    "morgan": "^1.10.0",
+    "node-discover": "^1.2.1",
+    "rrdir": "^8.2.2",
+    "stoppable": "^1.1.0",
+    "uuid": "^8.3.2",
+    "yargs": "^17.3.0"
+  },
+  "devDependencies": {
+    "express-session": "^1.17.2"
+  }
 }

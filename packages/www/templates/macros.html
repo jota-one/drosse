@@ -1,4 +1,0 @@
-{% macro terminal(session) %}
-{% set data = load_data(path=session) -%}
-<j-terminal steps="{{ data.steps | json_encode() }}"></j-terminal>
-{% endmacro terminal %}

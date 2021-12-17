@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SockJs example</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  </head>
+  <body>
+    <h1>SockJs example</h1>
+    <p>
+      <strong>Responses from server:</strong>
+      <br>
+      <small>
+        What happens in the Network/WS panel of the your browser's dev tools
+        is more interesting :)
+      </small>
+    </p>
+    
+    <div id="first" class="box">
+      <div></div>
+      <form action="#" onsubmit="send(); return false">
+        <input autocomplete="off" placeholder="Type here...">
+      </form>
+    </div>
+
+    <script>
+      var sockjs_url = '/echo'
+      var sockjs = new SockJS(sockjs_url)
+      document.querySelector('#first input').focus()
+
+      var div  = document.querySelector('#first div')
+      var inp  = document.querySelector('#first input')
+      var form = document.querySelector('#first form')
+
+      var print = function(m, p) {
+        var codeEl = document.createElement('code')
+        var brEl = document.createElement('br')
+        
+        p = (p === undefined) ? '' : JSON.stringify(p)
+        
+        codeEl.innerHTML = m + ' ' + p
+        
+        div.appendChild(codeEl)
+        div.appendChild(brEl)
+      }
+      
+      sockjs.onopen = function() {
+        print(
+          '[*] open connection',
+          `protocol: ${sockjs.protocol}, transport: ${sockjs.transport}, url: ${sockjs.url}`
+        )
+      }
+
+      sockjs.onmessage = function(e) {print('[.] message', e.data)}
+      sockjs.onclose   = function()  {print('[*] close')}
+
+      function send() {
+        print('[ ] sending', inp.value)
+        sockjs.send(inp.value)
+        inp.value = ''
+      }
+    </script>
+  </body>
+  </html>
