@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.2] - 2022-03-14
+### Changed
+- If a proxied call fails, it will now fallback to the `body` value of the proxied route if any, or to an empty JSON object.
+- Changed development node and npm version to LTS and therefore changed the package-lock.json format to v2.
+
 ## [2.5.1] - 2021-12-17
 ### Removed
 - Removed tags prefixed with `v`.
@@ -180,7 +185,8 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/2.5.1...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/2.5.2...develop
+[2.5.2]: https://github.com/jota-one/drosse/compare/2.5.1...2.5.2
 [2.5.1]: https://github.com/jota-one/drosse/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/jota-one/drosse/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/jota-one/drosse/compare/2.3.4...2.4.0

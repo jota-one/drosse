@@ -192,7 +192,7 @@ const createRoute = function (def, root, defHierarchy) {
       }
     }
 
-    const applyProxyRes = function (hooks = []) {
+    const applyProxyRes = function (hooks, def) {
       if (hooks.length === 0) {
         return
       }
@@ -206,6 +206,11 @@ const createRoute = function (def, root, defHierarchy) {
           console.log('Response error: could not encode string to JSON')
           console.log(response)
           console.log(e)
+          console.log(
+            'Will try to fallback on the static mock or at least return a vaild JSON string.'
+          )
+
+          return JSON.stringify(def.body) || '{}' // fallback on the def.body if any or a stringified empty JSON object to avoid an automatic Drosse crash.
         }
       })
     }
@@ -269,7 +274,7 @@ const createRoute = function (def, root, defHierarchy) {
             [path.join('/')]: '/',
           },
           onProxyReq,
-          onProxyRes: applyProxyRes(proxyResHooks),
+          onProxyRes: applyProxyRes(proxyResHooks, def),
         },
         def,
       })
