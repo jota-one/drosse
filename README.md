@@ -518,7 +518,8 @@ To define a `static mock`, simply set the `static` property of your `DROSSE` obj
       ":id": {
         "DROSSE": {
           "get": {
-            "static": true
+            "static": true,
+            "extensions": ["json"]
           }
         }
       }
@@ -527,7 +528,7 @@ To define a `static mock`, simply set the `static` property of your `DROSSE` obj
 }
 ```
 
-With such a definition, when you call `GET /api/users/65?withDetails=1`, drosse will look for a specific JSON file in the `static` subdirectory of your mocks directory.
+With such a definition, when you call `GET /api/users/65?withDetails=1`, drosse will look for a specific file in the `static` subdirectory of your mocks directory.
 
 :fire: You can redefine this `static` directory name in your `.drosserc.js` file ([see below](#drosserc)).
 
@@ -539,6 +540,9 @@ api.users.65.get.json
 api.users.65.json
 api.users.{id}.json
 ```
+
+You can pass more than one extension to check for. By default, if you don't pass the `extensions` key next to the `static` key, it will fallback to `["json"]`. If you search
+for other file types, like images for example, Drosse will automatically return the file instead of a JSON response.
 
 If you have a route with several path parameters, drosse will ignore them from left to right. Example, for this route:
 ```
