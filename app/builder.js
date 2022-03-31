@@ -43,6 +43,7 @@ const setRoute = function (app, def, verb, root) {
     async (req, res, next) => {
       let response
       let applyTemplate = true
+      let staticExtension = 'json'
 
       if (def.service) {
         const api = require('./api')(req, res)
@@ -57,15 +58,21 @@ const setRoute = function (app, def, verb, root) {
       if (def.static) {
         try {
           const { params, query } = req
-          response = await loadStatic({ routePath: root, params, verb, query })
+          const { extensions } = def
+          const [ result, extension ] = await loadStatic({ routePath: root, params, verb, query, extensions })
+          response = result
+          staticExtension = extension
           if (!response) {
-            response = await loadScraped({
+            const [ result, extension ] = await loadScraped({
               routePath: root,
               params,
               verb,
               query,
+              extensions,
             })
             applyTemplate = false
+            response = result
+            staticExtension = extension
 
             if (!response) {
               applyTemplate = true
@@ -92,6 +99,7 @@ const setRoute = function (app, def, verb, root) {
       if (
         applyTemplate &&
         def.responseType !== 'file' &&
+        staticExtension === 'json' &&
         def.template &&
         Object.keys(def.template).length
       ) {
@@ -99,7 +107,7 @@ const setRoute = function (app, def, verb, root) {
       }
 
       // send response
-      if (def.responseType === 'file') {
+      if (def.responseType === 'file' || staticExtension !== 'json') {
         return res.sendFile(response, function (err) {
           if (err) {
             logger.error(err.stack)

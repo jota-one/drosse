@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const rrdir = require('rrdir')
-const { isEmpty } = require('lodash')
+const { isEmpty, cloneDeep } = require('lodash')
 const { v4: uuidv4 } = require('uuid')
 const { replace } = require('@jota-one/replacer')
 const useState = require('./state')
@@ -81,10 +81,11 @@ const loadStatic = async ({
   query = {},
   verb = null,
   skipVerb = false,
+  extensions = ['json']
 }) => {
   const root = path.join(state.get('root'), state.get('staticPath'))
   const files = rrdir.sync(root)
-  return findStatic({ root, files, routePath, params, verb, skipVerb, query })
+  return findStatic({ root, files, routePath, params, verb, skipVerb, query, extensions })
 }
 
 const loadScraped = async ({
@@ -93,10 +94,11 @@ const loadScraped = async ({
   query = {},
   verb = null,
   skipVerb = false,
+  extensions = ['json'],
 }) => {
   const root = path.join(state.get('root'), state.get('scrapedPath'))
   const files = rrdir.sync(root)
-  return findStatic({ root, files, routePath, params, verb, skipVerb, query })
+  return findStatic({ root, files, extensions, routePath, params, verb, skipVerb, query })
 }
 
 const loadUuid = () => {
@@ -114,7 +116,7 @@ const routes = () => {
   return JSON.parse(content)
 }
 
-const getStaticFileName = (routePath, params = {}, verb = null, query = {}) => {
+const getStaticFileName = (routePath, extension, params = {}, verb = null, query = {}) => {
   const queryPart = Object.entries(query)
     .sort(([name1], [name2]) => {
       return name1 > name2 ? 1 : -1
@@ -133,36 +135,39 @@ const getStaticFileName = (routePath, params = {}, verb = null, query = {}) => {
     params
   )
 
-  filename = filename.concat(filename.slice(-5) === '.json' ? '' : '.json')
-
-  return filename
+  const extensionLength = extension.length
+  return filename.concat(filename.slice(-(extensionLength + 1)) === `.${extension}` ? '' : `.${extension}`)
 }
 
 const findStatic = async ({
   root,
   files,
   routePath,
+  extensions,
   params = {},
   verb = null,
   skipVerb = false,
   query = {},
   initial = null,
+  extensionIndex = 0
 }) => {
   const fs = require('fs').promises
-  const normalizedPath = filePath => filePath.replace(root, '').substr(1)
+  const normalizedPath = filePath => filePath.replace(root, '').substring(1)
 
   // if initial is null, it's the very first call (before recursion), we save the initial parameters for
   // further replacements in the file content, once found.
   if (initial === null) {
-    initial = {
+    initial = cloneDeep({
       params,
       query,
       verb,
-    }
+      skipVerb,
+    })
   }
 
   const filename = getStaticFileName(
     routePath,
+    extensions[extensionIndex],
     params,
     !skipVerb && verb,
     query
@@ -184,10 +189,9 @@ const findStatic = async ({
   }
 
   if (foundFiles.length === 0) {
-    logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
-
     // try without the query string if there was any
     if (!isEmpty(query)) {
+      logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
       return findStatic({
         root,
         files,
@@ -195,12 +199,15 @@ const findStatic = async ({
         params,
         verb,
         skipVerb,
+        extensions,
         initial,
+        extensionIndex,
       })
     }
 
     // if a verb was provided and not yet skipped, try to skip it
     if (verb && !skipVerb) {
+      logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
       return findStatic({
         root,
         files,
@@ -209,7 +216,9 @@ const findStatic = async ({
         verb,
         skipVerb: true,
         query,
+        extensions,
         initial,
+        extensionIndex,
       })
     }
 
@@ -218,28 +227,51 @@ const findStatic = async ({
       logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
       const newParams = Object.keys(params)
         .slice(1)
-        .reduce((acc, name) => ({ ...acc, [name]: params[name] }), {})
+        .reduce((acc, name) => ({...acc, [name]: params[name]}), {})
       return findStatic({
         root,
         files,
         routePath,
         params: newParams,
         verb,
+        extensions,
         initial,
+        extensionIndex,
       })
     }
 
     // really didn't find any file matching conditions
-    return false
+    if (extensionIndex === extensions.length - 1) {
+      logger.error(`findStatic: I think I've tried everything. No match...`)
+      return [ false, false ]
+    } else {
+      logger.warn(`findStatic: Okay, tried everything with ${extensions[extensionIndex]} extension. Let's try with the next one.`)
+      return findStatic({
+        root,
+        files,
+        routePath,
+        params: cloneDeep(initial.params),
+        query: cloneDeep(initial.query),
+        verb: initial.verb,
+        skipVerb: initial.skipVerb,
+        extensions,
+        initial,
+        extensionIndex: extensionIndex + 1,
+      })
+    }
+  } else {
+    const foundExtension = extensions[extensionIndex]
+
+    staticFile = foundFiles[0].path
+    logger.info(`findStatic: file used: ${staticFile}`)
+
+    if (foundExtension === 'json') {
+      const fileContent = await fs.readFile(staticFile, 'utf-8')
+      const result = replace(fileContent, initial.params)
+      return [JSON.parse(result), foundExtension]
+    }
+    return [staticFile, foundExtension]
   }
-
-  staticFile = foundFiles[0].path
-  logger.info(`findStatic: file used: ${staticFile}`)
-
-  const fileContent = await fs.readFile(staticFile, 'utf-8')
-
-  const result = replace(fileContent, initial.params)
-  return JSON.parse(result)
 }
 
 module.exports = function useIo() {

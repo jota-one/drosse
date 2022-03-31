@@ -5,9 +5,10 @@ module.exports = function useScraper() {
     const { req } = api
     const filename = getStaticFileName(
       req.baseUrl.split('/').slice(1),
+      'json',
       req.params,
       req.method,
-      req.query
+      req.query,
     )
 
     await writeScrapedFile(filename, json)
