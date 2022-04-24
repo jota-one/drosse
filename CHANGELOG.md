@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.1] - 2022-04-24
+### Fixed
+- Small fix to avoid app crash when a static file is not found
+
 ## [2.6.0] - 2022-03-30
 ### Added
 - Added support for file types other than JSON in static mocks

@@ -107,7 +107,7 @@ const setRoute = function (app, def, verb, root) {
       }
 
       // send response
-      if (def.responseType === 'file' || staticExtension !== 'json') {
+      if (def.responseType === 'file' || (staticExtension && staticExtension !== 'json')) {
         return res.sendFile(response, function (err) {
           if (err) {
             logger.error(err.stack)
