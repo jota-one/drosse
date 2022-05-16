@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Define custom middlewares after body parsing in order to have a defined req.body in the middlewares
 
 ## [2.6.1] - 2022-04-24
 ### Fixed
