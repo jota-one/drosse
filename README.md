@@ -641,7 +641,7 @@ module.exports = function ({ req, res, db }) {
 
 As you can see, the object argument gives you access to the well known `req` and `res` objects from Express. With those two and the full power of javascript, you can already do more than what you will ever need in a mock-server.
 
-:star: The return value of your function will be passed to the associated route response (optionally modified by a template, see later).
+:star: The return value of your function will be passed to the associated route response (optionally modified by a <a href="#templates">template</a>).
 
 Let's take a full example.
 
@@ -661,7 +661,7 @@ module.exports = function ({ req, res, db }) {
 4. Your call returns: `{ added: "John" }`.
 5. That's all folks!
 
-:fire: But there is more! The `db` object gives you access to the embbedded Drosse database and its super-fancy API. This part requires a full chapter.
+:fire: But there is more! The `db` object gives you access to the embedded Drosse database and its super-fancy API. This part requires a full chapter.
 
 ## Drosse db API
 
@@ -686,11 +686,13 @@ By default, on each startup Drosse will check the `collections` directory and se
 
 If you want a fresh database, simply delete the `mocks.json` file and restart Drosse.
 
+:cherries: You can also type directly `db drop` in the Drosse CLI to achieve the same goal.
+
 > :sweat_smile: That's a bit violent! Is there a smoother way?
 
 You ask it, we provide.
 
-You can define a `shallowCollections` key in your `.drosserc.js` file. It must contain an array with collection names. All the collections listed in this array will be overriden on each Drosse startup.
+You can define a `shallowCollections` key in your `.drosserc.js` file. It must contain an array with collection names. All the collections listed in this array will be recreated from the JSON files in the `collections` directory on each Drosse startup.
 
 <a name="db-identify"></a>
 ### Identify your documents
@@ -736,7 +738,7 @@ Assuming you have a `customers` collection with this customer document in it.
   },
   "activity": "Secretely conquer the world by not being evil... at first.",
   "DROSSE": {
-    "ids": [1980, "SKYSCRAPER-999"]
+    "ids": [888]
   }
 }
 ```
@@ -761,12 +763,12 @@ You can redefine your project like this:
 
 The company name is not duplicated anymore.
 
-When you've fetched the project document, you can easily query the linked customer by calling the [`db.get.byRef()`](#db-get-byRef) method and pass it the `project.customer` object. Drosse will return the corresponding customer document. You can then overwrite `project.customer` with this result.
+When you've fetched the project document, you can easily query the linked customer by calling the [`db.get.byRef()`](#db-get-byRef) method and pass it the `project.customer` object. Drosse will automatically understand the pattern "collection - id" and return the corresponding customer document. You can then overwrite `project.customer` with this result.
 
 
 ### API
 
-Once your documents are stored in the database, here is how you can query them or even dynamically insert new documents programmatically. As you've maybe already read above in the [dynamic mocks section](#dynamic-mocks), when you define a service function, it takes an object as argument and this object contains a `db` property. This `db` property exposes the whole Drosse DB API. Let's have a look to it in detail.
+Once your documents are stored in the database, here is how you can query them or even insert new documents programmatically. As you've maybe already read above in the [dynamic mocks section](#dynamic-mocks), when you define a service function, it takes an object as argument and this object contains a `db` property. This `db` property exposes the whole Drosse DB API. Let's have a look to it in detail.
 
 <a name="db-list-all"></a>
 **db.list.all(collection, cleanFields)**
