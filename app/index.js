@@ -81,6 +81,9 @@ const initServer = async args => {
     configureExpress({ server, app, db: api.db })
   }
 
+  app.use(express.urlencoded({ extended: true }))
+  app.use(express.json())
+
   // register custom global middlewares
   logger.info('-> Middlewares:')
   console.log(middlewares.list())
@@ -95,9 +98,6 @@ const initServer = async args => {
     }
     app.use(mw)
   })
-
-  app.use(express.urlencoded({ extended: true }))
-  app.use(express.json())
 
   // if everything is well configured, create the routes
   const ioRoutes = routes()

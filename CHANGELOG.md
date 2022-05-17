@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.2] - 2022-05-17
+### Fixed
+- Apply custom middlewares after body parsing in order to have a defined req.body in the middlewares
+
 ## [2.6.1] - 2022-04-24
 ### Fixed
 - Small fix to avoid app crash when a static file is not found
@@ -193,7 +197,9 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/2.6.0...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/2.6.2...develop
+[2.6.2]: https://github.com/jota-one/drosse/compare/2.6.1...2.6.2
+[2.6.1]: https://github.com/jota-one/drosse/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/jota-one/drosse/compare/2.5.2...2.6.0
 [2.5.2]: https://github.com/jota-one/drosse/compare/2.5.1...2.5.2
 [2.5.1]: https://github.com/jota-one/drosse/compare/2.5.0...2.5.1
