@@ -32,7 +32,7 @@ const start = () => {
   if (app.stdout) {
     app.stdout.on('data', data => {
       // eslint-disable-next-line
-      ;`${data}`.split('\n').forEach(msg => {
+      ; `${data}`.split('\n').forEach(msg => {
         d.send('log', { uuid, msg })
       })
       process.stdout.write(`${data}`)
@@ -42,7 +42,7 @@ const start = () => {
   if (app.stderr) {
     app.stderr.on('data', data => {
       // eslint-disable-next-line
-      ;`${data}`.split('\n').forEach(msg => {
+      ; `${data}`.split('\n').forEach(msg => {
         d.send('log', { uuid, msg })
       })
       process.stderr.write(`${data}`)
@@ -100,9 +100,9 @@ const restart = () => {
   setTimeout(() => (forked = start()), 1000)
 }
 
-forked = start()
-
 if (cmd === 'serve') {
+  forked = start()
+
   d.join('start', duuid => {
     if (duuid === uuid) {
       forked = start()

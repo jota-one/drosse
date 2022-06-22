@@ -27,7 +27,7 @@ const db = useDb()
 const { checkRoutesFile, loadUuid, getUserConfig, routes } = useIo()
 const { executeCommand } = useCommand()
 
-process.send = process.send || function () {}
+process.send = process.send || function () { }
 
 let configureExpress, onHttpUpgrade
 
@@ -168,8 +168,7 @@ const onStart = discoverConfig => {
   setTimeout(() => {
     console.log()
     logger.debug(
-      `App ${
-        discoverConfig.name ? c.magenta(discoverConfig.name) + ' ' : ''
+      `App ${discoverConfig.name ? c.magenta(discoverConfig.name) + ' ' : ''
       }(version ${c.magenta(discoverConfig.version)}) running at:`
     )
     discoverConfig.hosts.forEach(host => {
@@ -195,8 +194,13 @@ const init = async args => {
   return initDiscoverConfig(args)
 }
 
-// start server
 module.exports = async args => {
+  if (args._[0] === 'describe') {
+    const config = await initDiscoverConfig(args)
+    return { config }
+  }
+
+  // start server
   const discoverConfig = await init(args)
 
   const start = async () => {

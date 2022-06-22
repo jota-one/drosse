@@ -7,7 +7,8 @@
     "drosse": "./bin/drosse.js"
   },
   "scripts": {
-    "serve": "node ./bin/drosse.js serve"
+    "serve": "node ./bin/drosse.js serve",
+    "describe": "node ./bin/app.js describe"
   },
   "repository": {
     "type": "git",
