@@ -20,17 +20,18 @@ jobs:
         run: mkdir -p pkg/cache pkg/out
       - name: build artifacts
         run: npm run pkg
-      - name: gzip artifacts
-        run: cd pkg/out && tar -czf drosse.macos.tar.gz drosse-macos
+      # - name: gzip artifacts
+      #   run: cd pkg/out && tar -czf drosse.macos.tar.gz drosse-macos
       - name: release
         uses: actions/create-release@v1
         id: create_release
         with:
-          draft: false
+          draft: true
           prerelease: false
           release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{ github.ref }}
-          body_path: CHANGELOG.md
+          tag_name: ${{ steps.version.outputs.version }}
+          # body_path: CHANGELOG.md
+          body: Testing release
         env:
           GITHUB_TOKEN: ${{ github.token }}
       # - name: upload linux artifact
