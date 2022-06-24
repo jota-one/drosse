@@ -11,11 +11,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: install dependencies
+        run: npm install
       - name: version
         run: echo "::set-output name=version::$(node build/version)"
         id: version
       - name: build artifacts
-        run: npm run pkg && tar -czf pkg/out/drosse.macos.tar.gz pkg/out/drosse-macos
+        run: npm run pkg
       - name: gzip artifacts
         run: cd pkg/out && tar -czf drosse.macos.tar.gz drosse-macos
       - name: release
