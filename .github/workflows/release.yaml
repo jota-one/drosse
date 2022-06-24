@@ -16,6 +16,8 @@ jobs:
       - name: version
         run: echo "::set-output name=version::$(node build/version)"
         id: version
+      - name: create output dirs
+        run: mkdir -p pkg/cache pkg/out
       - name: build artifacts
         run: npm run pkg
       - name: gzip artifacts
