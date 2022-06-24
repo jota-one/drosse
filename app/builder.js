@@ -10,6 +10,7 @@ const useParser = require('./use/parser')
 const useTemplates = require('./use/templates')
 const useState = require('./use/state')
 const useIo = require('./use/io')
+const requireRuntime = require('require-runtime')
 
 const { loadService, loadScraperService, loadStatic, loadScraped } = useIo()
 const { parse } = useParser()
@@ -59,11 +60,11 @@ const setRoute = function (app, def, verb, root) {
         try {
           const { params, query } = req
           const { extensions } = def
-          const [ result, extension ] = await loadStatic({ routePath: root, params, verb, query, extensions })
+          const [result, extension] = await loadStatic({ routePath: root, params, verb, query, extensions })
           response = result
           staticExtension = extension
           if (!response) {
-            const [ result, extension ] = await loadScraped({
+            const [result, extension] = await loadScraped({
               routePath: root,
               params,
               verb,
@@ -132,33 +133,33 @@ const createRoute = function (def, root, defHierarchy) {
   const app = this
   const inheritance = []
 
-  ;['get', 'post', 'put', 'delete']
-    .filter(verb => def[verb])
-    .forEach(verb => {
-      // set throttling
-      const originalThrottle = !isEmpty(def[verb].throttle)
-      def[verb].throttle =
-        def[verb].throttle ||
-        defHierarchy.reduce((acc, item) => item.throttle || acc, {})
+    ;['get', 'post', 'put', 'delete']
+      .filter(verb => def[verb])
+      .forEach(verb => {
+        // set throttling
+        const originalThrottle = !isEmpty(def[verb].throttle)
+        def[verb].throttle =
+          def[verb].throttle ||
+          defHierarchy.reduce((acc, item) => item.throttle || acc, {})
 
-      if (!originalThrottle && !isEmpty(def[verb].throttle)) {
-        inheritance.push({ path: root.join('/'), type: 'throttle', verb })
-      }
+        if (!originalThrottle && !isEmpty(def[verb].throttle)) {
+          inheritance.push({ path: root.join('/'), type: 'throttle', verb })
+        }
 
-      // set template
-      const originalTemplate =
-        def[verb].template === null || Boolean(def[verb].template)
-      def[verb].template = originalTemplate
-        ? def[verb].template
-        : defHierarchy.reduce((acc, item) => item.template || acc, {})
+        // set template
+        const originalTemplate =
+          def[verb].template === null || Boolean(def[verb].template)
+        def[verb].template = originalTemplate
+          ? def[verb].template
+          : defHierarchy.reduce((acc, item) => item.template || acc, {})
 
-      if (!originalTemplate && def[verb].template) {
-        inheritance.push({ path: root.join('/'), type: 'template', verb })
-      }
+        if (!originalTemplate && def[verb].template) {
+          inheritance.push({ path: root.join('/'), type: 'template', verb })
+        }
 
-      // create route
-      setRoute(app, def[verb], verb, root)
-    })
+        // create route
+        setRoute(app, def[verb], verb, root)
+      })
 
   if (def.assets) {
     if (!this.assets) {
@@ -268,7 +269,7 @@ const createRoute = function (def, root, defHierarchy) {
         def.proxy.selfHandleResponse = true
         def.proxy.responseRewriters.forEach(rewriterName => {
           const path = './middlewares/json-response/' + rewriterName
-          proxyResHooks.push(require(path))
+          proxyResHooks.push(requireRuntime(path))
         })
       }
 

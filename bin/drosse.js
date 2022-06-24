@@ -83,8 +83,6 @@ const start = () => {
     }
   })
 
-  console.log(`process started: ${app.pid}`)
-
   return app
 }
 
@@ -102,6 +100,7 @@ const restart = () => {
 
 if (cmd === 'serve') {
   forked = start()
+  console.log(`process started: ${forked.pid}`)
 
   d.join('start', duuid => {
     if (duuid === uuid) {
@@ -121,6 +120,10 @@ if (cmd === 'serve') {
       forked.send({ event: 'cmd', data })
     }
   })
+}
+
+if (cmd === 'describe') {
+  forked = start()
 }
 
 // handle process exits and tell UI we are down

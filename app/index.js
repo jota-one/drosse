@@ -6,6 +6,7 @@ const express = require('express')
 const stoppable = require('stoppable')
 const lodash = require('lodash')
 const getPort = require('get-port')
+const requireRuntime = require('require-runtime')
 const config = require('./config')
 const logger = require('./logger')
 const openCors = require('./middlewares/open-cors')
@@ -29,9 +30,9 @@ const { executeCommand } = useCommand()
 
 process.send = process.send || function () { }
 
-let configureExpress, onHttpUpgrade
+let configureExpress, onHttpUpgrade, userConfig
 
-const initServer = async args => {
+const initState = async args => {
   // very first action -> set the 'root' directory in the state. Will be useful for further operations.
   state.set(
     'root',
@@ -39,7 +40,7 @@ const initServer = async args => {
   )
 
   // check for some users configuration in a drosserc.js file and update state
-  const userConfig = await getUserConfig()
+  userConfig = await getUserConfig()
   onHttpUpgrade = userConfig.onHttpUpgrade
   configureExpress = userConfig.configureExpress
   state.merge(userConfig)
@@ -54,6 +55,12 @@ const initServer = async args => {
     process.exit()
   }
 
+  // load uuid from the .uuid file (create it if needed), needed for the UI
+  // only. Do it if routesFile exists to prevent creating useless .uuid file
+  loadUuid()
+}
+
+const initServer = async () => {
   // start and populate database as early as possible
   await db.loadDb()
 
@@ -71,11 +78,6 @@ const initServer = async args => {
     useCommand().merge(userConfig.commands(require('./api')()))
   }
 
-  // load uuid from the .uuid file (create it if needed), needed for the UI
-  // only do it if routesFile exists to prevent creating useless .uuid file
-  loadUuid()
-  process.send({ event: 'uuid', data: state.get('uuid') })
-
   // extend express app
   if (typeof configureExpress === 'function') {
     configureExpress({ server, app, db: api.db })
@@ -88,14 +90,19 @@ const initServer = async args => {
   logger.info('-> Middlewares:')
   console.log(middlewares.list())
   middlewares.list().forEach(mw => {
-    if (typeof mw !== 'function') {
-      mw = require('./middlewares/' + mw)
+    if (typeof mw === 'string') {
+      mw = require(`./middlewares/${mw}`)
     }
 
-    // if the middleware signature has 4 arguments, we assume that the first one is the Drosse `api`
+    if (typeof mw !== 'function') {
+      throw new Error('Registered middleware is neither a function (custom middleware) nore a string (core middleware)')
+    }
+
+    // // if the middleware signature has 4 arguments, we assume that the first one is the Drosse `api`
     if (mw.length === 4) {
       mw = lodash.curry(mw)(api)
     }
+
     app.use(mw)
   })
 
@@ -129,7 +136,7 @@ const initServer = async args => {
   })
 }
 
-const initDiscoverConfig = async args => {
+const initDiscoverConfig = async () => {
   const ipAddress = ip.address()
   const proto = 'http'
   const hosts = ['localhost', ipAddress]
@@ -189,19 +196,17 @@ const onStart = discoverConfig => {
   process.send({ event: 'up', data: discoverConfig })
 }
 
-const init = async args => {
-  await initServer(args)
-  return initDiscoverConfig(args)
-}
-
 module.exports = async args => {
   if (args._[0] === 'describe') {
-    const config = await initDiscoverConfig(args)
+    await initState(args)
+    const config = await initDiscoverConfig()
     return { config }
   }
 
   // start server
-  const discoverConfig = await init(args)
+  await initState(args)
+  const discoverConfig = await initDiscoverConfig()
+  await initServer()
 
   const start = async () => {
     server.listen(discoverConfig.port, '0.0.0.0', () => {

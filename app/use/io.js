@@ -7,6 +7,7 @@ const { replace } = require('@jota-one/replacer')
 const useState = require('./state')
 const logger = require('../logger')
 const state = useState()
+const requireRuntime = require('require-runtime')
 
 const checkRoutesFile = () => {
   const filePath = path.join(
@@ -46,7 +47,7 @@ const loadService = (routePath, verb) => {
     }
   }
 
-  return require(serviceFile)
+  return requireRuntime(serviceFile)
 }
 const loadScraperService = routePath => {
   const serviceFile =
@@ -62,7 +63,7 @@ const loadScraperService = routePath => {
     }
   }
 
-  return require(serviceFile)
+  return requireRuntime(serviceFile)
 }
 
 const writeScrapedFile = async (filename, content) => {
@@ -227,7 +228,7 @@ const findStatic = async ({
       logger.error(`findStatic: tried with [${staticFile}]. File not found.`)
       const newParams = Object.keys(params)
         .slice(1)
-        .reduce((acc, name) => ({...acc, [name]: params[name]}), {})
+        .reduce((acc, name) => ({ ...acc, [name]: params[name] }), {})
       return findStatic({
         root,
         files,
@@ -243,7 +244,7 @@ const findStatic = async ({
     // really didn't find any file matching conditions
     if (extensionIndex === extensions.length - 1) {
       logger.error(`findStatic: I think I've tried everything. No match...`)
-      return [ false, false ]
+      return [false, false]
     } else {
       logger.warn(`findStatic: Okay, tried everything with ${extensions[extensionIndex]} extension. Let's try with the next one.`)
       return findStatic({

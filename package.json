@@ -8,7 +8,8 @@
   },
   "scripts": {
     "serve": "node ./bin/drosse.js serve",
-    "describe": "node ./bin/app.js describe"
+    "describe": "node ./bin/drosse.js describe",
+    "pkg": "PKG_CACHE_PATH=$(pwd)/pkg/cache pkg --out-path pkg/out -d . > pkg/debug.log"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,16 @@
     "url": "https://github.com/jota-one/drosse/issues"
   },
   "homepage": "https://drosse.dev",
+  "pkg": {
+    "scripts": [
+      "/app/**/*.js",
+      "/cmd/*.js",
+      "/bin/*.js"
+    ],
+    "assets": [
+      "/middlewares/**/*.js"
+    ]
+  },
   "dependencies": {
     "@jota-one/replacer": "^0.3.1",
     "@moleculer/vorpal": "^1.11.5",
@@ -40,12 +51,14 @@
     "lokijs": "^1.5.12",
     "morgan": "^1.10.0",
     "node-discover": "^1.2.1",
+    "require-runtime": "^2.0.0",
     "rrdir": "^8.2.2",
     "stoppable": "^1.1.0",
     "uuid": "^8.3.2",
     "yargs": "^17.3.0"
   },
   "devDependencies": {
-    "express-session": "^1.17.2"
+    "express-session": "^1.17.2",
+    "pkg": "^5.7.0"
   }
 }
