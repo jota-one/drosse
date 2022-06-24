@@ -50,7 +50,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./pkg/out/drosse-macos
-          asset_name: drosse.macos.tar.gz
+          asset_name: drosse-macos
           asset_content_type: application/gzip
       # - name: upload windows artifact
       #   uses: actions/upload-release-asset@v1
