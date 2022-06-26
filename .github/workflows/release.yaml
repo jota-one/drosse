@@ -1,49 +1,56 @@
-name: release
+name: release artifacts
 
 on: [push]
 
 jobs:
   build_release:
-    name: build_release
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.platform }}
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - name: setup node
+        uses: actions/setup-node@v1
         with:
-          fetch-depth: 0
-      - name: install dependencies
+          node-version: 16
+      - name: get version
+        run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+      - name: install app dependencies
         run: npm install
-      - name: version
-        run: echo "::set-output name=version::$(node build/version)"
-        id: version
-      - name: create output dirs
-        run: mkdir -p pkg/cache pkg/out
-      - name: build artifacts
-        run: npm run pkg
-      - name: gzip artifacts
-        run: tar -czf drosse.macos.tar.gz -C pkg/out drosse-macos
+      - name: build linux artifact
+        if: matrix.platform == 'ubuntu-latest'
+        run: make build-linux
+      - name: build macos artifact
+        if: matrix.platform == 'macos-latest'
+        run: make build-macos
+      - name: build windows artifact
+        if: matrix.platform == 'windows-latest'
+        run: make build-windows
       - name: release
         uses: actions/create-release@v1
         id: create_release
         with:
           draft: true
           prerelease: false
-          release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{ steps.version.outputs.version }}
+          release_name: ${{ env.PACKAGE_VERSION }}
+          tag_name: ${{ env.PACKAGE_VERSION }}
           # body_path: CHANGELOG.md
           body: Testing release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      # - name: upload linux artifact
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./bin/azblogfilter.linux-amd64.tar.gz
-      #     asset_name: azblogfilter.linux-amd64.tar.gz
-      #     asset_content_type: application/gzip
-      - name: upload darwin artifact
+      - name: upload linux artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./drosse.linux.tar.gz
+          asset_name: drosse.linux.tar.gz
+          asset_content_type: application/gzip
+      - name: upload macos artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -52,12 +59,12 @@ jobs:
           asset_path: ./drosse.macos.tar.gz
           asset_name: drosse.macos.tar.gz
           asset_content_type: application/gzip
-      # - name: upload windows artifact
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./bin/azblogfilter.windows-amd64.zip
-      #     asset_name: azblogfilter.windows-amd64.zip
-      #     asset_content_type: application/zip
+      - name: upload windows artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./drosse.windows.zip
+          asset_name: drosse.windows.zip
+          asset_content_type: application/gzip

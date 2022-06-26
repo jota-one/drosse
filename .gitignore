@@ -4,4 +4,4 @@
 node_modules
 mocks.db
 mocks.json
-pkg
+.pkg-cache

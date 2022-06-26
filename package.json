@@ -9,7 +9,7 @@
   "scripts": {
     "serve": "node ./bin/drosse.js serve",
     "describe": "node ./bin/drosse.js describe",
-    "pkg": "PKG_CACHE_PATH=$(pwd)/pkg/cache pkg --out-path pkg/out -d . > pkg/debug.log"
+    "pkg": "PKG_CACHE_PATH=$(pwd)/.pkg-cache pkg ."
   },
   "repository": {
     "type": "git",
