@@ -26,48 +26,13 @@ jobs:
       - name: build macos artifact
         if: matrix.platform == 'macos-latest'
         run: make build-macos
-      - name: build windows artifact
-        if: matrix.platform == 'windows-latest'
-        run: make build-windows
-      - name: release
-        uses: actions/create-release@v1
-        id: create_release
+      # - name: build windows artifact
+      #   if: matrix.platform == 'windows-latest'
+      #   run: make build-windows
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        #if: startsWith(github.ref, 'refs/tags/')
         with:
-          draft: true
-          prerelease: false
-          release_name: ${{ env.PACKAGE_VERSION }}
-          tag_name: ${{ env.PACKAGE_VERSION }}
-          # body_path: CHANGELOG.md
-          body: Testing release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: upload linux artifact
-        if: matrix.platform == 'ubuntu-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./drosse.linux.tar.gz
-          asset_name: drosse.linux.tar.gz
-          asset_content_type: application/gzip
-      - name: upload macos artifact
-        if: matrix.platform == 'macos-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./drosse.macos.tar.gz
-          asset_name: drosse.macos.tar.gz
-          asset_content_type: application/gzip
-      - name: upload windows artifact
-        if: matrix.platform == 'windows-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./drosse.windows.zip
-          asset_name: drosse.windows.zip
-          asset_content_type: application/gzip
+          files: |
+            drosse.linux.tar.gz
+            drosse.macos.tar.gz
