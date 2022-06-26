@@ -33,6 +33,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         #if: startsWith(github.ref, 'refs/tags/')
         with:
+          tag_name: ${{ env.PACKAGE_VERSION }}
           files: |
             drosse.linux.tar.gz
             drosse.macos.tar.gz
