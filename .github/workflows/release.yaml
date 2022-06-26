@@ -42,6 +42,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: upload linux artifact
+        if: matrix.platform == 'ubuntu-latest'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -51,6 +52,7 @@ jobs:
           asset_name: drosse.linux.tar.gz
           asset_content_type: application/gzip
       - name: upload macos artifact
+        if: matrix.platform == 'macos-latest'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -60,6 +62,7 @@ jobs:
           asset_name: drosse.macos.tar.gz
           asset_content_type: application/gzip
       - name: upload windows artifact
+        if: matrix.platform == 'windows-latest'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
