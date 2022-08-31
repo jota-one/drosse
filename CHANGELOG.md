@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2022-08-31
+### Added
+Added new reserved endpoint /CMD which can receive a POST call to trigger some internal or custom Drosse command.
+
 ## [2.6.2] - 2022-05-17
 ### Fixed
 - Apply custom middlewares after body parsing in order to have a defined req.body in the middlewares

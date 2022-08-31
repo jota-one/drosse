@@ -1,6 +1,6 @@
 {
   "name": "@jota-one/drosse",
-  "version": "2.6.2",
+  "version": "2.7.0",
   "description": "Mock your backend the right way.",
   "main": "app/index.js",
   "bin": {
