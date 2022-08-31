@@ -17,7 +17,7 @@ module.exports = {
     staticPath: 'static',
     database: 'mocks.json',
     dbAdapter: 'LokiFsAdapter',
-    reservedRoutes: { ui: '/UI' },
+    reservedRoutes: { ui: '/UI', cmd: '/CMD' },
     uuid: '',
   },
   commands: {},

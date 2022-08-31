@@ -127,6 +127,17 @@ const initServer = async args => {
   app.get(state.get('reservedRoutes').ui, openCors, (req, res) => {
     res.send({ routes: ioRoutes, inherited })
   })
+
+  // add reserved CMD route
+  app.post(state.get('reservedRoutes').cmd, openCors, async (req, res) => {
+    if (req.body.cmd === 'restart') {
+      setTimeout(() => process.send({event: 'restart'}), 100)
+      res.send({ success: true })
+    } else {
+      await executeCommand({ name: req.body.cmd, params: req.body })
+      res.send({ success: true })
+    }
+  })
 }
 
 const initDiscoverConfig = async args => {

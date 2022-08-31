@@ -78,6 +78,9 @@ const start = () => {
         }
         cli.start()
         break
+      case 'restart':
+        restart()
+        break
       default:
         d.send(event, data)
     }
