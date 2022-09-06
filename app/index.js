@@ -6,7 +6,6 @@ const express = require('express')
 const stoppable = require('stoppable')
 const lodash = require('lodash')
 const getPort = require('get-port')
-const requireRuntime = require('require-runtime')
 const config = require('./config')
 const logger = require('./logger')
 const openCors = require('./middlewares/open-cors')
@@ -91,7 +90,7 @@ const initServer = async () => {
   console.log(middlewares.list())
   middlewares.list().forEach(mw => {
     if (typeof mw === 'string') {
-      mw = requireRuntime(`./middlewares/${mw}`)
+      mw = require(`./middlewares/${mw}`)
     }
 
     if (typeof mw !== 'function') {

@@ -100,7 +100,7 @@ const restart = () => {
 
 if (cmd === 'serve') {
   forked = start()
-  console.log(`process started: ${forked.pid}`)
+  console.log(`processes started: ${process.pid} -> forked:${forked.pid}`)
 
   d.join('start', duuid => {
     if (duuid === uuid) {
