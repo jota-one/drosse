@@ -36,7 +36,7 @@
       "/bin/*.js"
     ],
     "assets": [
-      "/middlewares/**/*.js"
+      "/middlewares/**/*"
     ]
   },
   "dependencies": {

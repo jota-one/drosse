@@ -91,7 +91,7 @@ const initServer = async () => {
   console.log(middlewares.list())
   middlewares.list().forEach(mw => {
     if (typeof mw === 'string') {
-      mw = requireRuntime(`${__dirname}./middlewares/${mw}`)
+      mw = requireRuntime(`./middlewares/${mw}`)
     }
 
     if (typeof mw !== 'function') {
