@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.1] - 2022-09-17
+### Fixed
+Some dependencies fixes
+
 ## [2.7.0] - 2022-08-31
 ### Added
 Added new reserved endpoint /CMD which can receive a POST call to trigger some internal or custom Drosse command.
@@ -201,7 +205,9 @@ TODO
 ## [1.0.0] - 2020-10-28
 TODO
 
-[Unreleased]: https://github.com/jota-one/drosse/compare/2.6.2...develop
+[Unreleased]: https://github.com/jota-one/drosse/compare/2.7.1...develop
+[2.7.1]: https://github.com/jota-one/drosse/compare/2.7.0...2.7.1
+[2.7.0]: https://github.com/jota-one/drosse/compare/2.6.2...2.7.0
 [2.6.2]: https://github.com/jota-one/drosse/compare/2.6.1...2.6.2
 [2.6.1]: https://github.com/jota-one/drosse/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/jota-one/drosse/compare/2.5.2...2.6.0
