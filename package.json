@@ -7,7 +7,8 @@
     "drosse": "./bin/drosse.js"
   },
   "scripts": {
-    "serve": "node ./bin/drosse.js serve"
+    "serve": "node ./bin/drosse.js serve",
+    "build": "echo 'build done'"
   },
   "repository": {
     "type": "git",
@@ -45,6 +46,7 @@
     "yargs": "^17.3.0"
   },
   "devDependencies": {
+    "auto": "^10.37.6",
     "express-session": "^1.17.2"
   }
 }
