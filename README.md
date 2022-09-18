@@ -1,7 +1,7 @@
-<img src="./Drosse.svg"/>
-
-# Drosse
-**Stateful & programmable mock server**
+<div align="center">
+  <img src="./Drosse.svg"/>
+  <h1 style="margin-top:0">Drosse</h1>
+  <p>Stateful & programmable mock server</p>
 
 [![NPM Vernion](https://flat.badgen.net/npm/v/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
 [![NPM Downloads](https://flat.badgen.net/npm/dt/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
@@ -12,7 +12,7 @@
 [bmc-src]: https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/orange_img.png
 [bmc-href]: https://www.buymeacoffee.com/drosse
 [bmc-shield-src]: https://img.shields.io/static/v1?message=Buy%20me%20a%20coffee&logo=buy-me-a-coffee&style=flat-square&label=Sponsor&logoColor=white&color=ff813f
-
+</div>
 
 ## Table of contents
 * [Installation](#installation)
