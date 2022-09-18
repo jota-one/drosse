@@ -1,6 +1,9 @@
 <div align="center">
-  <img src="./Drosse.svg"/>
-  <h1 style="margin-top:0">Drosse</h1>
+  <h1>
+    <img src="./Drosse.svg"/>
+    <br>
+    Drosse
+  </h1>
   <p>Stateful & programmable mock server</p>
 
 [![NPM Vernion](https://flat.badgen.net/npm/v/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
