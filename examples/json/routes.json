@@ -3,13 +3,16 @@
     "users": {
       "DROSSE": {
         "get": {
-          "body": [{
-            "id": 1,
-            "name": "Tadai"
-          }, {
-            "id": 2,
-            "name": "Jorinho"
-          }]
+          "body": [
+            {
+              "id": 1,
+              "name": "Tadai"
+            },
+            {
+              "id": 2,
+              "name": "Jorinho"
+            }
+          ]
         }
       },
       ":id": {
@@ -33,20 +36,24 @@
       "premiums": {
         "DROSSE": {
           "get": {
-            "body": [{
-              "id": 1,
-              "name": "Tadai"
-            }]
+            "body": [
+              {
+                "id": 1,
+                "name": "Tadai"
+              }
+            ]
           }
         }
       },
       "aliens": {
         "DROSSE": {
           "get": {
-            "body": [{
-              "id": 2,
-              "name": "Jorinho"
-            }]
+            "body": [
+              {
+                "id": 2,
+                "name": "Jorinho"
+              }
+            ]
           }
         }
       }

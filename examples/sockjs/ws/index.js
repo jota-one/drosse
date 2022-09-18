@@ -3,7 +3,7 @@ const sockjs = require('sockjs')
 const PREFIX = '/echo'
 
 module.exports = {
-  configureExpress({ server, db }) {
+  extendServer({ server, db }) {
     const sockJsServer = sockjs.createServer()
 
     sockJsServer.on('connection', conn => {
