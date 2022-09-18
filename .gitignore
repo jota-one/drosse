@@ -1,6 +1,9 @@
 .DS_Store
-.idea
-.vscode
-node_modules
+.idea/
+.vscode/
+coverage/
+dist/
+node_modules/
 mocks.db
 mocks.json
+yarn-*.log
