@@ -1,7 +1,18 @@
-<img src="https://raw.githubusercontent.com/jota-one/drosse/master/Drosse.svg" style="width:350px;max-width:100%;margin: 25px 0;"/>
+<img src="./Drosse.svg"/>
 
-## What is it ?
-> Drosse is the last mock server you'll ever need.
+# Drosse
+**Stateful & programmable mock server**
+
+[![NPM Vernion](https://flat.badgen.net/npm/v/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
+[![NPM Downloads](https://flat.badgen.net/npm/dt/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
+[![Package Size](https://flat.badgen.net/packagephobia/install/@jota-one/drosse)](https://packagephobia.now.sh/result?p=@jota-one/drosse)
+[![Buy Me A Coffee][bmc-shield-src]][bmc-href]
+
+<!-- Badges -->
+[bmc-src]: https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/orange_img.png
+[bmc-href]: https://www.buymeacoffee.com/drosse
+[bmc-shield-src]: https://img.shields.io/static/v1?message=Buy%20me%20a%20coffee&logo=buy-me-a-coffee&style=flat-square&label=Sponsor&logoColor=white&color=ff813f
+
 
 ## Table of contents
 * [Installation](#installation)
