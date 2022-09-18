@@ -1,30 +1,38 @@
-const morgan = require('morgan')
-const c = require('ansi-colors')
-const useState = require('../use/state')
+import ansiColors from 'ansi-colors'
+import morgan, { token } from 'morgan'
+import { getResponseHeader } from 'h3'
+
+import useState from '../composables/useState'
+
 const state = useState()
 
-morgan.token('time', function getTime() {
-  return c.gray(new Date().toLocaleTimeString())
+token('time', function getTime() {
+  return ansiColors.gray(new Date().toLocaleTimeString())
 })
 
-morgan.token('status', function (req, res) {
+token('status', function (req, res) {
   const col = color(res.statusCode)
-  return c[col](res.statusCode)
+  return ansiColors[col](res.statusCode)
 })
 
-morgan.token('method', function (req, res) {
+token('method', function (req, res) {
   const verb = req.method.padEnd(7)
   const col = color(res.statusCode)
-  return c[col](verb)
+  return ansiColors[col](verb)
 })
 
-morgan.token('url', function (req, res) {
+token('url', function (req, res) {
   const url = req.originalUrl || req.url
-  return res.get('x-proxied') ? c.cyan(url) : c[color(res.statusCode)](url)
+  return getResponseHeader(res, 'x-proxied')
+    ? ansiColors.cyan(url)
+    : ansiColors[color(res.statusCode)](url)
 })
 
-morgan.token('proxied', function (req, res) {
-  return res.get('x-proxied') ? c.cyanBright('🔀 proxied') : ''
+token('proxied', function (req, res) {
+
+  return getResponseHeader(res, 'x-proxied')
+    ? ansiColors.cyanBright('🔀 proxied')
+    : ''
 })
 
 const color = status => {
@@ -51,7 +59,7 @@ const format = function (tokens, req, res) {
   ].join(' ')
 }
 
-module.exports = morgan(format, {
-  skip: (req, res) =>
+export default morgan(format, {
+  skip: req =>
     Object.values(state.get('reservedRoutes')).includes(req.url),
 })

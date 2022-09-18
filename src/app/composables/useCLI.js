@@ -1,32 +1,21 @@
-const vorpal = require('@moleculer/vorpal')()
-const cli = require('../cli')
+import _vorpal from '@moleculer/vorpal'
+import cli from '../cli'
+import useCommand from './useCommand'
 
-module.exports = function (config, app, forked, restart) {
-  const runCommand = async (name, params, commandExecutionTimeout = 5000) => {
-    return new Promise((resolve, reject) => {
-      const sendResponse = ({ event, data }) => {
-        if (event === 'cmdDone') {
-          app.off('message', sendResponse)
-          resolve(data)
-        }
-      }
-      app.on('message', sendResponse)
-      forked.send({ event: 'cmd', data: { name, params } })
+export default function (config, restart) {
+  const vorpal = _vorpal()
+  const { executeCommand } = useCommand()
 
-      setTimeout(() => {
-        app.off('message', sendResponse)
-        reject(new Error('Request timeout'))
-      }, commandExecutionTimeout)
-    })
-  }
+  const runCommand = async (name, params) => executeCommand({ name, params })
+
   return {
     extend(callback) {
-      callback(vorpal, { config, runCommand, restart, app })
+      callback(vorpal, { config, runCommand, restart })
     },
 
     start() {
       this.extend(cli)
-      vorpal.delimiter('📣$').show()
+      vorpal.delimiter('🎤').show()
     },
   }
 }

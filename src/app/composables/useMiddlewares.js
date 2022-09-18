@@ -1,6 +1,6 @@
 let state = []
 
-module.exports = function () {
+export default function useMiddlewares() {
   return {
     append(mw) {
       state = [...state, ...mw]

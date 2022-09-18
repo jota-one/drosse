@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   db: {
     reservedFields: ['DROSSE', 'meta', '$loki'],
   },

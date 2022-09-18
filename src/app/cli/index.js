@@ -1,18 +1,7 @@
-const db = require('./db')
+import db from './db'
 
-module.exports = function (vorpal, params) {
-  const exitCmd = vorpal.find('exit')
-
-  if (exitCmd) {
-    exitCmd.remove()
-  }
-
-  vorpal.command('exit', 'Exit application.').action(() => {
-    params.app.kill('SIGINT')
-    process.exit()
-  })
-
-  vorpal.command('rs', 'Restart the server.').action(async () => {
+export default function (vorpal, params) {
+  vorpal.command('rs', 'Restart the server.').action(() => {
     return params.restart()
   })
 

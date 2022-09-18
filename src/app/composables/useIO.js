@@ -1,74 +1,94 @@
-const fs = require('fs')
-const path = require('path')
-const rrdir = require('rrdir')
-const { isEmpty, cloneDeep } = require('lodash')
-const { v4: uuidv4 } = require('uuid')
-const { replace } = require('@jota-one/replacer')
-const useState = require('./state')
-const logger = require('../logger')
-const state = useState()
+import { promises as fs } from 'fs'
+import { join } from 'path'
 
-const checkRoutesFile = () => {
-  const filePath = path.join(
+import { replace } from '@jota-one/replacer'
+import { isEmpty, cloneDeep } from 'lodash'
+import { async as rrdir } from 'rrdir'
+import { v4 as uuidv4 } from 'uuid'
+
+import { load } from '../loader'
+
+import useState from './useState'
+import logger from '../logger'
+
+const state = useState()
+const fileExists = async path => {
+  let exists
+  
+  try {
+    await fs.access(path)
+    exists = true
+  } catch {
+    exists = false
+  }
+
+  return exists
+}
+
+const checkRoutesFile = async () => {
+  const filePath = join(
     state.get('root'),
     `${state.get('routesFile')}.json`
   )
-  if (fs.existsSync(filePath)) {
+
+  if (await fileExists(filePath)) {
     state.set('_routesFile', filePath)
     return true
   }
+  
   return false
 }
 
 const getUserConfig = async root => {
-  const rcFile = path.join(root || state.get('root') || '', '.drosserc.js')
+  const rcFile = join(root || state.get('root') || '', '.drosserc.js')
   try {
-    await fs.promises.stat(rcFile)
-    return require(rcFile)
+    await fs.stat(rcFile)
+    return load(rcFile)
   } catch (e) {
-    console.log('Could not load any user config.')
+    console.error('Could not load any user config.')
     console.error(e)
     return {}
   }
 }
 
-const loadService = (routePath, verb) => {
+const loadService = async (routePath, verb) => {
   const serviceFile =
-    path.join(
+    join(
       state.get('root'),
       state.get('servicesPath'),
       routePath.filter(el => el[0] !== ':').join('.')
     ) + `.${verb}.js`
 
-  if (!fs.existsSync(serviceFile)) {
+  if (!(await fileExists(serviceFile))) {
     return function () {
       logger.error(`service [${serviceFile}] not found`)
     }
   }
 
-  return require(serviceFile)
+  return load(serviceFile)
 }
-const loadScraperService = routePath => {
+
+const loadScraperService = async routePath => {
   const serviceFile =
-    path.join(
+    join(
       state.get('root'),
       state.get('scraperServicesPath'),
       routePath.filter(el => el[0] !== ':').join('.')
     ) + '.js'
 
-  if (!fs.existsSync(serviceFile)) {
+  if (!(await fileExists(serviceFile))) {
     return function () {
       logger.error(`scraper service [${serviceFile}] not found`)
     }
   }
 
-  return require(serviceFile)
+  return load(serviceFile)
 }
 
 const writeScrapedFile = async (filename, content) => {
-  const root = path.join(state.get('root'), state.get('scrapedPath'))
-  await fs.promises.writeFile(
-    path.join(root, filename),
+  const root = join(state.get('root'), state.get('scrapedPath'))
+  await fs.writeFile(
+    join(root, filename),
     JSON.stringify(content),
     'utf-8'
   )
@@ -83,8 +103,8 @@ const loadStatic = async ({
   skipVerb = false,
   extensions = ['json']
 }) => {
-  const root = path.join(state.get('root'), state.get('staticPath'))
-  const files = rrdir.sync(root)
+  const root = join(state.get('root'), state.get('staticPath'))
+  const files = await rrdir(root)
   return findStatic({ root, files, routePath, params, verb, skipVerb, query, extensions })
 }
 
@@ -96,23 +116,26 @@ const loadScraped = async ({
   skipVerb = false,
   extensions = ['json'],
 }) => {
-  const root = path.join(state.get('root'), state.get('scrapedPath'))
-  const files = rrdir.sync(root)
+  const root = join(state.get('root'), state.get('scrapedPath'))
+  const files = await rrdir(root)
   return findStatic({ root, files, extensions, routePath, params, verb, skipVerb, query })
 }
 
-const loadUuid = () => {
-  const uuidFile = path.join(state.get('root'), '.uuid')
+const loadUuid = async () => {
+  const uuidFile = join(state.get('root'), '.uuid')
 
-  if (!fs.existsSync(uuidFile)) {
-    fs.writeFileSync(uuidFile, uuidv4(), 'utf8')
+  // TODO: Refactor to not check if file exists before reading or writing it which could introduce race conditions
+  // => cf. https://nodejs.org/api/fs.html#fspromisesaccesspath-mode
+  if (!(await fileExists(uuidFile))) {
+    await fs.writeFile(uuidFile, uuidv4(), 'utf8')
   }
 
-  state.merge({ uuid: fs.readFileSync(uuidFile, 'utf8') })
+  const uuid = await fs.readFile(uuidFile, 'utf8')
+  state.merge({ uuid })
 }
 
-const routes = () => {
-  const content = fs.readFileSync(state.get('_routesFile'), 'utf8')
+const getRoutesDef = async () => {
+  const content = await fs.readFile(state.get('_routesFile'), 'utf8')
   return JSON.parse(content)
 }
 
@@ -151,7 +174,6 @@ const findStatic = async ({
   initial = null,
   extensionIndex = 0
 }) => {
-  const fs = require('fs').promises
   const normalizedPath = filePath => filePath.replace(root, '').substring(1)
 
   // if initial is null, it's the very first call (before recursion), we save the initial parameters for
@@ -172,7 +194,7 @@ const findStatic = async ({
     !skipVerb && verb,
     query
   )
-  let staticFile = path.join(root, filename)
+  let staticFile = join(root, filename)
 
   const foundFiles = files.filter(
     file =>
@@ -274,9 +296,10 @@ const findStatic = async ({
   }
 }
 
-module.exports = function useIo() {
+export default function useIO() {
   return {
     checkRoutesFile,
+    getRoutesDef,
     getStaticFileName,
     getUserConfig,
     loadService,
@@ -284,7 +307,6 @@ module.exports = function useIo() {
     loadStatic,
     loadScraped,
     loadUuid,
-    routes,
     writeScrapedFile,
   }
 }

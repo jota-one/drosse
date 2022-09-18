@@ -1,9 +1,10 @@
-const fs = require('fs')
-const path = require('path')
-module.exports = function (vorpal, { config, restart }) {
+import { promises as fs } from 'fs'
+import { join } from 'path'
+
+export default function (vorpal, { config, restart }) {
   const dropDatabase = async () => {
-    const dbFile = path.join(config.root, config.database)
-    await fs.promises.rm(dbFile)
+    const dbFile = join(config.root, config.database)
+    await fs.rm(dbFile)
     return restart()
   }
 

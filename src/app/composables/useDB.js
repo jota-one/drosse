@@ -1,21 +1,28 @@
-const Loki = require('lokijs')
-const lodash = require('lodash')
-const path = require('path')
-const useState = require('./state')
-const logger = require('../logger')
-const config = require('../config')
+import { promises as fs } from 'fs'
+import { join, sep } from 'path'
+
+import Loki from 'lokijs'
+import { cloneDeep, get, set, omit } from 'lodash'
+import { async as rrdir } from 'rrdir'
+
+import config from '../config'
+import logger from '../logger'
+
+import useState from './useState'
 
 let db
 
-module.exports = function () {
+export default function useDB() {
   const state = useState()
+  
   const collectionsPath = () =>
-    path.join(state.get('root'), state.get('collectionsPath'))
-  const normalizedPath = filePath =>
+    join(state.get('root'), state.get('collectionsPath'))
+  
+    const normalizedPath = filePath =>
     filePath.replace(collectionsPath(), '').substr(1)
 
   const loadAllMockFiles = async () => {
-    const res = await require('rrdir').async(collectionsPath())
+    const res = await rrdir(collectionsPath())
     return res
       .filter(entry => !entry.directory && entry.path.endsWith('json'))
       .map(entry => {
@@ -63,21 +70,20 @@ module.exports = function () {
   }
 
   const loadContents = async () => {
-    const fs = require('fs').promises
     const files = await loadAllMockFiles()
     const handled = []
     const newCollections = []
 
     for (const entry of files) {
-      const filename = entry.path.split(path.sep).pop()
+      const filename = entry.path.split(sep).pop()
       const fileContent = await fs.readFile(
-        path.join(collectionsPath(), entry.path),
+        join(collectionsPath(), entry.path),
         'utf-8'
       )
       const content = JSON.parse(fileContent)
       const collectionName = Array.isArray(content)
-        ? entry.path.slice(0, -5).split(path.sep).join('.')
-        : entry.path.split(path.sep).slice(0, -1).join('.')
+        ? entry.path.slice(0, -5).split(sep).join('.')
+        : entry.path.split(sep).slice(0, -1).join('.')
       const coll = handleCollection(collectionName, handled, newCollections)
       if (coll) {
         coll.insert(content)
@@ -87,7 +93,7 @@ module.exports = function () {
   }
 
   const clean = (...fields) => result =>
-    lodash.omit(result, config.db.reservedFields.concat(fields || []))
+    omit(result, config.db.reservedFields.concat(fields || []))
 
   const service = {
     loadDb() {
@@ -97,7 +103,7 @@ module.exports = function () {
           const adapter = Loki[AdapterName]
             ? new Loki[AdapterName]()
             : new AdapterName()
-          db = new Loki(path.join(state.get('root'), state.get('database')), {
+          db = new Loki(join(state.get('root'), state.get('database')), {
             adapter,
             autosave: true,
             autosaveInterval: 4000,
@@ -196,7 +202,7 @@ module.exports = function () {
         const id = dynamicId || refId
         return {
           ...this.byId(collection, id, cleanFields),
-          ...lodash.omit(refObj, ['collection', 'id']),
+          ...omit(refObj, ['collection', 'id']),
         }
       },
 
@@ -251,7 +257,7 @@ module.exports = function () {
 
     insert(collection, ids, payload) {
       const coll = service.collection(collection)
-      return coll.insert(lodash.cloneDeep({ ...payload, DROSSE: { ids } }))
+      return coll.insert(cloneDeep({ ...payload, DROSSE: { ids } }))
     },
 
     update: {
@@ -260,7 +266,7 @@ module.exports = function () {
 
         coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
           Object.entries(newValue).forEach(([key, value]) => {
-            lodash.set(doc, key, value)
+            set(doc, key, value)
           })
         })
       },
@@ -269,19 +275,19 @@ module.exports = function () {
         append(collection, id, subPath, payload) {
           const coll = service.collection(collection)
           coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
-            if (!lodash.get(doc, subPath)) {
-              lodash.set(doc, subPath, [])
+            if (!get(doc, subPath)) {
+              set(doc, subPath, [])
             }
-            lodash.get(doc, subPath).push(payload)
+            get(doc, subPath).push(payload)
           })
         },
         prepend(collection, id, subPath, payload) {
           const coll = service.collection(collection)
           coll.findAndUpdate({ 'DROSSE.ids': { $contains: id } }, doc => {
-            if (!lodash.get(doc, subPath)) {
-              lodash.set(doc, subPath, [])
+            if (!get(doc, subPath)) {
+              set(doc, subPath, [])
             }
-            lodash.get(doc, subPath).unshift(payload)
+            get(doc, subPath).unshift(payload)
           })
         },
       },
@@ -295,5 +301,6 @@ module.exports = function () {
       },
     },
   }
+
   return service
 }

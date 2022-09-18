@@ -1,143 +1,113 @@
 #!/usr/bin/env node
+
+import Discover from 'node-discover'
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+import { version } from '../package.json'
+import { describe, init, restart, start } from './app'
+import serveStatic from './app/static'
+
+import useCLI from './app/composables/useCLI'
+import useIO from './app/composables/useIO'
+
 process.title = `node drosse ${process.argv[1]}`
 
-const { fork } = require('child_process')
-const path = require('path')
-const yargs = require('yargs')
-const Discover = require('node-discover')
-const useIo = require('../app/use/io')
+let discover, description, noRepl
 
-const d = new Discover({ advertisement: {} })
-const cmd = yargs.argv._[0]
-let forked, uuid, io, cli
+const emit = async (event, data) => {
+  switch(event) {
+    case 'start':
+      // Send dicover events
+      description = describe()
 
-const exitHandler = () => {
-  d.send('down', { uuid })
-  setTimeout(() => {
-    if (forked) {
-      console.log('killing', forked.pid)
-      forked.kill('SIGINT')
-    }
-    process.exit()
-  }, 100)
-}
+      if (!Boolean(discover)) {
+        discover = new Discover()
+        discover.advertise(description)
+      }
 
-const start = () => {
-  const app = fork(
-    path.join(__dirname, 'app.js'),
-    [cmd].concat(process.argv.slice(2)),
-    { silent: true }
-  )
+      try {
+        // Discover seems to need some time before being able to
+        // send a message right after it has been created...
+        setTimeout(() => {
+          discover?.send(event, { uuid: description.uuid })
+        }, 10)
+      } catch(e) {
+        console.error(e)
+      }
+      
+      // Initiate repl mode
+      if (Boolean(noRepl)) {
+        return
+      }
 
-  if (app.stdout) {
-    app.stdout.on('data', data => {
-      // eslint-disable-next-line
-      ;`${data}`.split('\n').forEach(msg => {
-        d.send('log', { uuid, msg })
-      })
-      process.stdout.write(`${data}`)
-    })
+      const io = useIO()
+      const cli = useCLI(data, restart)
+      const userConfig = await io.getUserConfig(data.root)
+      
+      if (userConfig.cli) {
+        cli.extend(userConfig.cli)
+      }
+      
+      cli.start()
+      break
+    case 'restart':
+      restart()
+      break
+    case 'stop':
+      discover?.send(event, { uuid: description.uuid })
+      break
+    case 'request':
+      discover?.send(event, { uuid: description.uuid, ...data })
+      break
   }
-
-  if (app.stderr) {
-    app.stderr.on('data', data => {
-      // eslint-disable-next-line
-      ;`${data}`.split('\n').forEach(msg => {
-        d.send('log', { uuid, msg })
-      })
-      process.stderr.write(`${data}`)
-    })
-  }
-
-  app.on('close', code => {
-    if (code !== 0) {
-      const msg = `Drosse process exited with code ${code}`
-      d.send('log', { uuid, msg })
-      console.log(msg)
-    }
-  })
-
-  app.on('message', async ({ event, data }) => {
-    let userConfig
-    switch (event) {
-      case 'uuid':
-        uuid = data
-        break
-      case 'advertise':
-        d.advertise(data)
-        break
-      case 'ready':
-        if (io) {
-          break
-        }
-        io = useIo()
-        cli = require('../app/use/cli')(data, app, forked, restart)
-        userConfig = await io.getUserConfig(data.root)
-        if (userConfig.cli) {
-          cli.extend(userConfig.cli)
-        }
-        cli.start()
-        break
-      case 'restart':
-        restart()
-        break
-      default:
-        d.send(event, data)
-    }
-  })
-
-  console.log(`process started: ${app.pid}`)
-
-  return app
 }
 
-const stop = () => {
-  forked.send({ event: 'stop' })
-  setTimeout(() => {
-    forked.kill('SIGINT')
-  }, 200)
-}
-
-const restart = () => {
-  stop()
-  setTimeout(() => (forked = start()), 1000)
-}
-
-forked = start()
-
-if (cmd === 'serve') {
-  d.join('start', duuid => {
-    if (duuid === uuid) {
-      forked = start()
-      forked.send({ event: 'start' })
+yargs(hideBin(process.argv))
+  .usage('Usage: $0 <cmd> [args]')
+  .command({
+    command: 'describe <rootPath>',
+    desc: 'Describe the mock server',
+    handler: async argv => {
+      await init(argv.rootPath, emit, version)
+      console.log(describe())
+      process.exit()
     }
   })
-
-  d.join('stop', duuid => {
-    if (duuid === uuid) {
-      stop()
+  .command({
+    command: 'serve <rootPath>',
+    desc: 'Run the mock server',
+    builder: {
+      norepl: {
+        default: false,
+        describe: 'Disable repl mode',
+        type: 'boolean'
+      },
+    },
+    handler: async argv => {
+      noRepl = argv.norepl
+      await init(argv.rootPath, emit, version)
+      start()
     }
   })
-
-  d.join('cmd', data => {
-    if (data.uuid === uuid) {
-      forked.send({ event: 'cmd', data })
+  .command({
+    command: 'static <rootPath>',
+    desc: 'Run a static file server',
+    builder: {
+      port: {
+        alias: 'p',
+        describe: 'HTTP port',
+        type: 'number'
+      },
+      proxy: {
+        alias: 'P',
+        describe: 'Proxy requests to another host',
+        type: 'string'
+      },
+    },
+    handler: async argv => {
+      serveStatic(argv.rootPath, argv.port, argv.proxy)
     }
   })
-}
-
-// handle process exits and tell UI we are down
-process.stdin.resume()
-
-// app closes
-process.on('exit', exitHandler)
-
-// catch ctrl+c event
-process.on('SIGINT', exitHandler)
-
-// catch "kill pid" (for example: nodemon restart)
-process.on('SIGUSR1', exitHandler)
-process.on('SIGUSR2', exitHandler)
-
-// catch uncaught exceptions
-process.on('uncaughtException', exitHandler)
+  .demandCommand(1)
+  .strict()
+  .parse()

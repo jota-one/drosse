@@ -1,6 +1,8 @@
-const useIo = require('./io')
-module.exports = function useScraper() {
-  const { getStaticFileName, writeScrapedFile } = useIo()
+import useIO from './useIO'
+
+export default function useScraper() {
+  const { getStaticFileName, writeScrapedFile } = useIO()
+  
   const staticService = async (json, api) => {
     const { req } = api
     const filename = getStaticFileName(

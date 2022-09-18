@@ -1,0 +1,36 @@
+{
+  "throttle": {
+    "DROSSE": {
+      "throttle": {
+        "min": 3000,
+        "max": 3000
+      },
+      "get": {
+        "body": "you've got throttled!"
+      }
+    }
+  },
+  "static": {
+    "DROSSE": {
+      "get": {
+        "static": true
+      }
+    }
+  },
+  "assets": {},
+  "proxy": {},
+  "template": {},
+  "inheritance": {
+    "DROSSE": {
+      "throttle": {
+        "min": 3000,
+        "max": 3000
+      },
+      "sub": {
+        "get": {
+          "body": "you've got throttled!"
+        }
+      }
+    }
+  }
+}

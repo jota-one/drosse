@@ -1,6 +1,4 @@
-const c = require('ansi-colors')
-
-module.exports = new Logger()
+import ansiColors from 'ansi-colors'
 
 function Logger() {
   this.debug = function (...args) {
@@ -36,5 +34,7 @@ function log(color, args) {
     return arg
   })
 
-  console.log(c.gray(getTime()), c[color](args.join(' ')))
+  console.log(ansiColors.gray(getTime()), ansiColors[color](args.join(' ')))
 }
+
+export default new Logger()

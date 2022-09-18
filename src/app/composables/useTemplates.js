@@ -1,7 +1,8 @@
-const config = require('../config')
+import config from '../config'
+
 let state = config.templates
 
-module.exports = function () {
+export default function useTemplates() {
   return {
     merge(tpls) {
       state = { ...state, ...tpls }

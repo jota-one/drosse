@@ -1,12 +1,14 @@
-const logger = require('./logger')
-const useDb = require('./use/db')
-const useState = require('./use/state')
-const useIo = require('./use/io')
-const db = useDb()
-const state = useState()
-const { loadStatic, loadScraped } = useIo()
+import logger from '../logger'
 
-module.exports = function (req, res) {
+import useIO from './useIO'
+import useDB from './useDB'
+import useState from './useState'
+
+const db = useDB()
+const state = useState()
+const { loadStatic, loadScraped } = useIO()
+
+export default function useAPI(req, res) {
   return {
     req,
     res,

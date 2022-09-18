@@ -1,10 +1,10 @@
-const config = require('../config')
-const merge = require('lodash/merge')
-const pick = require('lodash/pick')
+import { merge, pick } from 'lodash'
+
+import config from '../config'
 
 let state = JSON.parse(JSON.stringify(config.state))
 
-module.exports = function () {
+export default function useState() {
   return {
     set(key, value) {
       state[key] = value

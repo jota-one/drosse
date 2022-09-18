@@ -1,8 +1,10 @@
-const get = require('lodash/get')
-const config = require('../config')
+import { get } from 'lodash'
+
+import config from '../config'
+
 let state = config.commands
 
-module.exports = function useCommand() {
+export default function useCommand() {
   return {
     merge(commands) {
       state = { ...state, ...commands }
