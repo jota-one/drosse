@@ -1,6 +1,6 @@
 <div align="center">
   <h1>
-    <img src="./Drosse.svg"/>
+    <img src="https://raw.githubusercontent.com/jota-one/drosse/next/Drosse.svg"/>
     <br>
     Drosse
   </h1>
