@@ -16,12 +16,9 @@ export const load = async function(path) {
   const fullPath = getFullPath(path)
 
   console.info('🗂  loading module', fullPath)
-
-  // try {
-  //   module = await import(fullPath)
-  // } catch (e) {
-    module = require(fullPath)
-  // }
+  
+  delete require.cache[fullPath]
+  module = require(fullPath)
 
   return module
 }

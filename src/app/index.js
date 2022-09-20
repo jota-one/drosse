@@ -27,11 +27,10 @@ const state = useState()
 
 let app, emit, root, listener, userConfig, version
 
-export const init = async (_root, _emit, _version, debug = true) => {
+export const init = async (_root, _emit, _version) => {
   version = _version
   root = resolve(_root)
   emit = _emit
-  app = createApp({ debug })
 
   // very first action -> set the 'root' directory in the state. Will be useful for further operations.
   state.set('root', root)
@@ -56,6 +55,8 @@ export const init = async (_root, _emit, _version, debug = true) => {
 }
 
 const initServer = async () => {
+  app = createApp({ debug: true })
+
   // start and populate database as early as possible
   await loadDb()
 

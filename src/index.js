@@ -86,7 +86,7 @@ yargs(hideBin(process.argv))
     handler: async argv => {
       noRepl = argv.norepl
       await init(argv.rootPath, emit, version)
-      start()
+      return start()
     }
   })
   .command({
@@ -105,7 +105,7 @@ yargs(hideBin(process.argv))
       },
     },
     handler: async argv => {
-      serveStatic(argv.rootPath, argv.port, argv.proxy)
+      return serveStatic(argv.rootPath, argv.port, argv.proxy)
     }
   })
   .demandCommand(1)
