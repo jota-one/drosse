@@ -7,13 +7,16 @@
           "max": 3000
         },
         "get": {
-          "body": [{
-            "id": 1,
-            "name": "Tadai"
-          }, {
-            "id": 2,
-            "name": "Jorinho"
-          }]
+          "body": [
+            {
+              "id": 1,
+              "name": "Tadai"
+            },
+            {
+              "id": 2,
+              "name": "Jorinho"
+            }
+          ]
         }
       },
       ":id": {
@@ -38,7 +41,7 @@
     "countries": {
       "DROSSE": {
         "proxy": {
-          "target": "https://restcountries.eu/rest/v2",
+          "target": "https://restcountries.com/v3.1",
           "headers": {
             "x-user": "Luke",
             "x-roles": "jedi,pilot"
@@ -61,7 +64,7 @@
     "countries-slow": {
       "DROSSE": {
         "proxy": {
-          "target": "https://restcountries.eu/rest/v2",
+          "target": "https://restcountries.com/v3.1",
           "headers": {
             "X-User": "123456-1",
             "X-Roles": "customer,blabla"

@@ -97,7 +97,11 @@ const createRoute = async function (def, root, defHierarchy) {
     }
 
     // create route
-    await setRoute(app, router, def[verb], verb, root)
+    const inheritsProxy = Boolean(defHierarchy.find(item =>
+      root.join('/').includes(item.path.join('/'))
+    )?.proxy)
+    
+    await setRoute(app, router, def[verb], verb, root, inheritsProxy)
   }
 
   // handle assets
@@ -120,18 +124,24 @@ const createRoute = async function (def, root, defHierarchy) {
     const proxyResHooks = []
     const path = [''].concat(root)
 
-    const onProxyReq = function (proxyReq, req, res) {
-      setResponseHeader(res, 'x-proxied', true)
+    const onProxyReq = async function (proxyReq, req, res) {
+      return new Promise((resolve, reject) => {
+        try {
+          // restream body, if any
+          if (!isEmpty(req.body)) {
+            const bodyData = JSON.stringify(req.body)
+            // If content-type is application/x-www-form-urlencoded -> we need to change to application/json
+            proxyReq.setHeader('Content-Type', 'application/json')
+            proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData))
+            // stream the content
+            proxyReq.write(bodyData)
+          }
 
-      // restream body, if any
-      if (!isEmpty(req.body)) {
-        const bodyData = JSON.stringify(req.body)
-        // If content-type is application/x-www-form-urlencoded -> we need to change to application/json
-        proxyReq.setHeader('Content-Type', 'application/json')
-        proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData))
-        // stream the content
-        proxyReq.write(bodyData)
-      }
+          resolve()
+        } catch(e) {
+          reject(e)
+        }
+      })
     }
 
     const applyProxyRes = function (hooks, def) {
@@ -228,98 +238,102 @@ const createRoute = async function (def, root, defHierarchy) {
   return inheritance
 }
 
-const setRoute = async (app, router, def, verb, root) => {
+const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
   const path = `${state.get('basePath')}/${root.join('/')}`
 
   if (Object.keys(def.throttle).length) {
     app.use(path, getThrottleMiddleware(def))
   }
 
-  router[verb](
-    path,
-    async (req, res, next) => {
-      let response
-      let applyTemplate = true
-      let staticExtension = 'json'
+  const handler = async (req, res, next) => {
+    let response
+    let applyTemplate = true
+    let staticExtension = 'json'
 
-      if (def.service) {
-        const api = useAPI(req, res)
-        const service = await loadService(root, verb)
-        try {
-          response = await service(api)
-        } catch (e) {
-          return next(e)
-        }
+    if (def.service) {
+      const api = useAPI(req, res)
+      const service = await loadService(root, verb)
+      try {
+        response = await service(api)
+      } catch (e) {
+        return next(e)
       }
+    }
 
-      if (def.static) {
-        try {
-          const { params, query } = req
-          const { extensions } = def
-          const [ result, extension ] = await loadStatic({ routePath: root, params, verb, query, extensions })
+    if (def.static) {
+      try {
+        const { params, query } = req
+        const { extensions } = def
+        const [ result, extension ] = await loadStatic({ routePath: root, params, verb, query, extensions })
+        response = result
+        staticExtension = extension
+        if (!response) {
+          const [ result, extension ] = await loadScraped({
+            routePath: root,
+            params,
+            verb,
+            query,
+            extensions,
+          })
+          applyTemplate = false
           response = result
           staticExtension = extension
-          if (!response) {
-            const [ result, extension ] = await loadScraped({
-              routePath: root,
-              params,
-              verb,
-              query,
-              extensions,
-            })
-            applyTemplate = false
-            response = result
-            staticExtension = extension
 
-            if (!response) {
-              applyTemplate = true
-              response = {
-                drosse: `loadStatic: file not found with routePath = ${root.join(
-                  '/'
-                )}`,
-              }
+          if (!response) {
+            applyTemplate = true
+            response = {
+              drosse: `loadStatic: file not found with routePath = ${root.join(
+                '/'
+              )}`,
             }
           }
-        } catch (e) {
-          response = {
-            drosse: e.message,
-          }
+        }
+      } catch (e) {
+        response = {
+          drosse: e.message,
         }
       }
-
-      if (def.body) {
-        response = def.body
-        applyTemplate = true
-      }
-
-      // Don't apply any template if the responseType is 'file'.
-      if (
-        applyTemplate &&
-        def.responseType !== 'file' &&
-        staticExtension === 'json' &&
-        def.template &&
-        Object.keys(def.template).length
-      ) {
-        response = templates.list()[def.template](response)
-      }
-
-      // send response
-      if (
-        def.responseType === 'file' ||
-        (staticExtension && staticExtension !== 'json')
-      ) {
-        return res.sendFile(response, function (err) {
-          if (err) {
-            logger.error(err.stack)
-          } else {
-            logger.success('File downloaded successfully')
-          }
-        })
-      }
-
-      return response
     }
-  )
+
+    if (def.body) {
+      response = def.body
+      applyTemplate = true
+    }
+
+    // Don't apply any template if the responseType is 'file'.
+    if (
+      applyTemplate &&
+      def.responseType !== 'file' &&
+      staticExtension === 'json' &&
+      def.template &&
+      Object.keys(def.template).length
+    ) {
+      response = templates.list()[def.template](response)
+    }
+
+    // send response
+    if (
+      def.responseType === 'file' ||
+      (staticExtension && staticExtension !== 'json')
+    ) {
+      return res.sendFile(response, function (err) {
+        if (err) {
+          logger.error(err.stack)
+        } else {
+          logger.success('File downloaded successfully')
+        }
+      })
+    }
+
+    return response
+  }
+
+  if (inheritsProxy) {
+    // We defined a middleware for the route so that if overwrites the proxy middleware
+    app.use(path, handler, { match: url => url === '/' })
+  } else {
+    router[verb](path, handler)
+  }
 
   logger.success(
     `-> ${verb.toUpperCase().padEnd(7)} ${state.get('basePath')}/${root.join(
@@ -345,18 +359,35 @@ const createAssets = ({ app, assets }) => {
   })
 }
 
-const createProxies = ({ app, proxies }) => {
+const createProxies = ({ app, router, proxies }) => {
   if (!proxies) {
     return
   }
 
   proxies.forEach(({ path, context, def }) => {
+    const proxyMw = createProxyMiddleware({ ...context, logLevel: 'warn' })
+
     if (Object.keys(def.throttle || {}).length) {
       app.use(path || '/', getThrottleMiddleware(def))
     }
 
     app.use(path || '/',
-      createProxyMiddleware({ ...context, logLevel: 'warn' })
+      async (req, res) => {
+        // Workaround for h3 not awaiting next
+        // => cf. https://github.com/unjs/h3/issues/35
+        return new Promise((resolve, reject) => {
+          const next = err => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(true)
+            }
+          }
+          
+          setResponseHeader(res, 'x-proxied', true)
+          return proxyMw(req, res, next)
+        })
+      }
     )
 
     logger.info(`-> PROXY   ${path || '/'} => ${context.target}`)
