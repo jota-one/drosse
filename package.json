@@ -1,6 +1,6 @@
 {
   "name": "@jota-one/drosse",
-  "version": "3.0.0",
+  "version": "2.7.1",
   "description": "A stateful and program­mable mock server",
   "author": "Juniors at Work",
   "license": "MIT",
