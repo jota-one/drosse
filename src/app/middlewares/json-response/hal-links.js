@@ -1,6 +1,6 @@
 import { get, set } from '../../../helpers'
 
-const rewriteLinks = links => links.map(link => {
+const rewriteLinks = links => Object.entries(links).reduce((links, [ key, link ]) => {
   // if the link href starts with a fully qualified URL, we remove the domain
   // the goal is that the URL starts just with /path/to/endpoint
   let { href } = link
@@ -9,29 +9,25 @@ const rewriteLinks = links => links.map(link => {
     href = `/${href.split('/').slice(3).join('/')}`
   }
 
-  return { ...link, href }
-})
+  links[key] = { ...link, href }
+
+  return links 
+}, {})
 
 const walkObj = (root = {}, prefix = '') => {
   if (typeof root !== 'object') {
     return root
   }
-  
+
   const obj = (prefix ? get(root, prefix) : root) || {}
 
-  Object.entries(obj).forEach(([ key, value ]) => {
+  Object.entries(obj).forEach(([key, value]) => {
     const path = `${prefix && prefix + '.'}${key}`
 
-    if (key === 'links') {
-      const linkKeys = Object.keys(value[0] || [])
-      
-      if (linkKeys.includes('href') && linkKeys.includes('rel')) {
-        set(root, path, rewriteLinks(value))
-      } else {
-        walkObj(root, path)
-      }
+    if (key === '_links') {
+      set(root, path, rewriteLinks(value))
     }
-    
+
     walkObj(root, path)
   })
 }

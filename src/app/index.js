@@ -74,9 +74,6 @@ const initServer = async () => {
   if (userConfig.commands) {
     useCommand().merge(userConfig.commands(api))
   }
-  
-  // app.use(express.urlencoded({ extended: true }))
-  // app.use(express.json())
 
   // register custom global middlewares
   logger.info('-> Middlewares:')
@@ -89,9 +86,9 @@ const initServer = async () => {
     }
 
     // if the middleware signature has 4 arguments, we assume that the first one is the Drosse `api`
-    // if (mw.length === 4) {
-    //   mw = curry(mw)(api)
-    // }
+    if (mw.length === 4) {
+      mw = curry(mw)(api)
+    }
 
     app.use(mw)
   }
@@ -183,6 +180,7 @@ export const start = async () => {
   console.log()
 
   emit('start', state.get())
+  return listener
 }
 
 export const stop = async () => {

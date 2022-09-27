@@ -66,4 +66,50 @@ describe('serve', () => {
     const res = await supertest(host).get('/throttle')
     expect(res.statusCode).toBe(200)
   })
+
+  it('applies template', async () => {
+    let res = await supertest(host).get('/template/hateoas')
+    expect(JSON.parse(res.text)).toMatchObject({
+      links: [{
+        rel: 'link1',
+        href: 'http://somehost/link/1'
+      }]
+    })
+
+    res = await supertest(host).get('/template/hal')
+    expect(JSON.parse(res.text)).toMatchObject({
+      _links: {
+        link1: {
+          href: 'http://somehost/link/1'
+        }
+      }
+    })
+  })
+
+  it('proxies requests', async () => {
+    const listener = await start()
+    const d = describeDrosse()
+    const port2 = listener.server.address().port
+    const host2 = `${d.proto}://localhost:${port2}`
+    const trim = str => str.replace(/[\n\r\s\t]?/gmi, '')
+
+    const res1 = await supertest(host).get('/template/hal')
+    const res2 = await supertest(host2).get('/proxy/hal')
+    
+    expect(trim(res1.text).replaceAll('http://somehost/', '/'))
+      .toEqual(trim(res2.text))
+    
+    await stop()
+  })
+
+  it('overwrites proxied request with local route', async () => {
+    const listener = await start()
+    const d = describeDrosse()
+    const port2 = listener.server.address().port
+    const host2 = `${d.proto}://localhost:${port2}`
+
+    const res = await supertest(host2).get('/proxy/hal/overwrite')
+    
+    expect(res.text).toEqual('overwritten!')
+  })
 })
