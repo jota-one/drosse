@@ -1,5 +1,5 @@
 module.exports = function ({ db, req }) {
-  const { id } = req.params
+  const { id } = req.context.params
 
   db.remove.byId('users', id)
 

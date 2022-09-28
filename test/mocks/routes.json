@@ -1,0 +1,111 @@
+{
+  "throttle": {
+    "DROSSE": {
+      "throttle": {
+        "min": 3000,
+        "max": 3000
+      },
+      "get": {
+        "body": "you've been throttled!"
+      }
+    }
+  },
+  "static": {
+    "DROSSE": {
+      "get": {
+        "static": true
+      }
+    }
+  },
+  "template": {
+    "hateoas": {
+      "DROSSE": {
+        "template": "hateoas",
+        "get": {
+          "body": {
+            "someResource": {
+              "links": [{
+                "rel": "link2",
+                "href": "http://somehost/link/2",
+                "verbs": ["get", "put"]
+              }]
+            }
+          }
+        }
+      },
+      "overwrite": {
+        "DROSSE": {
+          "get": {
+            "body": {
+              "version": "original!"
+            }
+          }
+        }
+      }
+    },
+    "hal": {
+      "DROSSE": {
+        "template": "hal",
+        "get": {
+          "body": {
+            "someResource": {
+              "_links": {
+                "link2": {
+                  "href": "http://somehost/link/2",
+                  "verbs": ["get", "put"]
+                }
+              },
+              "sub": {
+                "_links": {
+                  "link3": {
+                    "href": "http://somehost/link/3"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "overwrite": {
+        "DROSSE": {
+          "get": {
+            "body": {
+              "version": "original!"
+            }
+          }
+        }
+      }
+    }
+  },
+  "assets": {},
+  "proxy": {
+    "DROSSE": {
+      "proxy": {
+        "target": "http://localhost:3636/template",
+        "responseRewriters": ["hal-links", "hateoas-links"]
+      }
+    },
+    "hal": {
+      "overwrite": {
+        "DROSSE": {
+          "get": {
+            "body": "overwritten!"
+          }
+        }
+      }
+    }
+  },
+  "inheritance": {
+    "DROSSE": {
+      "throttle": {
+        "min": 3000,
+        "max": 3000
+      },
+      "sub": {
+        "get": {
+          "body": "you've got throttled!"
+        }
+      }
+    }
+  }
+}
