@@ -33,8 +33,10 @@ jobs:
             yarn-deps-${{ hashFiles('yarn.lock') }}
       
       - name: Install
-        run: |
-          yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile
+
+      - name: Test
+        run: yarn test
 
       - name: Create Release
         env:
