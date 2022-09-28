@@ -34,29 +34,3 @@ module.exports = {
 | `extendServer`       | -               | Used to set custom instructions to the server application. Must be a function with the following signature: function ({ server, app, db }) {}. `server` being the node http.Server instance, `app` the [h3](https://github.com/unjs/h3) instance and `db` the [drosse db api](db-api#api). |
 | `onHttpUpgrade`      | `null`          | A function that initiates a websocket connection. This is happening once during HTTP protocol upgrade handshake. Must be a function with the following signature: function (request, socket, head) { ... }. |
 | `commands`           | -               | Used to extend Drosse CLI with custom commands. Must be a function with the following signature: function (vorpal, drosse) { ... }. See the [CLI commands](commands.md) documentation. |
-
-## Custom middlewares
-
-You can create your own middlewares. Simply create a JS file that exports a classic express middleware function. Something like this:
-
-```js
-module.exports = function (req, res, next) {
-  // put your middleware code here
-  next()
-}
-```
-
-You can also define the middleware with a supplementary argument, to place at the first position. It will
-expose the Drosse API inside your middleware, letting you access the `db` instance for example.
-
-```js
-module.exports = function (api, req, res, next) {
-  // (very) naive role checking :)
-  const { db } = api
-  const user = db.get.byId('users', req.params.id)
-  if (user.role !== 'admin') {
-    return next({ some: 'error'})
-  }
-  next()
-}
-```

@@ -7,6 +7,7 @@
 - [Static mocks](static-mocks.md)
 - [Dynamic mocks (services)](dynamic-mocks.md)
 - [Db API](db-api.md)
+- [Middlewares](middlewares.md)
 - [Configuration](configuration.md)
 - [Scraping](scraping.md)
 - [CLI commands](commands.md)
