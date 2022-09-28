@@ -76,4 +76,4 @@ Find example code in the [examples](./examples) folder.
 
 ## Credits & License
 
-**Drosse** is crafted by ([Jota](https://jota.one)) and licensed under the [MIT license](https://github.com/jota-one/drosse/blob/master/LICENSE).
+**Drosse** is crafted by [Jota](https://jota.one) and licensed under the [MIT license](https://github.com/jota-one/drosse/blob/master/LICENSE).
