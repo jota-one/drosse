@@ -19,8 +19,7 @@
 - [x] refactor (more generic) hateoas-links json-response rewrite mw @Tadai
 - [x] test feature proxies @Tadai
 - [x] test communication via discover
-
-- [ ] build static website drosse.dev with docsify @Tadai
+- [x] build static website drosse.dev with docsify @Tadai
 
 # Optional before/after 3.0 release
 - [ ] test example websocket

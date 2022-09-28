@@ -26,7 +26,8 @@
     "serve": "node ./dist/index.cjs serve",
     "static": "node ./dist/index.cjs static",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "doc": "docsify serve docs"
   },
   "repository": {
     "type": "git",
