@@ -4,7 +4,7 @@
     <br>
     Drosse
   </h1>
-  <p>Stateful & programmable mock server</p>
+  <p><strong>Stateful & programmable mock server</strong></p>
 
 [![NPM Vernion](https://flat.badgen.net/npm/v/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
 [![NPM Downloads](https://flat.badgen.net/npm/dt/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
