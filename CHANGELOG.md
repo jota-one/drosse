@@ -1,3 +1,15 @@
+# v3.0.2 (Wed Sep 28 2022)
+
+#### ⚠️ Pushed to `master`
+
+- Create CNAME ([@tadaii](https://github.com/tadaii))
+
+#### Authors: 1
+
+- Tadai ([@tadaii](https://github.com/tadaii))
+
+---
+
 # v4.0.0 (Wed Sep 28 2022)
 
 #### 💥 Breaking Change
