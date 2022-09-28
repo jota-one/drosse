@@ -62,7 +62,7 @@ Find example code in the [examples](./examples) folder.
 ## Contact & Support
 
 - Create a [GitHub issue](https://github.com/jota-one/drosse/issues) for bug reports, feature requests, or questions
-- Add a ⭐️ [star on GitHub](https://github.com/jota-one/drosse) or ☕️ [buy us a coffe](https://www.buymeacoffee.com/drosse) to support the project!
+- Add a ⭐️ [star on GitHub](https://github.com/jota-one/drosse) or ☕️ [buy us a coffee](https://www.buymeacoffee.com/drosse) to support the project!
 
 
 ## Development

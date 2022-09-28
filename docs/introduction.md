@@ -21,33 +21,33 @@ making it the best companion for any frontend developer 🤓
 
 ## Features
 
-- ![](/_media/paperclip.svg) **Tight to your project**: your mocks and your mock-server are part of your project. You can run as many drosse instances as you want simultaneously.
+![](/_media/paperclip.svg) **Tight to your project**: your mocks and your mock-server are part of your project. You can run as many drosse instances as you want simultaneously.
 
-- ![](/_media/configuration.svg) **Easy configuration**: configuring drosse is as simple as writing its port number in a `.drosserc.js` file and writing route definitions in a `routes.json` file.
+![](/_media/configuration.svg) **Easy configuration**: configuring drosse is as simple as writing its port number in a `.drosserc.js` file and writing route definitions in a `routes.json` file.
 
-- ![](/_media/cascading.svg) **Cascading configs**: routes are defined as a JSON tree of sub-paths - plugins (throttle, proxy, ...) are inherited by child routes.
+![](/_media/cascading.svg) **Cascading configs**: routes are defined as a JSON tree of sub-paths - plugins (throttle, proxy, ...) are inherited by child routes.
 
-- ![](/_media/static-mocks.svg) **Static mocks**: write mocks directly in the `routes.json` file (inline mode) or in JSON files (static mode).
+![](/_media/static-mocks.svg) **Static mocks**: write mocks directly in the `routes.json` file (inline mode) or in JSON files (static mode).
 
-- ![](/_media/dynamic-mocks.svg) **Dynamic mocks**: build dynamic responses in javascript and access to the persisted data api, request and response objects and the NodeJS environment.
+![](/_media/dynamic-mocks.svg) **Dynamic mocks**: build dynamic responses in javascript and access to the persisted data api, request and response objects and the NodeJS environment.
 
-- ![](/_media/assets.svg) **Assets handling**: serve multimedia files with patterns and wild cards for easy fallback.
+![](/_media/assets.svg) **Assets handling**: serve multimedia files with patterns and wild cards for easy fallback.
 
-- ![](/_media/url-param.svg) **Dynamic URL params**: match any route/endpoint pattern with dynamic parameters (e.g. `/api/users/:id`).
+![](/_media/url-param.svg) **Dynamic URL params**: match any route/endpoint pattern with dynamic parameters (e.g. `/api/users/:id`).
 
-- ![](/_media/database.svg) **Data persistence**: work with stateful and interactive mocks thanks to the in-memory JSON database accessible via an easy-to-use API.
+![](/_media/database.svg) **Data persistence**: work with stateful and interactive mocks thanks to the in-memory JSON database accessible via an easy-to-use API.
 
-- ![](/_media/throttle.svg) **Throttling**: delay response time of your routes, even the proxied ones.
+![](/_media/throttle.svg) **Throttling**: delay response time of your routes, even the proxied ones.
 
-- ![](/_media/proxy.svg) **Proxying**: super-flexible proxy mechanism with inheritance and overwriting of sub-routes (with different proxy or local route).
+![](/_media/proxy.svg) **Proxying**: super-flexible proxy mechanism with inheritance and overwriting of sub-routes (with different proxy or local route).
 
-- ![](/_media/middleware.svg) **Middlewares**: extend Drosse with custom express middlewares to fulfill your use cases (user session, websocket, jwt, ...).
+![](/_media/middleware.svg) **Middlewares**: extend Drosse with custom express middlewares to fulfill your use cases (user session, websocket, jwt, ...).
 
-- ![](/_media/template.svg) **Templates**: use response templates to avoid repeating yourself.
+![](/_media/template.svg) **Templates**: use response templates to avoid repeating yourself.
 
-- ![](/_media/scrape.svg) **Scraping**: scrape proxied endpoints and save the content to Drosse's database or static files.
+![](/_media/scrape.svg) **Scraping**: scrape proxied endpoints and save the content to Drosse's database or static files.
 
-- ![](/_media/cli.svg) **Extensible REPL CLI**: build custom commands and execute them at runtime => simulate interaction with 3rp-party services.
+![](/_media/cli.svg) **Extensible REPL CLI**: build custom commands and execute them at runtime => simulate interaction with 3rp-party services.
 
 ## Examples
 Find example code in the [examples](https://github.com/jota-one/drosse/tree/master/examples) folder.

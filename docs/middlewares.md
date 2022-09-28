@@ -1,4 +1,4 @@
-# Middlewraes
+# Middlewares
 
 You can create your own middlewares. Simply create a JS file that exports a classic express middleware function. Something like this:
 
