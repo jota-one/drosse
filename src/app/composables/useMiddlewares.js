@@ -1,17 +1,22 @@
-let state = []
+let defaults = []
+let pool = {}
 
 export default function useMiddlewares() {
   return {
-    append(mw) {
-      state = [...state, ...mw]
+    setDefaults(mw) {
+      defaults = [...mw]
     },
 
-    set(mw) {
-      state = [...mw]
+    setPool(mw) {
+      pool = { ...pool, ...mw }
+    },
+
+    get(name) {
+      return pool[name]
     },
 
     list() {
-      return state
+      return { defaults, pool }
     },
   }
 }

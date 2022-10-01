@@ -1,4 +1,11 @@
 {
+  "DROSSE": {
+    "__proxy": "https://restcountries.com/v3.1",
+    "middlewares": [
+      "global1",
+      "open-cors"
+    ]
+  },
   "throttle": {
     "DROSSE": {
       "throttle": {
@@ -24,11 +31,16 @@
         "get": {
           "body": {
             "someResource": {
-              "links": [{
-                "rel": "link2",
-                "href": "http://somehost/link/2",
-                "verbs": ["get", "put"]
-              }]
+              "links": [
+                {
+                  "rel": "link2",
+                  "href": "http://somehost/link/2",
+                  "verbs": [
+                    "get",
+                    "put"
+                  ]
+                }
+              ]
             }
           }
         }
@@ -52,7 +64,10 @@
               "_links": {
                 "link2": {
                   "href": "http://somehost/link/2",
-                  "verbs": ["get", "put"]
+                  "verbs": [
+                    "get",
+                    "put"
+                  ]
                 }
               },
               "sub": {
@@ -77,12 +92,31 @@
       }
     }
   },
+  "middlewares": {
+    "DROSSE": {
+      "middlewares": [
+        "local1"
+      ]
+    },
+    "tadai": {
+      "DROSSE": {
+        "get": {
+          "body": {
+            "isTadai": 1
+          }
+        }
+      }
+    }
+  },
   "assets": {},
   "proxy": {
     "DROSSE": {
       "proxy": {
         "target": "http://localhost:3636/template",
-        "responseRewriters": ["hal-links", "hateoas-links"]
+        "responseRewriters": [
+          "hal-links",
+          "hateoas-links"
+        ]
       }
     },
     "hal": {

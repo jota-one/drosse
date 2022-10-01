@@ -5,7 +5,7 @@ import {
   createProxyMiddleware,
   responseInterceptor,
 } from 'http-proxy-middleware'
-import { isEmpty, isString, difference } from 'lodash'
+import { curry, difference, isEmpty, isString } from 'lodash'
 import serveStatic from 'serve-static'
 
 import logger from './logger'
@@ -13,6 +13,7 @@ import internalMiddlewares from './middlewares'
 
 import useAPI from './composables/useAPI'
 import useIO from './composables/useIO'
+import useMiddlewares from './composables/useMiddlewares'
 import useParser from './composables/useParser'
 import useScraper from './composables/useScraper'
 import useState from './composables/useState'
@@ -28,19 +29,32 @@ const getThrottle = function (min, max) {
 }
 
 const getThrottleMiddleware = def => async () => new Promise(resolve => {
-    const delay = getThrottle(
-      def.throttle.min || 0,
-      def.throttle.max || def.throttle.min
-    )
-    setTimeout( resolve, delay )
-  })
+  const delay = getThrottle(
+    def.throttle.min || 0,
+    def.throttle.max || def.throttle.min
+  )
+  setTimeout( resolve, delay )
+})
 
 const getProxy = function (def) {
   return typeof def.proxy === 'string' ? { target: def.proxy } : def.proxy
 }
 
+const getRouteMiddleware = name => {
+  const api = useAPI()
+  const mws = useMiddlewares()
+  const mw = mws.get(name) || internalMiddlewares[name]
+
+  // if the middleware signature has 4 arguments, we assume that the first one is the Drosse `api`
+  if (mw.length === 4) {
+    mw = curry(mw)(api)
+  }
+
+  return mw
+}
+
 const createRoutes = async (app, router, routes) => {
-  const context = { app, router, proxies: [], assets: [] }
+  const context = { app, router, proxies: [], assets: [], middlewares: [] }
   const inherited = await parse({
     routes,
     onRouteDef: await createRoute.bind(context)
@@ -55,6 +69,7 @@ const createRoutes = async (app, router, routes) => {
         template: false,
         throttle: false,
         proxy: false,
+        middlewares: false,
       }
     }
     acc[item.path][item.verb][item.type] = true
@@ -63,12 +78,13 @@ const createRoutes = async (app, router, routes) => {
 
   createAssets(context)
   createProxies(context)
+  createMiddlewares(context)
 
   return result
 }
 
 const createRoute = async function (def, root, defHierarchy) {
-  const { router, app, proxies, assets } = this
+  const { router, app, proxies, assets, middlewares } = this
   const inheritance = []
   const verbs = ['get', 'post', 'put', 'delete'].filter(verb => def[verb])
 
@@ -120,6 +136,15 @@ const createRoute = async function (def, root, defHierarchy) {
     })
   }
 
+  // handle middlewares
+  if (def.middlewares) {
+    middlewares.push({
+      path: ([''].concat(root)).join('/'),
+      list: def.middlewares
+    })
+  }
+
+  // handle proxies and scraper
   if (def.proxy || def.scraper) {
     const proxyResHooks = []
     const path = [''].concat(root)
@@ -336,7 +361,7 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
   }
 
   logger.success(
-    `-> ${verb.toUpperCase().padEnd(7)} ${state.get('basePath')}/${root.join(
+    `→ ${verb.toUpperCase().padEnd(8)} ${state.get('basePath')}/${root.join(
       '/'
     )}`
   )
@@ -354,12 +379,12 @@ const createAssets = ({ app, assets }) => {
     app.use(routePath, serveStatic(fsPath, { redirect: false }))
 
     logger.info(
-      `-> STATIC ASSETS   ${routePath || '/'} => ${fsPath}`
+      `→ STATIC ASSETS    ${routePath || '/'} => ${fsPath}`
     )
   })
 }
 
-const createProxies = ({ app, router, proxies }) => {
+const createProxies = ({ app, proxies }) => {
   if (!proxies) {
     return
   }
@@ -370,6 +395,12 @@ const createProxies = ({ app, router, proxies }) => {
     if (Object.keys(def.throttle || {}).length) {
       app.use(path || '/', getThrottleMiddleware(def))
     }
+
+    // if (def.middlewares?.length) {
+    //   def.middlewares.forEach(name => {
+    //     app.use(path || '/', getRouteMiddleware(name))
+    //   })
+    // }
 
     app.use(path || '/',
       async (req, res) => {
@@ -390,7 +421,24 @@ const createProxies = ({ app, router, proxies }) => {
       }
     )
 
-    logger.info(`-> PROXY   ${path || '/'} => ${context.target}`)
+    logger.info(`→ PROXY 🔀 ${path || '/'} => ${context.target}`)
+  })
+}
+
+const createMiddlewares = ({ app, middlewares }) => {
+  const mws = useMiddlewares()
+  
+  // Apply default global middlewares
+  mws.list().defaults.forEach(name => {
+    const mw = internalMiddlewares[name]
+    app.use(mw)
+  })
+
+  middlewares.forEach(({ path, list }) => {
+    list.forEach(name => {
+      app.use(path || '/', getRouteMiddleware(name))
+      logger.warn(`→ MW    🧩 ${path || '/'} => ${name}`)
+    })
   })
 }
 
