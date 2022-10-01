@@ -1,5 +1,5 @@
 # TODO
-
+- [x] Check that proxy inside proxy (sub-route) has priority @tadai
 - [ ] support wildcards in static routes @tadai
 - [ ] fix `set` helper fn @jorinho
 - [ ] test example websocket
@@ -17,5 +17,4 @@
       => ...
 - [ ] make drosse usable in other codebase => "type": "module" in package.json
 - [ ] Get rid of lodash
-- [ ] Check that proxy inside proxy (sub-route) has priority
 - [ ] Handle inherited configs in proxy (like throttle)
