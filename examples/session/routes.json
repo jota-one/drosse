@@ -1,5 +1,10 @@
 {
   "DROSSE": {
+    "middlewares": [
+      "open-cors",
+      "session",
+      "checkSession"
+    ],
     "get": {
       "body": {
         "connected": true

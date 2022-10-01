@@ -1,4 +1,9 @@
 {
+  "DROSSE": {
+    "middlewares": [
+      "open-cors"
+    ]
+  },
   "example": {
     "DROSSE": {
       "assets": "index.html"
