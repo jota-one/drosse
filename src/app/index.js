@@ -3,7 +3,6 @@ import { resolve } from 'path'
 import ansiColors from 'ansi-colors'
 import { createApp, createRouter, readBody } from 'h3'
 import { listen } from 'listhen'
-import { curry } from 'lodash'
 
 import config from './config'
 import logger from './logger'
@@ -61,10 +60,10 @@ const initServer = async () => {
   await loadDb()
 
   // set other user defined properties that are not part of the state
-  middlewares.set(config.middlewares)
+  middlewares.setDefaults(config.middlewares)
   
   if (userConfig.middlewares) {
-    middlewares.append(userConfig.middlewares)
+    middlewares.setPool(userConfig.middlewares)
   }
 
   if (userConfig.templates) {
@@ -73,24 +72,6 @@ const initServer = async () => {
 
   if (userConfig.commands) {
     useCommand().merge(userConfig.commands(api))
-  }
-
-  // register custom global middlewares
-  logger.info('-> Middlewares:')
-  
-  console.info(middlewares.list())
-  
-  for (let mw of middlewares.list()) {
-    if (typeof mw !== 'function') {
-      mw = internalMiddlewares[mw]
-    }
-
-    // if the middleware signature has 4 arguments, we assume that the first one is the Drosse `api`
-    if (mw.length === 4) {
-      mw = curry(mw)(api)
-    }
-
-    app.use(mw)
   }
 
   // if everything is well configured, create the routes
