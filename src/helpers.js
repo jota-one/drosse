@@ -11,7 +11,7 @@ export function set (obj, path, value) {
 
 export function get (obj, path, defaultValue) {
   const result = path.split('.').reduce((r, p) => {
-    if (typeof r === 'object') {
+    if (typeof r === 'object' && r !== null) {
       p = p.startsWith("[") ? p.replace(/\D/g, "") : p;
 
       return r[p]

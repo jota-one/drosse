@@ -1,14 +1,12 @@
 # TODO
 
-# Optional before/after 3.0 release
+- [ ] support wildcards in static routes @tadai
+- [ ] fix `set` helper fn @jorinho
 - [ ] test example websocket
 - [ ] test feature static
 - [ ] test feature assets
 - [ ] test feature inheritance
-
-# After 3.0 release
 - [ ] allow to set middlewares in routes.json (at any level)
-- [ ] support wildcards in static routes
 - [ ] add some meta data, title and description to have nice preview when the website link is pasted somewhere (use Slack to proof that it works)
 - [ ] refactor proxies: add option to chose fallback direction (proxy 1st then route | route 1st then proxy)
 - [ ] run as module (using mjs and ES in drosserc and services)
