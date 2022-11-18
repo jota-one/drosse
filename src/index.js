@@ -3,6 +3,7 @@
 import Discover from 'node-discover'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
+// TODO hook in auto process to get next version, the current way of getting version from package.json will always display the previous verion as it is built before auto does its magic...
 import { version } from '../package.json'
 import { describe, init, restart, start } from './app'
 import serveStatic from './app/static'
