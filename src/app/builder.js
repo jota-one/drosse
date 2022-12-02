@@ -75,7 +75,7 @@ const createRoute = async function (def, root, defHierarchy) {
   for (const verb of verbs) {
     // set throttling
     const originalThrottle = !isEmpty(def[verb].throttle)
-    
+
     def[verb].throttle =
       def[verb].throttle ||
       defHierarchy.reduce((acc, item) => item.throttle || acc, {})
@@ -87,7 +87,7 @@ const createRoute = async function (def, root, defHierarchy) {
     // set template
     const originalTemplate =
       def[verb].template === null || Boolean(def[verb].template)
-    
+
     def[verb].template = originalTemplate
       ? def[verb].template
       : defHierarchy.reduce((acc, item) => item.template || acc, {})
@@ -100,7 +100,7 @@ const createRoute = async function (def, root, defHierarchy) {
     const inheritsProxy = Boolean(defHierarchy.find(item =>
       root.join('/').includes(item.path.join('/'))
     )?.proxy)
-    
+
     await setRoute(app, router, def[verb], verb, root, inheritsProxy)
   }
 
@@ -113,7 +113,7 @@ const createRoute = async function (def, root, defHierarchy) {
         : isString(def.assets)
           ? def.assets.split('/')
           : def.assets
-    
+
     assets.push({
       path: routePath.join('/'),
       context: { target: join(state.get('assetsPath'), ...assetsSubPath) },
@@ -196,7 +196,7 @@ const createRoute = async function (def, root, defHierarchy) {
       }
 
       let scraperService
-      
+
       if (def.scraper.service) {
         scraperService = await loadScraperService(root)
       } else if (def.scraper.static) {
@@ -332,6 +332,7 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
     // We defined a middleware for the route so that if overwrites the proxy middleware
     app.use(path, handler, { match: url => url === '/' })
   } else {
+    console.log('appel du routeur', verb, path)
     router[verb](path, handler)
   }
 
@@ -383,7 +384,7 @@ const createProxies = ({ app, router, proxies }) => {
               resolve(true)
             }
           }
-          
+
           setResponseHeader(res, 'x-proxied', true)
           return proxyMw(req, res, next)
         })

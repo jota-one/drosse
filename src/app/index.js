@@ -62,7 +62,7 @@ const initServer = async () => {
 
   // set other user defined properties that are not part of the state
   middlewares.set(config.middlewares)
-  
+
   if (userConfig.middlewares) {
     middlewares.append(userConfig.middlewares)
   }
@@ -77,9 +77,9 @@ const initServer = async () => {
 
   // register custom global middlewares
   logger.info('-> Middlewares:')
-  
+
   console.info(middlewares.list())
-  
+
   for (let mw of middlewares.list()) {
     if (typeof mw !== 'function') {
       mw = internalMiddlewares[mw]
@@ -131,7 +131,7 @@ const initServer = async () => {
         name: body.cmd,
         params: body
       })
-      
+
       return result
     }
   })
@@ -155,7 +155,7 @@ const getDescription = () => ({
 export const start = async () => {
   await initServer()
   const description = getDescription()
-  
+
   console.log()
   logger.debug(
     `App ${
