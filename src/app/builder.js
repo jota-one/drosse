@@ -332,7 +332,6 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
     // We defined a middleware for the route so that if overwrites the proxy middleware
     app.use(path, handler, { match: url => url === '/' })
   } else {
-    console.log('appel du routeur', verb, path)
     router[verb](path, handler)
   }
 
