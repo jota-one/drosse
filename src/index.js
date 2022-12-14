@@ -10,10 +10,13 @@ import serveStatic from './app/static'
 
 import useCLI from './app/composables/useCLI'
 import useIO from './app/composables/useIO'
+import useLoader from './app/composables/useLoader'
 
 process.title = `node drosse ${process.argv[1]}`
 
 let discover, description, noRepl
+
+const { setEsmMode } = useLoader()
 
 const emit = async (event, data) => {
   switch(event) {
@@ -35,7 +38,7 @@ const emit = async (event, data) => {
       } catch(e) {
         console.error(e)
       }
-      
+
       // Initiate repl mode
       if (Boolean(noRepl)) {
         return
@@ -44,11 +47,11 @@ const emit = async (event, data) => {
       const io = useIO()
       const cli = useCLI(data, restart)
       const userConfig = await io.getUserConfig(data.root)
-      
+
       if (userConfig.cli) {
         cli.extend(userConfig.cli)
       }
-      
+
       cli.start()
       break
     case 'restart':
@@ -83,9 +86,15 @@ yargs(hideBin(process.argv))
         describe: 'Disable repl mode',
         type: 'boolean'
       },
+      esm: {
+        default: false,
+        describe: 'Enable esm mode',
+        type: 'boolean'
+      },
     },
     handler: async argv => {
       noRepl = argv.norepl
+      setEsmMode(argv.esm)
       await init(argv.rootPath, emit, version)
       return start()
     }
