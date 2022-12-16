@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { setResponseHeader } from 'h3'
+import { getQuery, getRouterParams, setResponseHeader } from 'h3'
 import {
   createProxyMiddleware,
   responseInterceptor,
@@ -262,7 +262,8 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
 
     if (def.static) {
       try {
-        const { params, query } = req
+        const params = getRouterParams(req)
+        const query = getQuery(req)
         const { extensions } = def
         const [ result, extension ] = await loadStatic({ routePath: root, params, verb, query, extensions })
         response = result
@@ -332,7 +333,6 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
     // We defined a middleware for the route so that if overwrites the proxy middleware
     app.use(path, handler, { match: url => url === '/' })
   } else {
-    console.log('appel du routeur', verb, path)
     router[verb](path, handler)
   }
 

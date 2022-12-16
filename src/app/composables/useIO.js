@@ -6,15 +6,16 @@ import { isEmpty, cloneDeep } from 'lodash'
 import { async as rrdir } from 'rrdir'
 import { v4 as uuidv4 } from 'uuid'
 
-import { load } from '../loader'
-
+import useLoader from './useLoader'
 import useState from './useState'
 import logger from '../logger'
 
 const state = useState()
+const { load } = useLoader()
+
 const fileExists = async path => {
   let exists
-  
+
   try {
     await fs.access(path)
     exists = true
@@ -35,7 +36,7 @@ const checkRoutesFile = async () => {
     state.set('_routesFile', filePath)
     return true
   }
-  
+
   return false
 }
 

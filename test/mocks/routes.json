@@ -15,6 +15,15 @@
       "get": {
         "static": true
       }
+    },
+    "labels": {
+      ":lang": {
+        "DROSSE": {
+          "get": {
+            "static": true
+          }
+        }
+      }
     }
   },
   "template": {
