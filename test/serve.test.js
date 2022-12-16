@@ -112,4 +112,14 @@ describe('serve', () => {
     
     expect(res.text).toEqual('overwritten!')
   })
+
+  it('loads static file with param and no verb in filename', async () => {
+    const res = await supertest(host).get('/static/labels/en')
+    expect(JSON.parse(res.text).label1).toBe('English')
+  })
+
+  it('loads static file with param in filename', async () => {
+    const res = await supertest(host).get('/static/labels/de')
+    expect(JSON.parse(res.text).label1).toBe('Any other language')
+  })
 })
