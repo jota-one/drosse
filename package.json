@@ -17,7 +17,8 @@
     "dist"
   ],
   "bin": {
-    "drosse": "./dist/index.cjs"
+    "drosse": "./dist/index.cjs",
+    "drosse-esm": "./dist/index.mjs"
   },
   "pkg": {
     "scripts": "dist/index.cjs",
