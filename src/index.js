@@ -2,29 +2,29 @@
 
 import Discover from 'node-discover'
 import yargs from 'yargs'
-import { dirname, join } from 'path'
-import { fileURLToPath } from 'url'
+import { join } from 'path'
+import { readFile } from 'fs/promises'
 import { hideBin } from 'yargs/helpers'
 import { describe, init, restart, start } from './app'
 import serveStatic from './app/static'
 
 import useCLI from './app/composables/useCLI'
 import useIO from './app/composables/useIO'
-import useLoader from './app/composables/useLoader'
 
 process.title = `node drosse ${process.argv[1]}`
 
 let _version, discover, description, noRepl
 
-const { load, setEsmMode } = useLoader()
-
 const getVersion = async () => {
   if (!_version) {
-    const __filename = fileURLToPath(import.meta.url)
-    const __dirname = dirname(__filename)
-    const packageJsonFile = join(__dirname, '..', 'package.json')
-    const packageInfo = await load(packageJsonFile)
-    _version = packageInfo.version
+    try {
+      const importPath = import.meta.url.replace('file://', '/')
+      const packageFile = join(importPath, '..', '..', 'package.json')
+      const content = await readFile(packageFile, "utf8")
+      _version = JSON.parse(content).version
+    } catch(e) {
+      console.error('Failed to get Drosse version', e)
+    }
   }
 
   return _version
@@ -99,15 +99,9 @@ yargs(hideBin(process.argv))
         describe: 'Disable repl mode',
         type: 'boolean'
       },
-      esm: {
-        default: false,
-        describe: 'Enable esm mode',
-        type: 'boolean'
-      },
     },
     handler: async argv => {
       noRepl = argv.norepl
-      setEsmMode(argv.esm)
       const version = await getVersion()
       await init(argv.rootPath, emit, version)
       return start()

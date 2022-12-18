@@ -4,7 +4,7 @@ import { createRequire } from 'module'
 import useState from './useState'
 
 let cjsRequire
-let esmMode = false
+const esmMode = import.meta.url.endsWith('.mjs')
 
 const getFullPath = path => {
   const state = useState()
@@ -32,14 +32,10 @@ const load = async function(path) {
   return module
 }
 
-const setEsmMode = function(isEsmMode) {
-  esmMode = Boolean(isEsmMode)
-}
-
 const isEsmMode = function() {
   return esmMode
 }
 
 export default function useIO() {
-  return { isEsmMode, load, setEsmMode }
+  return { isEsmMode, load }
 }
