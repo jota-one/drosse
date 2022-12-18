@@ -2,9 +2,9 @@
 
 import Discover from 'node-discover'
 import yargs from 'yargs'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 import { hideBin } from 'yargs/helpers'
-// TODO hook in auto process to get next version, the current way of getting version from package.json will always display the previous verion as it is built before auto does its magic...
-import { version } from '../package.json'
 import { describe, init, restart, start } from './app'
 import serveStatic from './app/static'
 
@@ -14,9 +14,21 @@ import useLoader from './app/composables/useLoader'
 
 process.title = `node drosse ${process.argv[1]}`
 
-let discover, description, noRepl
+let _version, discover, description, noRepl
 
-const { setEsmMode } = useLoader()
+const { load, setEsmMode } = useLoader()
+
+const getVersion = async () => {
+  if (!_version) {
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = dirname(__filename)
+    const packageJsonFile = join(__dirname, '..', 'package.json')
+    const packageInfo = await load(packageJsonFile)
+    _version = packageInfo.version
+  }
+
+  return _version
+}
 
 const emit = async (event, data) => {
   switch(event) {
@@ -72,6 +84,7 @@ yargs(hideBin(process.argv))
     command: 'describe <rootPath>',
     desc: 'Describe the mock server',
     handler: async argv => {
+      const version = await getVersion()
       await init(argv.rootPath, emit, version)
       console.log(describe())
       process.exit()
@@ -95,6 +108,7 @@ yargs(hideBin(process.argv))
     handler: async argv => {
       noRepl = argv.norepl
       setEsmMode(argv.esm)
+      const version = await getVersion()
       await init(argv.rootPath, emit, version)
       return start()
     }
