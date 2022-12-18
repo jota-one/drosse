@@ -43,7 +43,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          DROSSE_VERSION=$(npx auto version)
-          echo $DROSSE_VERSION
           yarn build
           npx auto shipit
