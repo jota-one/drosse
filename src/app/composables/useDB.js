@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import { join, sep } from 'path'
 
 import Loki from 'lokijs'
-import { cloneDeep, get, set, omit } from 'lodash'
+import { cloneDeep, get, set, omit } from '../../helpers'
 import { async as rrdir } from 'rrdir'
 
 import config from '../config'
@@ -14,10 +14,10 @@ let db
 
 export default function useDB() {
   const state = useState()
-  
+
   const collectionsPath = () =>
     join(state.get('root'), state.get('collectionsPath'))
-  
+
     const normalizedPath = filePath =>
     filePath.replace(collectionsPath(), '').substr(1)
 

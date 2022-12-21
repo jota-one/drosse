@@ -1,10 +1,11 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
 
-import { replace } from '@jota-one/replacer'
-import { isEmpty, cloneDeep } from 'lodash'
+import replacer from '@jota-one/replacer'
 import { async as rrdir } from 'rrdir'
 import { v4 as uuidv4 } from 'uuid'
+
+import { isEmpty, cloneDeep } from '../../helpers'
 
 import useLoader from './useLoader'
 import useState from './useState'
@@ -66,7 +67,8 @@ const loadService = async (routePath, verb) => {
     }
   }
 
-  return load(serviceFile)
+  const service = await load(serviceFile)
+  return { serviceFile, service }
 }
 
 const loadScraperService = async routePath => {
@@ -150,7 +152,7 @@ const getStaticFileName = (routePath, extension, params = {}, verb = null, query
     }, [])
     .join('&')
 
-  let filename = replace(
+  let filename = replacer.replace(
     routePath
       .join('.')
       .concat(verb ? `.${verb.toLowerCase()}` : '')
@@ -290,7 +292,7 @@ const findStatic = async ({
 
     if (foundExtension === 'json') {
       const fileContent = await fs.readFile(staticFile, 'utf-8')
-      const result = replace(fileContent, initial.params)
+      const result = replacer.replace(fileContent, initial.params)
       return [JSON.parse(result), foundExtension]
     }
     return [staticFile, foundExtension]

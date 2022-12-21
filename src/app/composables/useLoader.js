@@ -19,7 +19,7 @@ const load = async function(path) {
   console.info(`🗂  loading ${esmMode ? 'esm ' : ''}module ${fullPath}`)
 
   if (esmMode) {
-    module = await import(fullPath)
+    module = (await import(fullPath)).default
   } else {
     if (!cjsRequire) {
       cjsRequire = createRequire(import.meta.url)

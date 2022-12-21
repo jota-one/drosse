@@ -5,9 +5,9 @@ import {
   createProxyMiddleware,
   responseInterceptor,
 } from 'http-proxy-middleware'
-import { isEmpty, isString, difference } from 'lodash'
 import serveStatic from 'serve-static'
 
+import { isEmpty } from '../helpers'
 import logger from './logger'
 import internalMiddlewares from './middlewares'
 
@@ -110,7 +110,7 @@ const createRoute = async function (def, root, defHierarchy) {
     const assetsSubPath =
       def.assets === true
         ? routePath
-        : isString(def.assets)
+        : typeof def.assets === 'string'
           ? def.assets.split('/')
           : def.assets
 
@@ -180,7 +180,7 @@ const createRoute = async function (def, root, defHierarchy) {
             if (!acc) {
               return acc
             }
-            const subpath = difference(item.path, acc.path)
+            const subpath = item.path.filter(path => !acc.path.includes(path))
             const proxy = getProxy(acc)
 
             proxy.target = proxy.target.split('/').concat(subpath).join('/')
@@ -252,10 +252,11 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
 
     if (def.service) {
       const api = useAPI(req, res)
-      const service = await loadService(root, verb)
+      const { serviceFile, service } = await loadService(root, verb)
       try {
         response = await service(api)
       } catch (e) {
+        console.log('Error in service', serviceFile, e)
         return next(e)
       }
     }

@@ -6,15 +6,17 @@
   </h1>
   <p><strong>Stateful & programmable mock server</strong></p>
 
-[![NPM Vernion](https://flat.badgen.net/npm/v/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
+[![NPM Version](https://flat.badgen.net/npm/v/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
 [![NPM Downloads](https://flat.badgen.net/npm/dt/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
 [![Package Size](https://flat.badgen.net/packagephobia/install/@jota-one/drosse)](https://packagephobia.now.sh/result?p=@jota-one/drosse)
 [![Buy Me A Coffee][bmc-shield-src]][bmc-href]
 
 <!-- Badges -->
+
 [bmc-src]: https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/orange_img.png
 [bmc-href]: https://www.buymeacoffee.com/drosse
 [bmc-shield-src]: https://img.shields.io/static/v1?message=Buy%20me%20a%20coffee&logo=buy-me-a-coffee&style=flat-square&label=Sponsor&logoColor=white&color=ff813f
+
 </div>
 
 **Drosse is a stateful and programmable mock server written in javascript.**
@@ -57,13 +59,13 @@ making it the best companion for any frontend developer 🤓
 ![](./docs/_media/cli.svg) **Extensible REPL CLI**: build custom commands and execute them at runtime => simulate interaction with 3rp-party services.
 
 ## Examples
+
 Find example code in the [examples](./examples) folder.
 
 ## Contact & Support
 
 - Create a [GitHub issue](https://github.com/jota-one/drosse/issues) for bug reports, feature requests, or questions
 - Add a ⭐️ [star on GitHub](https://github.com/jota-one/drosse) or ☕️ [buy us a coffee](https://www.buymeacoffee.com/drosse) to support the project!
-
 
 ## Development
 
@@ -72,7 +74,6 @@ Find example code in the [examples](./examples) folder.
 - Install dependencies using `yarn`
 - Build using `yarn build` or `yarn build:stub` for live rebuild
 - Run drosse with `yarn serve examples/<example-folder-name>`
-
 
 ## Credits & License
 

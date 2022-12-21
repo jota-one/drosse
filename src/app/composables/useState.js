@@ -1,4 +1,4 @@
-import { merge, pick } from 'lodash'
+import { merge, pick } from '../../helpers'
 
 import config from '../config'
 

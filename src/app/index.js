@@ -3,8 +3,8 @@ import { resolve } from 'path'
 import ansiColors from 'ansi-colors'
 import { createApp, createRouter, readBody } from 'h3'
 import { listen } from 'listhen'
-import { curry } from 'lodash'
 
+import { curry } from '../helpers'
 import { RESTART_DISABLED_IN_ESM_MODE } from '../messages'
 
 import config from './config'
