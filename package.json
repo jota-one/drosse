@@ -6,7 +6,6 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
@@ -26,11 +25,14 @@
   },
   "scripts": {
     "describe": "node ./dist/index.cjs describe",
+    "describe-esm": "node ./dist/index.mjs describe",
     "build": "unbuild",
     "build:stub": "unbuild  --stub",
     "bundle": "pkg .",
     "serve": "node ./dist/index.cjs serve",
+    "serve-esm": "node ./dist/index.mjs serve",
     "static": "node ./dist/index.cjs static",
+    "static-esm": "node ./dist/index.mjs static",
     "test": "vitest run",
     "test:watch": "vitest",
     "doc": "docsify serve docs"

@@ -11,6 +11,9 @@ import serveStatic from './app/static'
 import useCLI from './app/composables/useCLI'
 import useIO from './app/composables/useIO'
 
+export const defineDrosseServer = userConfig => userConfig
+export const defineDrosseService = handler => handler
+
 process.title = `node drosse ${process.argv[1]}`
 
 let _version, discover, description, noRepl
