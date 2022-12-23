@@ -16,7 +16,7 @@ const load = async function(path) {
   let module
   const fullPath = getFullPath(path)
 
-  console.info(`🗂  loading ${esmMode ? 'esm ' : ''}module ${fullPath}`)
+  // console.debug(`🗂  loading ${esmMode ? 'esm ' : ''}module ${fullPath}`)
 
   if (esmMode) {
     module = (await import(fullPath)).default

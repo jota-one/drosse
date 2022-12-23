@@ -42,10 +42,10 @@ const checkRoutesFile = async () => {
 }
 
 const getUserConfig = async root => {
-  const rcFile = join(root || state.get('root') || '', '.drosserc.js')
+  const rcFilePath = join(root || state.get('root') || '', '.drosserc.js')
   try {
-    await fs.stat(rcFile)
-    return load(rcFile)
+    await fs.stat(rcFilePath)
+    return load(rcFilePath)
   } catch (e) {
     console.error('Could not load any user config.')
     console.error(e)

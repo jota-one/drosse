@@ -81,54 +81,86 @@ const emit = async (event, data) => {
   }
 }
 
-yargs(hideBin(process.argv))
-  .usage('Usage: $0 <cmd> [args]')
-  .command({
-    command: 'describe <rootPath>',
-    desc: 'Describe the mock server',
-    handler: async argv => {
-      const version = await getVersion()
-      await init(argv.rootPath, emit, version)
-      console.log(describe())
-      process.exit()
-    }
-  })
-  .command({
-    command: 'serve <rootPath>',
-    desc: 'Run the mock server',
-    builder: {
-      norepl: {
-        default: false,
-        describe: 'Disable repl mode',
-        type: 'boolean'
+function getMatchablePath(path) {
+  let stop = false
+  return path.replace(/^(.*\/\/)?\/(.*)$/g, '/$2')
+    .split('/')
+    .reduce((matchablePath, dir) => {
+      if (['node_modules', 'dist', 'src'].includes(dir)) {
+        stop = true
+      }
+
+      if (!stop) {
+        matchablePath.push(dir)
+      }
+
+      return matchablePath
+    }, []).join('/')
+}
+
+// Prevent embedded drosse to be loaded a second time due to import/require
+// in .drosserc and js services inside mock files.
+// When we do:
+// ```
+// import { defineDrosseServer } from '@jota-one/drosse
+// export default defineDrosseServer({...})
+// ```
+// we load a single index.cjs|mjs file which reacts to the arguments passed
+// by the serve|static|describe command and executes it a second time
+// although already started from another path.
+//
+// So we verify that import and require url matches the path the command was
+// run from to enable yargs.
+if (getMatchablePath(import.meta.url) === getMatchablePath(process.argv[1])) {
+  yargs(hideBin(process.argv))
+    .usage('Usage: $0 <cmd> [args]')
+    .command({
+      command: 'describe <rootPath>',
+      desc: 'Describe the mock server',
+      handler: async argv => {
+        const version = await getVersion()
+        await init(argv.rootPath, emit, version)
+        console.log(describe())
+        process.exit()
+      }
+    })
+    .command({
+      command: 'serve <rootPath>',
+      desc: 'Run the mock server',
+      builder: {
+        norepl: {
+          default: false,
+          describe: 'Disable repl mode',
+          type: 'boolean'
+        },
       },
-    },
-    handler: async argv => {
-      noRepl = argv.norepl
-      const version = await getVersion()
-      await init(argv.rootPath, emit, version)
-      return start()
-    }
-  })
-  .command({
-    command: 'static <rootPath>',
-    desc: 'Run a static file server',
-    builder: {
-      port: {
-        alias: 'p',
-        describe: 'HTTP port',
-        type: 'number'
+      handler: async argv => {
+        noRepl = argv.norepl
+        const version = await getVersion()
+        await init(argv.rootPath, emit, version)
+        return start()
+      }
+    })
+    .command({
+      command: 'static <rootPath>',
+      desc: 'Run a static file server',
+      builder: {
+        port: {
+          alias: 'p',
+          describe: 'HTTP port',
+          type: 'number'
+        },
+        proxy: {
+          alias: 'P',
+          describe: 'Proxy requests to another host',
+          type: 'string'
+        },
       },
-      proxy: {
-        alias: 'P',
-        describe: 'Proxy requests to another host',
-        type: 'string'
-      },
-    },
-    handler: async argv => {
-      return serveStatic(argv.rootPath, argv.port, argv.proxy)
-    }
-  })
-  .demandCommand(1)
-  .strict()
-  .parse()
+      handler: async argv => {
+        return serveStatic(argv.rootPath, argv.port, argv.proxy)
+      }
+    })
+    .demandCommand(1)
+    .strict()
+    .parse()
+}
