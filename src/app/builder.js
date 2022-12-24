@@ -353,6 +353,16 @@ const createAssets = ({ app, assets }) => {
     const fsPath = join(state.get('root'), context.target)
 
     // TODO handle wildcards in path (used to work with express.static)
+    console.log('routePath', routePath)
+    console.log('is wild card', routePath.includes('*'))
+    if (routePath.includes('*')) {
+      const re = new RegExp(routePath.replaceAll('*', '.*'))
+      console.log('wildCard on', routePath, join(routePath, '..'))
+      app.use(routePath, (req, res) => {
+        console.log('wild card assets mw', req.url, re.test(req.url))
+      })
+    }
+    console.log('serveStatic on', routePath)
     app.use(routePath, serveStatic(fsPath, { redirect: false }))
 
     logger.info(

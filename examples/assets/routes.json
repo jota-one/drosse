@@ -13,7 +13,7 @@
       "assets": true
     },
     "imgs": {
-      "background_*.jpg": {
+      "background_*.png": {
         "DROSSE": {
           "assets": "content/imgs/background_mocked.png"
         }

@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import { join, resolve } from 'path'
+import { join } from 'path'
 
 import { createApp } from 'h3'
 import { createProxyMiddleware } from 'http-proxy-middleware'
@@ -10,10 +10,10 @@ import internalMiddlewares from './middlewares'
 
 export default function(root, port, proxy) {
   const app = createApp({ debug: true })
-  
+
   app.use(internalMiddlewares.morgan)
   const staticMw = serveStatic(root, { fallthrough: false, redirect: false })
-  
+
   if (proxy) {
     const proxyMw = createProxyMiddleware({
       target: proxy,
@@ -22,7 +22,7 @@ export default function(root, port, proxy) {
 
     app.use(async (req, res) => {
       let fileExists
-      
+
       try {
         await fs.access(join(root, req.url))
         fileExists = true
