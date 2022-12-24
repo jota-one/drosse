@@ -4,7 +4,8 @@ import { createRequire } from 'module'
 import useState from './useState'
 
 let cjsRequire
-const esmMode = import.meta.url.endsWith('.mjs')
+const esmMode = import.meta.url.endsWith('.mjs') ||
+  process.argv[1].endsWith('.mjs')
 
 const getFullPath = path => {
   const state = useState()
