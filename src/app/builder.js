@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { getQuery, getRouterParams, setResponseHeader } from 'h3'
+import { getQuery, getResponseHeader, getRouterParams, setResponseHeader } from 'h3'
 import {
   createProxyMiddleware,
   responseInterceptor,
@@ -349,24 +349,52 @@ const createAssets = ({ app, assets }) => {
     return
   }
 
+  const _assets = []
+
   assets.forEach(({ path: routePath, context }) => {
     const fsPath = join(state.get('root'), context.target)
 
-    // TODO handle wildcards in path (used to work with express.static)
-    console.log('routePath', routePath)
-    console.log('is wild card', routePath.includes('*'))
+    let mwPath = routePath
+    
     if (routePath.includes('*')) {
-      const re = new RegExp(routePath.replaceAll('*', '.*'))
-      console.log('wildCard on', routePath, join(routePath, '..'))
-      app.use(routePath, (req, res) => {
-        console.log('wild card assets mw', req.url, re.test(req.url))
-      })
-    }
-    console.log('serveStatic on', routePath)
-    app.use(routePath, serveStatic(fsPath, { redirect: false }))
+      mwPath = mwPath.substring(0, mwPath.indexOf('*'))
+      mwPath = mwPath.substring(0, mwPath.lastIndexOf('/'))
+      
+      const re = new RegExp(routePath.replaceAll('*', '[^/]*'))
 
+      app.use(mwPath, (req, res) => {
+        if (re.test(`${mwPath}${req.url}`)) {
+          setResponseHeader(
+            res,
+            'x-wildcard-asset-target',
+            context.target
+          )
+        }
+      })
+
+      _assets.push({ mwPath, fsPath, wildcardPath: routePath })
+    } else {
+      _assets.push({ mwPath, fsPath })
+    }
+  })
+
+  _assets.forEach(({ mwPath, fsPath, wildcardPath }) => {
+    app.use(mwPath, (req, res, next) => {
+      const wildcardAssetTarget = getResponseHeader(
+        res,
+        'x-wildcard-asset-target'
+      )
+
+      if (wildcardAssetTarget) {
+        req.url = wildcardAssetTarget
+          .replace(join(state.get('assetsPath'), mwPath), '')
+      }
+      
+      return serveStatic(fsPath, { redirect: false })(req, res, next)
+    })
+  
     logger.info(
-      `-> STATIC ASSETS   ${routePath || '/'} => ${fsPath}`
+      `-> STATIC ASSETS   ${wildcardPath || mwPath || '/'} => ${fsPath}`
     )
   })
 }

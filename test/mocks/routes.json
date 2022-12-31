@@ -86,7 +86,30 @@
       }
     }
   },
-  "assets": {},
+  "image": {
+    "DROSSE": {
+      "assets": true
+    },
+    "dog.jpg": {
+      "DROSSE": {
+        "assets": "image/cat.jpg"
+      }
+    },
+    "animals": {
+      "*.jpg": {
+        "DROSSE": {
+          "assets": "image/cat.jpg"
+        } 
+      },
+      "domestic-*": {
+        "feline-*": {
+          "DROSSE": {
+            "assets": "image/cat.jpg"
+          } 
+        }
+      }
+    }
+  },
   "proxy": {
     "DROSSE": {
       "proxy": {
