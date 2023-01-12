@@ -1,3 +1,15 @@
+# v3.0.3 (Thu Jan 12 2023)
+
+#### 🐛 Bug Fix
+
+- build(deps): bump json5 from 2.2.1 to 2.2.3 [#56](https://github.com/jota-one/drosse/pull/56) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 1
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v3.0.2 (Wed Sep 28 2022)
 
 #### ⚠️ Pushed to `master`
