@@ -74,7 +74,7 @@ api.users.2.json
 api.users.{id}.json
 ```
 
-```bash
+```shell
 1:11:29 AM App Example JSON static app running at:
 1:11:29 AM  - http://localhost:8000
 1:11:29 AM  - http://172.22.22.178:8000

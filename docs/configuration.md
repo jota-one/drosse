@@ -11,6 +11,36 @@ module.exports = {
 }
 ```
 
+?> As of version 3.1.0 you can also use the `defineDrosseServer` utility function
+which provides typing:
+```js
+const { defineDrosseServer } = require('@jota-one/drosse')
+
+module.exports = defineDrosseServer({
+  name: 'My mocks app',
+  port: 8000
+})
+```
+
+And in esm mode (as of version 3.1.0 as well):
+```js
+export default {
+  name: 'My mocks app',
+  port: 8000
+}
+```
+
+or:
+
+```js
+import { defineDrosseServer } from '@jota-one/drosse'
+
+export default defineDrosseServer({
+  name: 'My mocks app',
+  port: 8000
+})
+```
+
 ## Configuration reference
 | Key                  | Default value | Description |
 |----------------------|---------------|-------------|
