@@ -5,17 +5,14 @@ const state = useState()
 const parse = async ({ routes, root = [], hierarchy = [], onRouteDef }) => {
   let inherited = []
   const localHierarchy = [].concat(hierarchy)
-  
+
   if (routes.DROSSE) {
     localHierarchy.push({ ...routes.DROSSE, path: root })
   }
 
   const orderedRoutes = Object.entries(routes)
     .filter(([path]) => path !== 'DROSSE')
-    .sort((a, b) => {
-      return a[0].indexOf(':') === 0 ? 1 : a[0] > b[0] ? -1 : 0
-    })
-  
+
   for (const orderedRoute of orderedRoutes) {
     const [path, content] = orderedRoute
     const fullPath = `/${root.join('/')}`

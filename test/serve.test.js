@@ -112,4 +112,49 @@ describe('serve', () => {
     
     expect(res.text).toEqual('overwritten!')
   })
+
+  it('loads static file with param and no verb in filename', async () => {
+    const res = await supertest(host).get('/static/labels/en')
+    expect(JSON.parse(res.text).label1).toBe('English')
+  })
+
+  it('loads static file with param in filename', async () => {
+    const res = await supertest(host).get('/static/labels/de')
+    expect(JSON.parse(res.text).label1).toBe('Any other language')
+  })
+
+  it('loads asset from assets dir', async () => {
+    let res = await supertest(host).get('/image/cat.jpg')
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toBe('image/jpeg')
+
+    res = await supertest(host).get('/image/bird.jpg')
+    expect(res.statusCode).toBe(404)
+  })
+
+  it('loads asset from specified file', async () => {
+    let res = await supertest(host).get('/image/dog.jpg')
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toBe('image/jpeg')
+  })
+
+  it('loads asset with wildcard', async () => {
+    let res = await supertest(host).get('/image/animals/bird.jpg')
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toBe('image/jpeg')
+    expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
+
+    res = await supertest(host).get('/image/other/bird.jpg')
+    expect(res.statusCode).toBe(404)
+  })
+
+  it('loads asset with multiple wildcards', async () => {
+    let res = await supertest(host).get('/image/animals/domestic-a/feline-b.jpg')
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toBe('image/jpeg')
+    expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
+
+    res = await supertest(host).get('/image/animals/domestic-a/feline.jpg')
+    expect(res.statusCode).toBe(404)
+  })
 })

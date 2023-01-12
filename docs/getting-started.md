@@ -5,8 +5,11 @@
 **As a local npm dependency in your node project**
 
 1. Simply install it as a dev dependency of the project you want to mock.
-```
+```shell
+# with npm
 npm install --save-dev @jota-one/drosse
+# or yarn
+yarn add -D @jota-one/drosse
 ```
 2. Define a script in your `package.json` file for simpler usage
 ```json
@@ -21,15 +24,31 @@ npm install --save-dev @jota-one/drosse
 }
 ```
 
+?> Drosse also ships with an esm compatible version (as of version 3.1.0) which
+you should launch with `drosse-esm`:
+```json
+{
+      "name": "my-node-project",
+      "scripts": {
+        "mock-server": "npx drosse-esm serve path/to/mocks-directory"
+      },
+      "devDependencies": {
+        "@jota-one/drosse": "^1.0.0"
+      }
+}
+```
+
 **As a global npm package**
 1. Install drosse globally.
-```bash
+```shell
 npm i -g @jota-one/drosse
 ```
 
 2. Run it via the `serve` command followed by the path of your drosse root folder:
-```bash
+```shell
 drosse serve /path/to/my/mocks
+# or with esm mode (as of version 3.1.0)
+drosse-esm serve /path/to/my/mocks
 ```
 
 ## Usage

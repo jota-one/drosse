@@ -6,7 +6,6 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
@@ -14,17 +13,27 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ],
   "bin": {
-    "drosse": "./dist/index.cjs"
+    "drosse": "./dist/index.cjs",
+    "drosse-esm": "./dist/index.mjs"
+  },
+  "pkg": {
+    "scripts": "dist/index.cjs",
+    "outputPath": "bundle"
   },
   "scripts": {
     "describe": "node ./dist/index.cjs describe",
+    "describe:esm": "node ./dist/index.mjs describe",
     "build": "unbuild",
     "build:stub": "unbuild  --stub",
+    "bundle": "pkg .",
     "serve": "node ./dist/index.cjs serve",
+    "serve:esm": "node ./dist/index.mjs serve",
     "static": "node ./dist/index.cjs static",
+    "static:esm": "node ./dist/index.mjs static",
     "test": "vitest run",
     "test:watch": "vitest",
     "doc": "docsify serve docs"
@@ -52,8 +61,8 @@
     "h3": "^0.7.21",
     "http-proxy-middleware": "^2.0.6",
     "listhen": "^0.2.15",
-    "lodash": "^4.17.21",
     "lokijs": "^1.5.12",
+    "mergician": "^1.0.3",
     "morgan": "^1.10.0",
     "node-discover": "^1.2.1",
     "rrdir": "^8.2.2",
@@ -65,10 +74,14 @@
     "@vitest/coverage-c8": "^0.23.2",
     "auto": "^10.37.6",
     "express-session": "^1.17.3",
+    "pkg": "^5.8.0",
     "sockjs": "^0.3.24",
     "supertest": "^6.2.4",
     "unbuild": "^0.8.10",
     "vitest": "^0.23.2",
     "ws": "^8.8.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

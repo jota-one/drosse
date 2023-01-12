@@ -12,7 +12,7 @@ The easiest one. Just indicate in your `routes.json` file, which endpoint you wa
 ```json
     "countries": {
       "DROSSE": {
-        "proxy": "https://restcountries.eu/rest/v2"
+        "proxy": "https://restcountries.com/v3.1"
       },
       "name": {
         "DROSSE": {
@@ -39,7 +39,7 @@ The dynamic scraping will let you rework the scraped content and save it exactly
 ```json
     "countries": {
       "DROSSE": {
-        "proxy": "https://restcountries.eu/rest/v2"
+        "proxy": "https://restcountries.com/v3.1"
       },
       "name": {
         "DROSSE": {

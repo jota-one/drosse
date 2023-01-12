@@ -1,6 +1,5 @@
-import supertest from 'supertest'
 import { describe, expect, it } from 'vitest'
-import { describe as describeDrosse, init, start, stop } from '../src/app'
+import { describe as describeDrosse, init } from '../src/app'
 
 const root = './test/mocks'
 const version = 'test'
@@ -13,7 +12,7 @@ describe('app', () => {
     await init('./test/mocks', () => {}, version)
     const d = describeDrosse()
     host = `${d.proto}://localhost:${d.port}`
-    
+
     expect(d).toMatchObject({
       isDrosse: true,
       version: 'test',
@@ -26,15 +25,15 @@ describe('app', () => {
     })
   })
 
-  it.skip('starts the app', async () => {
+  it.todo('starts the app', async () => {
     // TODO start a dedicated instance not used in any other test to be sure we can test "connection" refused on instance port when not started
   })
-  
-  it.skip('stops the app', async () => {
+
+  it.todo('stops the app', async () => {
     // TODO same as in start test
   })
 
-  it.skip('restarts the app', async () => {
+  it.todo('restarts the app', async () => {
     // TODO same as in start test
   })
 })

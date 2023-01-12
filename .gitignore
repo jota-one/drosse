@@ -3,6 +3,7 @@
 .vscode/
 coverage/
 dist/
+bundle/
 node_modules/
 mocks.db
 mocks.json

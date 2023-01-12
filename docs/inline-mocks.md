@@ -31,7 +31,7 @@ Let's focus first on the `body` key, by far the simplest but by far the less coo
 
 The above JSON is a fully working `routes.json` file. If you run your mock-server with this file, you will see something like this in your console (amongst other things):
 
-```bash
+```shell
 4:26:27 PM -> GET     /api/users/:id
 4:26:27 PM -> GET     /api/users
 4:26:27 PM -> POST    /api/users
@@ -77,7 +77,7 @@ Note that the routes are defined in the right order to make sure that a less pre
 ```
 We defined a new route corresponding to this one `GET /api/users/premiums`. Of course, if Drosse was stupid it would define it in the same order as what we did in the `routes.json` file, which would make the route unreachable, because it would always be captured by the `GET /api/users/:id`, passing "premiums" as the `:id` parameter. Let's see what happens if we reload our mock server.
 
-```bash
+```shell
 4:40:59 PM -> GET     /api/users/premiums
 4:40:59 PM -> GET     /api/users/:id
 4:40:59 PM -> GET     /api/users

@@ -1,0 +1,14 @@
+{
+  "api": {
+    "DROSSE": {
+      "template": "response"
+    },
+    "users": {
+      "DROSSE": {
+        "get": {
+          "service": true  
+        }
+      }
+    }
+  }
+}

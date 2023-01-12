@@ -3,7 +3,9 @@ import { resolve } from 'path'
 import ansiColors from 'ansi-colors'
 import { createApp, createRouter, readBody } from 'h3'
 import { listen } from 'listhen'
-import { curry } from 'lodash'
+
+import { curry } from '../helpers'
+import { RESTART_DISABLED_IN_ESM_MODE } from '../messages'
 
 import config from './config'
 import logger from './logger'
@@ -14,6 +16,7 @@ import useAPI from './composables/useAPI'
 import useCommand from './composables/useCommand'
 import useDB from './composables/useDB'
 import useIO from './composables/useIO'
+import useLoader from './composables/useLoader'
 import useMiddlewares from './composables/useMiddlewares'
 import useState from './composables/useState'
 import useTemplates from './composables/useTemplates'
@@ -22,6 +25,7 @@ const api = useAPI()
 const { executeCommand } = useCommand()
 const { loadDb } = useDB()
 const { checkRoutesFile, loadUuid, getUserConfig, getRoutesDef } = useIO()
+const { isEsmMode } = useLoader()
 const middlewares = useMiddlewares()
 const state = useState()
 
@@ -62,7 +66,7 @@ const initServer = async () => {
 
   // set other user defined properties that are not part of the state
   middlewares.set(config.middlewares)
-  
+
   if (userConfig.middlewares) {
     middlewares.append(userConfig.middlewares)
   }
@@ -77,9 +81,9 @@ const initServer = async () => {
 
   // register custom global middlewares
   logger.info('-> Middlewares:')
-  
+
   console.info(middlewares.list())
-  
+
   for (let mw of middlewares.list()) {
     if (typeof mw !== 'function') {
       mw = internalMiddlewares[mw]
@@ -125,13 +129,20 @@ const initServer = async () => {
 
     if (body.cmd === 'restart') {
       emit('restart')
-      return { restarted: true }
+      if (isEsmMode()) {
+        return {
+          restarted: false,
+          comment: RESTART_DISABLED_IN_ESM_MODE
+        }
+      } else {
+        return { restarted: true }
+      }
     } else {
       const result = await executeCommand({
         name: body.cmd,
         params: body
       })
-      
+
       return result
     }
   })
@@ -155,7 +166,7 @@ const getDescription = () => ({
 export const start = async () => {
   await initServer()
   const description = getDescription()
-  
+
   console.log()
   logger.debug(
     `App ${
@@ -190,8 +201,13 @@ export const stop = async () => {
 }
 
 export const restart = async () => {
-  await stop()
-  await start()
+  if (isEsmMode()) {
+    console.warn(RESTART_DISABLED_IN_ESM_MODE)
+    console.info('Please use ctrl+c to restart drosse.')
+  } else {
+    await stop()
+    await start()
+  }
 }
 
 export const describe = () => {
