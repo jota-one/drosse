@@ -1,3 +1,21 @@
+# v3.1.0 (Thu Jan 12 2023)
+
+#### 🚀 Enhancement
+
+- Release esm support + loadStatic fix [#53](https://github.com/jota-one/drosse/pull/53) ([@jorinho](https://github.com/jorinho) [@tadaii](https://github.com/tadaii))
+
+#### 🐛 Bug Fix
+
+- Feature/wild card in static mw [#55](https://github.com/jota-one/drosse/pull/55) ([@tadaii](https://github.com/tadaii))
+- Feature/esm mode support [#52](https://github.com/jota-one/drosse/pull/52) ([@tadaii](https://github.com/tadaii))
+
+#### Authors: 2
+
+- Jorinho ([@jorinho](https://github.com/jorinho))
+- Tadai ([@tadaii](https://github.com/tadaii))
+
+---
+
 # v3.0.3 (Thu Jan 12 2023)
 
 #### 🐛 Bug Fix
