@@ -1,13 +1,13 @@
 import { join } from 'path'
 
-import { setResponseHeader } from 'h3'
+import { getQuery, getResponseHeader, getRouterParams, setResponseHeader } from 'h3'
 import {
   createProxyMiddleware,
   responseInterceptor,
 } from 'http-proxy-middleware'
-import { isEmpty, isString, difference } from 'lodash'
 import serveStatic from 'serve-static'
 
+import { isEmpty } from '../helpers'
 import logger from './logger'
 import internalMiddlewares from './middlewares'
 
@@ -110,7 +110,7 @@ const createRoute = async function (def, root, defHierarchy) {
     const assetsSubPath =
       def.assets === true
         ? routePath
-        : isString(def.assets)
+        : typeof def.assets === 'string'
           ? def.assets.split('/')
           : def.assets
 
@@ -180,7 +180,7 @@ const createRoute = async function (def, root, defHierarchy) {
             if (!acc) {
               return acc
             }
-            const subpath = difference(item.path, acc.path)
+            const subpath = item.path.filter(path => !acc.path.includes(path))
             const proxy = getProxy(acc)
 
             proxy.target = proxy.target.split('/').concat(subpath).join('/')
@@ -252,17 +252,19 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
 
     if (def.service) {
       const api = useAPI(req, res)
-      const service = await loadService(root, verb)
+      const { serviceFile, service } = await loadService(root, verb)
       try {
         response = await service(api)
       } catch (e) {
+        console.log('Error in service', serviceFile, e)
         return next(e)
       }
     }
 
     if (def.static) {
       try {
-        const { params, query } = req
+        const params = getRouterParams(req)
+        const query = getQuery(req)
         const { extensions } = def
         const [ result, extension ] = await loadStatic({ routePath: root, params, verb, query, extensions })
         response = result
@@ -332,7 +334,6 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
     // We defined a middleware for the route so that if overwrites the proxy middleware
     app.use(path, handler, { match: url => url === '/' })
   } else {
-    console.log('appel du routeur', verb, path)
     router[verb](path, handler)
   }
 
@@ -348,14 +349,52 @@ const createAssets = ({ app, assets }) => {
     return
   }
 
+  const _assets = []
+
   assets.forEach(({ path: routePath, context }) => {
     const fsPath = join(state.get('root'), context.target)
 
-    // TODO handle wildcards in path (used to work with express.static)
-    app.use(routePath, serveStatic(fsPath, { redirect: false }))
+    let mwPath = routePath
+    
+    if (routePath.includes('*')) {
+      mwPath = mwPath.substring(0, mwPath.indexOf('*'))
+      mwPath = mwPath.substring(0, mwPath.lastIndexOf('/'))
+      
+      const re = new RegExp(routePath.replaceAll('*', '[^/]*'))
 
+      app.use(mwPath, (req, res) => {
+        if (re.test(`${mwPath}${req.url}`)) {
+          setResponseHeader(
+            res,
+            'x-wildcard-asset-target',
+            context.target
+          )
+        }
+      })
+
+      _assets.push({ mwPath, fsPath, wildcardPath: routePath })
+    } else {
+      _assets.push({ mwPath, fsPath })
+    }
+  })
+
+  _assets.forEach(({ mwPath, fsPath, wildcardPath }) => {
+    app.use(mwPath, (req, res, next) => {
+      const wildcardAssetTarget = getResponseHeader(
+        res,
+        'x-wildcard-asset-target'
+      )
+
+      if (wildcardAssetTarget) {
+        req.url = wildcardAssetTarget
+          .replace(join(state.get('assetsPath'), mwPath), '')
+      }
+      
+      return serveStatic(fsPath, { redirect: false })(req, res, next)
+    })
+  
     logger.info(
-      `-> STATIC ASSETS   ${routePath || '/'} => ${fsPath}`
+      `-> STATIC ASSETS   ${wildcardPath || mwPath || '/'} => ${fsPath}`
     )
   })
 }

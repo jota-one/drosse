@@ -1,6 +1,6 @@
 # Introduction
 
-[![NPM Vernion](https://flat.badgen.net/npm/v/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
+[![NPM Version](https://flat.badgen.net/npm/v/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
 [![NPM Downloads](https://flat.badgen.net/npm/dt/@jota-one/drosse)](https://www.npmjs.com/package/@jota-one/drosse)
 [![Package Size](https://flat.badgen.net/packagephobia/install/@jota-one/drosse)](https://packagephobia.now.sh/result?p=@jota-one/drosse)
 [![Buy Me A Coffee][bmc-shield-src]][bmc-href]
@@ -56,6 +56,8 @@ Find example code in the [examples](https://github.com/jota-one/drosse/tree/mast
 
 - Create a [GitHub issue](https://github.com/jota-one/drosse/issues) for bug reports, feature requests, or questions
 - Add a ⭐️ [star on GitHub](https://github.com/jota-one/drosse) or ☕️ [buy us a coffe](https://www.buymeacoffee.com/drosse) to support the project!
+
+<a href="https://www.buymeacoffee.com/drosse" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="margin-top:10px;height:40px" ></a>
 
 ## Credits & License
 

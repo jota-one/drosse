@@ -15,7 +15,16 @@
     "imgs": {
       "background_*.jpg": {
         "DROSSE": {
-          "assets": "content/imgs/background_mocked.png"
+          "assets": "content/imgs/background_mocked.jpg"
+        }
+      },
+      "sub-*": {
+        "wild-*": {
+          "card-*": {
+            "DROSSE": {
+              "assets": "content/imgs/background_mocked.jpg"
+            }
+          }
         }
       }
     }

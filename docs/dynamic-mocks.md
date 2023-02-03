@@ -54,6 +54,46 @@ module.exports = function ({ req, res, db }) {
 }
 ```
 
+?> In esm mode (as of version 3.1.0) you would define your service like so:
+```js
+export default function ({ req, res, db }) {
+  // a lot of cool stuffs...
+}
+```
+or with a lambda function:
+```js
+export default ({ req, res, db }) => {
+  // a lot of cool stuffs...
+}
+```
+or async:
+```js
+export default async ({ req, res, db }) => {
+  // a lot of cool stuffs...
+}
+```
+
+?> As of version 3.1.0 you can use the `defineDrosseService` utility function
+which provides typing:
+
+in commonjs mode:
+```js
+const { defineDrosseService } = require('@jota-one/drosse')
+
+module.exports = defineDrosseService(function ({ req, res, db }) {
+  // a lot of cool stuffs...
+})
+```
+
+in esm mode (with async for example):
+```js
+import { defineDrosseService } from '@jota-one/drosse'
+
+export default defineDrosseService(async ({ req, res, db }) => {
+  // a lot of cool stuffs...
+})
+```
+
 As you can see, the object argument gives you access to the well known `req` and `res` objects. With those two and the full power of javascript, you can already do more than what you will ever need in a mock-server.
 
 ?> The return value of your function will be passed to the associated route response (optionally modified by a [template](customize-response.md#templates)</a>).
@@ -68,6 +108,30 @@ Let's take a full example.
 ```js
 module.exports = function ({ req, res, db }) {
   const payload = req.body
+  // do whatever you want with your payload
+  return { added: payload.name }
+}
+```
+
+!> As of version 3.0.0 you have to use the `readBody` utility of
+[h3](https://github.com/unjs/h3) like this:
+
+```js
+const { readBody } = require('h3')
+
+module.exports = async function ({ req, res, db }) {
+  const payload = await readBody(req)
+  // do whatever you want with your payload
+  return { added: payload.name }
+}
+```
+
+or in esm mode:
+```js
+import { readBody } from 'h3'
+
+export default async function ({ req, res, db }) {
+  const payload = await readBody(req)
   // do whatever you want with your payload
   return { added: payload.name }
 }

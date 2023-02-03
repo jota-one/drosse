@@ -1,0 +1,1 @@
+export default ({ req, db }) => db.list.all('users')

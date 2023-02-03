@@ -1,12 +1,11 @@
 {
   "name": "@jota-one/drosse",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "A stateful and program­mable mock server",
   "author": "Juniors at Work",
   "license": "MIT",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
@@ -14,10 +13,12 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ],
   "bin": {
-    "drosse": "./dist/index.cjs"
+    "drosse": "./dist/index.cjs",
+    "drosse-esm": "./dist/index.mjs"
   },
   "pkg": {
     "scripts": "dist/index.cjs",
@@ -25,11 +26,14 @@
   },
   "scripts": {
     "describe": "node ./dist/index.cjs describe",
+    "describe:esm": "node ./dist/index.mjs describe",
     "build": "unbuild",
     "build:stub": "unbuild  --stub",
     "bundle": "pkg .",
     "serve": "node ./dist/index.cjs serve",
+    "serve:esm": "node ./dist/index.mjs serve",
     "static": "node ./dist/index.cjs static",
+    "static:esm": "node ./dist/index.mjs static",
     "test": "vitest run",
     "test:watch": "vitest",
     "doc": "docsify serve docs"
@@ -57,8 +61,8 @@
     "h3": "^0.7.21",
     "http-proxy-middleware": "^2.0.6",
     "listhen": "^0.2.15",
-    "lodash": "^4.17.21",
     "lokijs": "^1.5.12",
+    "mergician": "^1.0.3",
     "morgan": "^1.10.0",
     "node-discover": "^1.2.1",
     "rrdir": "^8.2.2",
@@ -76,5 +80,8 @@
     "unbuild": "^0.8.10",
     "vitest": "^0.23.2",
     "ws": "^8.8.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

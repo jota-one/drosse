@@ -1,3 +1,6 @@
+// To test the discover feature, run this script and
+// start/stop a drosse instance, then check events are logged in the console.
+
 const Discover = require('node-discover')
 
 const discover = new Discover()

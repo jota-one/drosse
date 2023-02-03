@@ -1,20 +1,22 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
 
-import { replace } from '@jota-one/replacer'
-import { isEmpty, cloneDeep } from 'lodash'
+import replacer from '@jota-one/replacer'
 import { async as rrdir } from 'rrdir'
 import { v4 as uuidv4 } from 'uuid'
 
-import { load } from '../loader'
+import { isEmpty, cloneDeep } from '../../helpers'
 
+import useLoader from './useLoader'
 import useState from './useState'
 import logger from '../logger'
 
 const state = useState()
+const { load } = useLoader()
+
 const fileExists = async path => {
   let exists
-  
+
   try {
     await fs.access(path)
     exists = true
@@ -35,15 +37,15 @@ const checkRoutesFile = async () => {
     state.set('_routesFile', filePath)
     return true
   }
-  
+
   return false
 }
 
 const getUserConfig = async root => {
-  const rcFile = join(root || state.get('root') || '', '.drosserc.js')
+  const rcFilePath = join(root || state.get('root') || '', '.drosserc.js')
   try {
-    await fs.stat(rcFile)
-    return load(rcFile)
+    await fs.stat(rcFilePath)
+    return load(rcFilePath)
   } catch (e) {
     console.error('Could not load any user config.')
     console.error(e)
@@ -65,7 +67,8 @@ const loadService = async (routePath, verb) => {
     }
   }
 
-  return load(serviceFile)
+  const service = await load(serviceFile)
+  return { serviceFile, service }
 }
 
 const loadScraperService = async routePath => {
@@ -149,7 +152,7 @@ const getStaticFileName = (routePath, extension, params = {}, verb = null, query
     }, [])
     .join('&')
 
-  let filename = replace(
+  let filename = replacer.replace(
     routePath
       .join('.')
       .concat(verb ? `.${verb.toLowerCase()}` : '')
@@ -289,7 +292,7 @@ const findStatic = async ({
 
     if (foundExtension === 'json') {
       const fileContent = await fs.readFile(staticFile, 'utf-8')
-      const result = replace(fileContent, initial.params)
+      const result = replacer.replace(fileContent, initial.params)
       return [JSON.parse(result), foundExtension]
     }
     return [staticFile, foundExtension]

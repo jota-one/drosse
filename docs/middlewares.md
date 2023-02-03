@@ -23,3 +23,22 @@ module.exports = function (api, req, res, next) {
   next()
 }
 ```
+
+?> As of version 3.0.0, you can write middlewares "the h3 way" without the `next`
+callback. Note that h3 supports express middlewares anyways.
+[https://github.com/unjs/h3](Please refer to the h3 documentation for more details).
+
+```js
+const { getRouterParams } = require('h3')
+
+module.exports = function (api, req, res, next) {
+  // (very) naive role checking :)
+  const { db } = api
+  const user = db.get.byId('users', getRouterParams(req).id)
+  if (user.role !== 'admin') {
+    return { some: 'error'}
+  }
+  return
+}
+```
+
