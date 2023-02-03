@@ -35,7 +35,7 @@ const emit = async (event, data) => {
       } catch(e) {
         console.error(e)
       }
-      
+
       // Initiate repl mode
       if (Boolean(noRepl)) {
         return
@@ -44,11 +44,11 @@ const emit = async (event, data) => {
       const io = useIO()
       const cli = useCLI(data, restart)
       const userConfig = await io.getUserConfig(data.root)
-      
+
       if (userConfig.cli) {
         cli.extend(userConfig.cli)
       }
-      
+
       cli.start()
       break
     case 'restart':
@@ -78,6 +78,11 @@ yargs(hideBin(process.argv))
     command: 'serve <rootPath>',
     desc: 'Run the mock server',
     builder: {
+      port: {
+        alias: 'p',
+        describe: 'HTTP port',
+        type: 'number'
+      },
       norepl: {
         default: false,
         describe: 'Disable repl mode',
@@ -86,7 +91,7 @@ yargs(hideBin(process.argv))
     },
     handler: async argv => {
       noRepl = argv.norepl
-      await init(argv.rootPath, emit, version)
+      await init(argv.rootPath, emit, version, argv.port)
       return start()
     }
   })
