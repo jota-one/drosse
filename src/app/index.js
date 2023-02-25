@@ -29,12 +29,13 @@ const { isEsmMode } = useLoader()
 const middlewares = useMiddlewares()
 const state = useState()
 
-let app, emit, root, listener, userConfig, version
+let app, emit, root, listener, userConfig, version, port
 
-export const init = async (_root, _emit, _version) => {
+export const init = async (_root, _emit, _version, _port) => {
   version = _version
   root = resolve(_root)
   emit = _emit
+  port = _port
 
   // very first action -> set the 'root' directory in the state. Will be useful for further operations.
   state.set('root', root)
@@ -174,7 +175,7 @@ export const start = async () => {
     }(version ${ansiColors.magenta(version)}) running at:`
   )
 
-  listener = await listen(app, { port: description.port })
+  listener = await listen(app, { port: port || description.port })
 
   // extend server
   if (typeof userConfig.extendServer === 'function') {

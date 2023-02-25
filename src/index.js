@@ -128,6 +128,11 @@ if (getMatchablePath(import.meta.url) === getMatchablePath(process.argv[1])) {
       command: 'serve <rootPath>',
       desc: 'Run the mock server',
       builder: {
+        port: {
+          alias: 'p',
+          describe: 'HTTP port',
+          type: 'number'
+        },
         norepl: {
           default: false,
           describe: 'Disable repl mode',
@@ -137,7 +142,7 @@ if (getMatchablePath(import.meta.url) === getMatchablePath(process.argv[1])) {
       handler: async argv => {
         noRepl = argv.norepl
         const version = await getVersion()
-        await init(argv.rootPath, emit, version)
+        await init(argv.rootPath, emit, version, argv.port)
         return start()
       }
     })
