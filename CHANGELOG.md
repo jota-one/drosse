@@ -1,3 +1,20 @@
+# v3.1.1 (Sat Feb 25 2023)
+
+#### 🐛 Bug Fix
+
+- chore: added "port" arg to serve command [#58](https://github.com/jota-one/drosse/pull/58) ([@jorinho](https://github.com/jorinho))
+
+#### 🔩 Dependency Updates
+
+- build(deps): bump cookiejar from 2.1.3 to 2.1.4 [#57](https://github.com/jota-one/drosse/pull/57) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 2
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- Jorinho ([@jorinho](https://github.com/jorinho))
+
+---
+
 # v3.1.0 (Thu Jan 12 2023)
 
 #### 🚀 Enhancement
