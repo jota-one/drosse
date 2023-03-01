@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
 
-import replacer from '@jota-one/replacer'
+import { replace } from '@jota-one/replacer'
 import { async as rrdir } from 'rrdir'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -152,7 +152,7 @@ const getStaticFileName = (routePath, extension, params = {}, verb = null, query
     }, [])
     .join('&')
 
-  let filename = replacer.replace(
+  let filename = replace(
     routePath
       .join('.')
       .concat(verb ? `.${verb.toLowerCase()}` : '')
@@ -292,7 +292,7 @@ const findStatic = async ({
 
     if (foundExtension === 'json') {
       const fileContent = await fs.readFile(staticFile, 'utf-8')
-      const result = replacer.replace(fileContent, initial.params)
+      const result = replace(fileContent, initial.params)
       return [JSON.parse(result), foundExtension]
     }
     return [staticFile, foundExtension]

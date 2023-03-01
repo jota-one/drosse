@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 
 import ansiColors from 'ansi-colors'
-import { createApp, createRouter, readBody } from 'h3'
+import {createApp, createRouter, handleCors, readBody, eventHandler, fromNodeMiddleware} from 'h3'
 import { listen } from 'listhen'
 
 import { curry } from '../helpers'
@@ -85,6 +85,7 @@ const initServer = async () => {
 
   console.info(middlewares.list())
 
+  // app.use(eventHandler((event) => handleCors({})))
   for (let mw of middlewares.list()) {
     if (typeof mw !== 'function') {
       mw = internalMiddlewares[mw]
@@ -95,7 +96,7 @@ const initServer = async () => {
       mw = curry(mw)(api)
     }
 
-    app.use(mw)
+    app.use(fromNodeMiddleware(mw))
   }
 
   // if everything is well configured, create the routes
@@ -108,24 +109,24 @@ const initServer = async () => {
   }
 
   // notify the UI for every request made
-  app.use(req => {
+  app.use(eventHandler(req => {
     if (!Object.values(state.get('reservedRoutes')).includes(req.url)) {
       emit('request', {
         url: req.url,
         method: req.method,
       })
     }
-  })
+  }))
 
   // add reserved UI route
-  app.use(state.get('reservedRoutes').ui, internalMiddlewares['open-cors'])
-  router.get(state.get('reservedRoutes').ui, () => {
+  app.use(state.get('reservedRoutes').ui, fromNodeMiddleware(internalMiddlewares['open-cors']))
+  router.get(state.get('reservedRoutes').ui, eventHandler(() => {
     return { routes: routesDef }
-  })
+  }))
 
   // add reserved CMD route
-  app.use(state.get('reservedRoutes').cmd, internalMiddlewares['open-cors'])
-  router.post(state.get('reservedRoutes').cmd, async req => {
+  app.use(state.get('reservedRoutes').cmd, fromNodeMiddleware(internalMiddlewares['open-cors']))
+  router.post(state.get('reservedRoutes').cmd, eventHandler(async req => {
     const body = await readBody(req)
 
     if (body.cmd === 'restart') {
@@ -146,7 +147,7 @@ const initServer = async () => {
 
       return result
     }
-  })
+  }))
 
   // Register router
   app.use(router)

@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { getQuery, getResponseHeader, getRouterParams, setResponseHeader } from 'h3'
+import { getQuery, getResponseHeader, getRouterParams, setResponseHeader, fromNodeMiddleware } from 'h3'
 import {
   createProxyMiddleware,
   responseInterceptor,
@@ -293,6 +293,7 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
       } catch (e) {
         response = {
           drosse: e.message,
+          stack: e.stack
         }
       }
     }
@@ -334,7 +335,7 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
     // We defined a middleware for the route so that if overwrites the proxy middleware
     app.use(path, handler, { match: url => url === '/' })
   } else {
-    router[verb](path, handler)
+    router[verb](path, fromNodeMiddleware(handler))
   }
 
   logger.success(
@@ -355,11 +356,11 @@ const createAssets = ({ app, assets }) => {
     const fsPath = join(state.get('root'), context.target)
 
     let mwPath = routePath
-    
+
     if (routePath.includes('*')) {
       mwPath = mwPath.substring(0, mwPath.indexOf('*'))
       mwPath = mwPath.substring(0, mwPath.lastIndexOf('/'))
-      
+
       const re = new RegExp(routePath.replaceAll('*', '[^/]*'))
 
       app.use(mwPath, (req, res) => {
@@ -389,10 +390,10 @@ const createAssets = ({ app, assets }) => {
         req.url = wildcardAssetTarget
           .replace(join(state.get('assetsPath'), mwPath), '')
       }
-      
+
       return serveStatic(fsPath, { redirect: false })(req, res, next)
     })
-  
+
     logger.info(
       `-> STATIC ASSETS   ${wildcardPath || mwPath || '/'} => ${fsPath}`
     )
