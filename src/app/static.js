@@ -11,7 +11,7 @@ import internalMiddlewares from './middlewares'
 export default function(root, port, proxy) {
   const app = createApp({ debug: true })
 
-  app.use(internalMiddlewares.morgan)
+  // app.use(internalMiddlewares.morgan)
   const staticMw = serveStatic(root, { fallthrough: false, redirect: false })
 
   if (proxy) {

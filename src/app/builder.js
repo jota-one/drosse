@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { getQuery, getResponseHeader, getRouterParams, setResponseHeader, fromNodeMiddleware } from 'h3'
+import { getQuery, getResponseHeader, getRouterParams, setResponseHeader, eventHandler } from 'h3'
 import {
   createProxyMiddleware,
   responseInterceptor,
@@ -245,26 +245,26 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
     app.use(path, getThrottleMiddleware(def))
   }
 
-  const handler = async (req, res, next) => {
+  const handler = async (event) => {
     let response
     let applyTemplate = true
     let staticExtension = 'json'
 
     if (def.service) {
-      const api = useAPI(req, res)
+      const api = useAPI(event)
       const { serviceFile, service } = await loadService(root, verb)
       try {
         response = await service(api)
       } catch (e) {
         console.log('Error in service', serviceFile, e)
-        return next(e)
+        throw e
       }
     }
 
     if (def.static) {
       try {
-        const params = getRouterParams(req)
-        const query = getQuery(req)
+        const params = getRouterParams(event)
+        const query = getQuery(event)
         const { extensions } = def
         const [ result, extension ] = await loadStatic({ routePath: root, params, verb, query, extensions })
         response = result
@@ -319,13 +319,15 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
       def.responseType === 'file' ||
       (staticExtension && staticExtension !== 'json')
     ) {
-      return res.sendFile(response, function (err) {
-        if (err) {
-          logger.error(err.stack)
-        } else {
-          logger.success('File downloaded successfully')
-        }
-      })
+      // @todo sendfile
+      return {}
+      // return res.sendFile(response, function (err) {
+      //   if (err) {
+      //     logger.error(err.stack)
+      //   } else {
+      //     logger.success('File downloaded successfully')
+      //   }
+      // })
     }
 
     return response
@@ -333,9 +335,9 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
 
   if (inheritsProxy) {
     // We defined a middleware for the route so that if overwrites the proxy middleware
-    app.use(path, handler, { match: url => url === '/' })
+    app.use(path, eventHandler(handler), { match: url => url === '/' })
   } else {
-    router[verb](path, fromNodeMiddleware(handler))
+    router[verb](path, eventHandler(handler))
   }
 
   logger.success(

@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 
 import ansiColors from 'ansi-colors'
-import {createApp, createRouter, handleCors, readBody, eventHandler, fromNodeMiddleware} from 'h3'
+import {createApp, createRouter, readBody, eventHandler, toNodeListener} from 'h3'
 import { listen } from 'listhen'
 
 import { curry } from '../helpers'
@@ -85,7 +85,6 @@ const initServer = async () => {
 
   console.info(middlewares.list())
 
-  // app.use(eventHandler((event) => handleCors({})))
   for (let mw of middlewares.list()) {
     if (typeof mw !== 'function') {
       mw = internalMiddlewares[mw]
@@ -96,7 +95,7 @@ const initServer = async () => {
       mw = curry(mw)(api)
     }
 
-    app.use(fromNodeMiddleware(mw))
+    app.use(eventHandler(mw))
   }
 
   // if everything is well configured, create the routes
@@ -119,15 +118,15 @@ const initServer = async () => {
   }))
 
   // add reserved UI route
-  app.use(state.get('reservedRoutes').ui, fromNodeMiddleware(internalMiddlewares['open-cors']))
+  app.use(state.get('reservedRoutes').ui, eventHandler(internalMiddlewares['open-cors']))
   router.get(state.get('reservedRoutes').ui, eventHandler(() => {
     return { routes: routesDef }
   }))
 
   // add reserved CMD route
-  app.use(state.get('reservedRoutes').cmd, fromNodeMiddleware(internalMiddlewares['open-cors']))
-  router.post(state.get('reservedRoutes').cmd, eventHandler(async req => {
-    const body = await readBody(req)
+  app.use(state.get('reservedRoutes').cmd, eventHandler(internalMiddlewares['open-cors']))
+  router.post(state.get('reservedRoutes').cmd, eventHandler(async event => {
+    const body = await readBody(event)
 
     if (body.cmd === 'restart') {
       emit('restart')
@@ -176,7 +175,7 @@ export const start = async () => {
     }(version ${ansiColors.magenta(version)}) running at:`
   )
 
-  listener = await listen(app, { port: port || description.port })
+  listener = await listen(toNodeListener(app), { port: port || description.port })
 
   // extend server
   if (typeof userConfig.extendServer === 'function') {
