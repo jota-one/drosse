@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 
 import ansiColors from 'ansi-colors'
-import { createApp, createRouter, readBody } from 'h3'
+import {createApp, createRouter, readBody, eventHandler, toNodeListener} from 'h3'
 import { listen } from 'listhen'
 
 import { curry } from '../helpers'
@@ -95,7 +95,7 @@ const initServer = async () => {
       mw = curry(mw)(api)
     }
 
-    app.use(mw)
+    app.use(eventHandler(mw))
   }
 
   // if everything is well configured, create the routes
@@ -108,25 +108,25 @@ const initServer = async () => {
   }
 
   // notify the UI for every request made
-  app.use(req => {
+  app.use(eventHandler(req => {
     if (!Object.values(state.get('reservedRoutes')).includes(req.url)) {
       emit('request', {
         url: req.url,
         method: req.method,
       })
     }
-  })
+  }))
 
   // add reserved UI route
-  app.use(state.get('reservedRoutes').ui, internalMiddlewares['open-cors'])
-  router.get(state.get('reservedRoutes').ui, () => {
+  app.use(state.get('reservedRoutes').ui, eventHandler(internalMiddlewares['open-cors']))
+  router.get(state.get('reservedRoutes').ui, eventHandler(() => {
     return { routes: routesDef }
-  })
+  }))
 
   // add reserved CMD route
-  app.use(state.get('reservedRoutes').cmd, internalMiddlewares['open-cors'])
-  router.post(state.get('reservedRoutes').cmd, async req => {
-    const body = await readBody(req)
+  app.use(state.get('reservedRoutes').cmd, eventHandler(internalMiddlewares['open-cors']))
+  router.post(state.get('reservedRoutes').cmd, eventHandler(async event => {
+    const body = await readBody(event)
 
     if (body.cmd === 'restart') {
       emit('restart')
@@ -146,7 +146,7 @@ const initServer = async () => {
 
       return result
     }
-  })
+  }))
 
   // Register router
   app.use(router)
@@ -175,7 +175,7 @@ export const start = async () => {
     }(version ${ansiColors.magenta(version)}) running at:`
   )
 
-  listener = await listen(app, { port: port || description.port })
+  listener = await listen(toNodeListener(app), { port: port || description.port })
 
   // extend server
   if (typeof userConfig.extendServer === 'function') {

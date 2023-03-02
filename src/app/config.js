@@ -24,7 +24,7 @@ export default {
   commands: {},
   errorHandler: null,
   extendServer: null,
-  middlewares: ['morgan'],
+  middlewares: [],
   templates: {},
   onHttpUpgrade: null,
 }
