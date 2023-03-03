@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { getQuery, getResponseHeader, getRouterParams, setResponseHeader, eventHandler } from 'h3'
+import {getQuery, getResponseHeader, getRouterParams, setResponseHeader, eventHandler, fromNodeMiddleware} from 'h3'
 import {
   createProxyMiddleware,
   responseInterceptor,
@@ -27,13 +27,13 @@ const getThrottle = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-const getThrottleMiddleware = def => async () => new Promise(resolve => {
+const getThrottleMiddleware = def => eventHandler(() => new Promise(resolve => {
     const delay = getThrottle(
       def.throttle.min || 0,
       def.throttle.max || def.throttle.min
     )
     setTimeout( resolve, delay )
-  })
+  }))
 
 const getProxy = function (def) {
   return typeof def.proxy === 'string' ? { target: def.proxy } : def.proxy
@@ -365,15 +365,15 @@ const createAssets = ({ app, assets }) => {
 
       const re = new RegExp(routePath.replaceAll('*', '[^/]*'))
 
-      app.use(mwPath, (req, res) => {
-        if (re.test(`${mwPath}${req.url}`)) {
+      app.use(mwPath, eventHandler((event) => {
+        if (re.test(`${mwPath}${event.url}`)) {
           setResponseHeader(
-            res,
+            event,
             'x-wildcard-asset-target',
             context.target
           )
         }
-      })
+      }))
 
       _assets.push({ mwPath, fsPath, wildcardPath: routePath })
     } else {
@@ -382,19 +382,19 @@ const createAssets = ({ app, assets }) => {
   })
 
   _assets.forEach(({ mwPath, fsPath, wildcardPath }) => {
-    app.use(mwPath, (req, res, next) => {
+    app.use(mwPath, eventHandler((event) => {
       const wildcardAssetTarget = getResponseHeader(
-        res,
+        event,
         'x-wildcard-asset-target'
       )
 
       if (wildcardAssetTarget) {
-        req.url = wildcardAssetTarget
+        event.url = wildcardAssetTarget
           .replace(join(state.get('assetsPath'), mwPath), '')
       }
 
-      return serveStatic(fsPath, { redirect: false })(req, res, next)
-    })
+      return fromNodeMiddleware(serveStatic(fsPath, { redirect: false }))
+    }))
 
     logger.info(
       `-> STATIC ASSETS   ${wildcardPath || mwPath || '/'} => ${fsPath}`
@@ -415,7 +415,7 @@ const createProxies = ({ app, router, proxies }) => {
     }
 
     app.use(path || '/',
-      async (req, res) => {
+      eventHandler((event) => {
         // Workaround for h3 not awaiting next
         // => cf. https://github.com/unjs/h3/issues/35
         return new Promise((resolve, reject) => {
@@ -427,10 +427,10 @@ const createProxies = ({ app, router, proxies }) => {
             }
           }
 
-          setResponseHeader(res, 'x-proxied', true)
-          return proxyMw(req, res, next)
+          setResponseHeader(event, 'x-proxied', true)
+          return fromNodeMiddleware(proxyMw)(event)
         })
-      }
+      })
     )
 
     logger.info(`-> PROXY   ${path || '/'} => ${context.target}`)

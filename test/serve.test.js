@@ -95,10 +95,10 @@ describe('serve', () => {
 
     const res1 = await supertest(host).get('/template/hal')
     const res2 = await supertest(host2).get('/proxy/hal')
-    
+
     expect(trim(res1.text).replaceAll('http://somehost/', '/'))
       .toEqual(trim(res2.text))
-    
+
     await stop()
   })
 
@@ -109,7 +109,7 @@ describe('serve', () => {
     const host2 = `${d.proto}://localhost:${port2}`
 
     const res = await supertest(host2).get('/proxy/hal/overwrite')
-    
+
     expect(res.text).toEqual('overwritten!')
   })
 

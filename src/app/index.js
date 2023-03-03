@@ -90,8 +90,8 @@ const initServer = async () => {
       mw = internalMiddlewares[mw]
     }
 
-    // if the middleware signature has 4 arguments, we assume that the first one is the Drosse `api`
-    if (mw.length === 4) {
+    // if the middleware signature has 2 arguments, we assume that the first one is the Drosse `api`
+    if (mw.length === 2) {
       mw = curry(mw)(api)
     }
 
