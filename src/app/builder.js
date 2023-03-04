@@ -366,7 +366,7 @@ const createAssets = ({ app, assets }) => {
       const re = new RegExp(routePath.replaceAll('*', '[^/]*'))
 
       app.use(mwPath, eventHandler((event) => {
-        if (re.test(`${mwPath}${event.url}`)) {
+        if (re.test(`${mwPath}${event.node.req.url}`)) {
           setResponseHeader(
             event,
             'x-wildcard-asset-target',
@@ -389,11 +389,11 @@ const createAssets = ({ app, assets }) => {
       )
 
       if (wildcardAssetTarget) {
-        event.url = wildcardAssetTarget
+        event.node.req.url = wildcardAssetTarget
           .replace(join(state.get('assetsPath'), mwPath), '')
       }
 
-      return fromNodeMiddleware(serveStatic(fsPath, { redirect: false }))
+      return fromNodeMiddleware(serveStatic(fsPath, { redirect: false }))(event)
     }))
 
     logger.info(
@@ -428,7 +428,7 @@ const createProxies = ({ app, router, proxies }) => {
           }
 
           setResponseHeader(event, 'x-proxied', true)
-          return fromNodeMiddleware(proxyMw)(event)
+          return proxyMw(event.node.req, event.node.res, next)
         })
       })
     )

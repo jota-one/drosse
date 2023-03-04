@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
 
-import { createApp } from 'h3'
+import {createApp, fromNodeMiddleware} from 'h3'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { listen } from 'listhen'
 import serveStatic from 'serve-static'
@@ -47,7 +47,7 @@ export default function(root, port, proxy) {
       })
     })
   } else {
-    app.use('/', staticMw)
+    app.use('/', fromNodeMiddleware(staticMw))
   }
 
   listen(app, { port })

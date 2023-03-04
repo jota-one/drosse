@@ -99,13 +99,13 @@
       "*.jpg": {
         "DROSSE": {
           "assets": "image/cat.jpg"
-        } 
+        }
       },
       "domestic-*": {
         "feline-*": {
           "DROSSE": {
             "assets": "image/cat.jpg"
-          } 
+          }
         }
       }
     }
@@ -113,7 +113,7 @@
   "proxy": {
     "DROSSE": {
       "proxy": {
-        "target": "http://localhost:3636/template",
+        "target": "http://127.0.0.1:3636/template",
         "responseRewriters": ["hal-links", "hateoas-links"]
       }
     },
