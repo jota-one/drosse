@@ -1,7 +1,7 @@
 {
   "name": "@jota-one/drosse",
   "version": "3.1.1",
-  "description": "A stateful and program­mable mock server",
+  "description": "A stateful and programmable mock server",
   "author": "Juniors at Work",
   "license": "MIT",
   "exports": {
@@ -55,7 +55,7 @@
     "proxy"
   ],
   "dependencies": {
-    "@jota-one/replacer": "^0.3.2",
+    "@jota-one/replacer": "0.3.3--canary.1.4343485349.0",
     "@moleculer/vorpal": "^1.11.5",
     "ansi-colors": "^4.1.3",
     "h3": "^1.5.0",
