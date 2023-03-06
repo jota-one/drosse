@@ -1,8 +1,8 @@
-const { readBody } = require('h3')
+const { readBody, getRouterParam } = require('h3')
 
-module.exports = async function ({ db, req }) {
-  const { id } = req.context.params
-  const payload = await readBody(req)
+module.exports = async function ({ db, event }) {
+  const id = getRouterParam(event, 'id')
+  const payload = await readBody(event)
 
   console.log(id, payload)
   db.update.byId('users', id, payload)

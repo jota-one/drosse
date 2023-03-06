@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
 
-import { createApp } from 'h3'
+import {createApp, fromNodeMiddleware} from 'h3'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { listen } from 'listhen'
 import serveStatic from 'serve-static'
@@ -11,7 +11,7 @@ import internalMiddlewares from './middlewares'
 export default function(root, port, proxy) {
   const app = createApp({ debug: true })
 
-  app.use(internalMiddlewares.morgan)
+  // app.use(internalMiddlewares.morgan)
   const staticMw = serveStatic(root, { fallthrough: false, redirect: false })
 
   if (proxy) {
@@ -47,7 +47,7 @@ export default function(root, port, proxy) {
       })
     })
   } else {
-    app.use('/', staticMw)
+    app.use('/', fromNodeMiddleware(staticMw))
   }
 
   listen(app, { port })

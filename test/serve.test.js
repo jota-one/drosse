@@ -12,7 +12,7 @@ describe('serve', () => {
   beforeAll(async () => {
     await init(root, emit, version)
     const d = describeDrosse()
-    host = `${d.proto}://localhost:${d.port}`
+    host = `${d.proto}://127.0.0.1:${d.port}`
     await start()
   })
 
@@ -90,15 +90,15 @@ describe('serve', () => {
     const listener = await start()
     const d = describeDrosse()
     const port2 = listener.server.address().port
-    const host2 = `${d.proto}://localhost:${port2}`
+    const host2 = `${d.proto}://127.0.0.1:${port2}`
     const trim = str => str.replace(/[\n\r\s\t]?/gmi, '')
 
     const res1 = await supertest(host).get('/template/hal')
     const res2 = await supertest(host2).get('/proxy/hal')
-    
+
     expect(trim(res1.text).replaceAll('http://somehost/', '/'))
       .toEqual(trim(res2.text))
-    
+
     await stop()
   })
 
@@ -106,10 +106,10 @@ describe('serve', () => {
     const listener = await start()
     const d = describeDrosse()
     const port2 = listener.server.address().port
-    const host2 = `${d.proto}://localhost:${port2}`
+    const host2 = `${d.proto}://127.0.0.1:${port2}`
 
     const res = await supertest(host2).get('/proxy/hal/overwrite')
-    
+
     expect(res.text).toEqual('overwritten!')
   })
 

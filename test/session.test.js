@@ -12,7 +12,7 @@ describe('session', async () => {
   beforeAll(async () => {
     await init(root, emit, version)
     const d = describeDrosse()
-    host = `${d.proto}://localhost:${d.port}`
+    host = `${d.proto}://127.0.0.1:${d.port}`
     await start()
   })
 

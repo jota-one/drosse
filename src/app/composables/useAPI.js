@@ -8,10 +8,9 @@ const db = useDB()
 const state = useState()
 const { loadStatic, loadScraped } = useIO()
 
-export default function useAPI(req, res) {
+export default function useAPI(event) {
   return {
-    req,
-    res,
+    event,
     db,
     logger,
     io: { loadStatic, loadScraped },

@@ -1,5 +1,6 @@
-module.exports = function ({ db, req }) {
-  const { id } = req.context.params
+const {getRouterParam} = require("h3");
+module.exports = function ({ db, event }) {
+  const id = getRouterParam(event, 'id')
 
   db.remove.byId('users', id)
 

@@ -11,7 +11,7 @@ describe('app', () => {
   it('describes instance', async () => {
     await init('./test/mocks', () => {}, version)
     const d = describeDrosse()
-    host = `${d.proto}://localhost:${d.port}`
+    host = `${d.proto}://127.0.0.1:${d.port}`
 
     expect(d).toMatchObject({
       isDrosse: true,
