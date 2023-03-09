@@ -180,10 +180,10 @@ export declare type DrosseServerConfig = {
 }
 
 type DrosseServiceCallback = (api: DrosseServiceApi) => Promise<any>
+type DrosseScraperCallback = (json: string, api: DrosseServiceApi) => Promise<any>
 
 export declare type DrosseServiceApi = {
-  req: H3Event,
-  res: H3Event,
+  event: H3Event,
   db: DrosseDbApi,
   logger: DrosseLogger,
   io: DrosseIoApi,
@@ -195,3 +195,4 @@ export declare function defineDrosseServer(
 ): DrosseServerConfig
 
 export declare function defineDrosseService(cb: DrosseServiceCallback): void
+export declare function defineDrosseScraper(cb: DrosseScraperCallback): void

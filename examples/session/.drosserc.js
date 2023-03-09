@@ -1,5 +1,10 @@
 const session = require('./middlewares/session')
-const {fromNodeMiddleware, eventHandler, getMethod, setResponseStatus} = require("h3");
+const {
+  fromNodeMiddleware,
+  eventHandler,
+  getMethod,
+  setResponseStatus,
+} = require('h3')
 
 module.exports = {
   name: 'Example session',

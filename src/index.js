@@ -12,6 +12,7 @@ import useCLI from './app/composables/useCLI'
 import useIO from './app/composables/useIO'
 
 export const defineDrosseServer = userConfig => userConfig
+export const defineDrosseScraper = handler => handler
 export const defineDrosseService = handler => handler
 
 process.title = `node drosse ${process.argv[1]}`
@@ -23,9 +24,9 @@ const getVersion = async () => {
     try {
       const importPath = import.meta.url.replace('file://', '/')
       const packageFile = join(importPath, '..', '..', 'package.json')
-      const content = await readFile(packageFile, "utf8")
+      const content = await readFile(packageFile, 'utf8')
       _version = JSON.parse(content).version
-    } catch(e) {
+    } catch (e) {
       console.error('Failed to get Drosse version', e)
     }
   }
@@ -34,7 +35,7 @@ const getVersion = async () => {
 }
 
 const emit = async (event, data) => {
-  switch(event) {
+  switch (event) {
     case 'start':
       // Send dicover events
       description = describe()
@@ -50,7 +51,7 @@ const emit = async (event, data) => {
         setTimeout(() => {
           discover?.send(event, { uuid: description.uuid })
         }, 10)
-      } catch(e) {
+      } catch (e) {
         console.error(e)
       }
 
@@ -83,7 +84,8 @@ const emit = async (event, data) => {
 
 function getMatchablePath(path) {
   let stop = false
-  return path.replace(/^(.*\/\/)?\/(.*)$/g, '/$2')
+  return path
+    .replace(/^(.*\/\/)?\/(.*)$/g, '/$2')
     .split('/')
     .reduce((matchablePath, dir) => {
       if (['node_modules', 'dist', 'src'].includes(dir)) {
@@ -95,7 +97,8 @@ function getMatchablePath(path) {
       }
 
       return matchablePath
-    }, []).join('/')
+    }, [])
+    .join('/')
 }
 
 // Prevent embedded drosse to be loaded a second time due to import/require
@@ -122,7 +125,7 @@ if (getMatchablePath(import.meta.url) === getMatchablePath(process.argv[1])) {
         await init(argv.rootPath, emit, version)
         console.log(describe())
         process.exit()
-      }
+      },
     })
     .command({
       command: 'serve <rootPath>',
@@ -131,12 +134,12 @@ if (getMatchablePath(import.meta.url) === getMatchablePath(process.argv[1])) {
         port: {
           alias: 'p',
           describe: 'HTTP port',
-          type: 'number'
+          type: 'number',
         },
         norepl: {
           default: false,
           describe: 'Disable repl mode',
-          type: 'boolean'
+          type: 'boolean',
         },
       },
       handler: async argv => {
@@ -144,7 +147,7 @@ if (getMatchablePath(import.meta.url) === getMatchablePath(process.argv[1])) {
         const version = await getVersion()
         await init(argv.rootPath, emit, version, argv.port)
         return start()
-      }
+      },
     })
     .command({
       command: 'static <rootPath>',
@@ -153,17 +156,17 @@ if (getMatchablePath(import.meta.url) === getMatchablePath(process.argv[1])) {
         port: {
           alias: 'p',
           describe: 'HTTP port',
-          type: 'number'
+          type: 'number',
         },
         proxy: {
           alias: 'P',
           describe: 'Proxy requests to another host',
-          type: 'string'
+          type: 'string',
         },
       },
       handler: async argv => {
         return serveStatic(argv.rootPath, argv.port, argv.proxy)
-      }
+      },
     })
     .demandCommand(1)
     .strict()
