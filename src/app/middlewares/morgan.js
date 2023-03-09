@@ -1,3 +1,4 @@
+import { fromNodeMiddleware } from 'h3'
 import ansiColors from 'ansi-colors'
 import morgan, { token } from 'morgan'
 import { getResponseHeader } from 'h3'
@@ -29,7 +30,6 @@ token('url', function (req, res) {
 })
 
 token('proxied', function (req, res) {
-
   return getResponseHeader(res, 'x-proxied')
     ? ansiColors.cyanBright('🔀 proxied')
     : ''
@@ -59,7 +59,8 @@ const format = function (tokens, req, res) {
   ].join(' ')
 }
 
-export default morgan(format, {
-  skip: req =>
-    Object.values(state.get('reservedRoutes')).includes(req.url),
-})
+export default fromNodeMiddleware(
+  morgan(format, {
+    skip: req => Object.values(state.get('reservedRoutes')).includes(req.url),
+  })
+)
