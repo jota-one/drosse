@@ -1,6 +1,14 @@
 import { join } from 'path'
 
-import {getQuery, getResponseHeader, getRouterParams, setResponseHeader, eventHandler, fromNodeMiddleware} from 'h3'
+import {
+  getQuery,
+  getResponseHeader,
+  getRouterParams,
+  send,
+  setResponseHeader,
+  eventHandler,
+  fromNodeMiddleware,
+} from 'h3'
 import {
   createProxyMiddleware,
   responseInterceptor,
@@ -17,6 +25,7 @@ import useParser from './composables/useParser'
 import useScraper from './composables/useScraper'
 import useState from './composables/useState'
 import useTemplates from './composables/useTemplates'
+import { readFile } from 'fs/promises'
 
 const { loadService, loadScraperService, loadStatic, loadScraped } = useIO()
 const { parse } = useParser()
@@ -27,13 +36,17 @@ const getThrottle = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-const getThrottleMiddleware = def => eventHandler(() => new Promise(resolve => {
-    const delay = getThrottle(
-      def.throttle.min || 0,
-      def.throttle.max || def.throttle.min
-    )
-    setTimeout( resolve, delay )
-  }))
+const getThrottleMiddleware = def =>
+  eventHandler(
+    () =>
+      new Promise(resolve => {
+        const delay = getThrottle(
+          def.throttle.min || 0,
+          def.throttle.max || def.throttle.min
+        )
+        setTimeout(resolve, delay)
+      })
+  )
 
 const getProxy = function (def) {
   return typeof def.proxy === 'string' ? { target: def.proxy } : def.proxy
@@ -43,7 +56,7 @@ const createRoutes = async (app, router, routes) => {
   const context = { app, router, proxies: [], assets: [] }
   const inherited = await parse({
     routes,
-    onRouteDef: await createRoute.bind(context)
+    onRouteDef: await createRoute.bind(context),
   })
 
   const result = inherited.reduce((acc, item) => {
@@ -97,9 +110,10 @@ const createRoute = async function (def, root, defHierarchy) {
     }
 
     // create route
-    const inheritsProxy = Boolean(defHierarchy.find(item =>
-      root.join('/').includes(item.path.join('/'))
-    )?.proxy)
+    const inheritsProxy = Boolean(
+      defHierarchy.find(item => root.join('/').includes(item.path.join('/')))
+        ?.proxy
+    )
 
     await setRoute(app, router, def[verb], verb, root, inheritsProxy)
   }
@@ -111,8 +125,8 @@ const createRoute = async function (def, root, defHierarchy) {
       def.assets === true
         ? routePath
         : typeof def.assets === 'string'
-          ? def.assets.split('/')
-          : def.assets
+        ? def.assets.split('/')
+        : def.assets
 
     assets.push({
       path: routePath.join('/'),
@@ -138,7 +152,7 @@ const createRoute = async function (def, root, defHierarchy) {
           }
 
           resolve()
-        } catch(e) {
+        } catch (e) {
           reject(e)
         }
       })
@@ -245,7 +259,7 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
     app.use(path, getThrottleMiddleware(def))
   }
 
-  const handler = async (event) => {
+  const handler = async event => {
     let response
     let applyTemplate = true
     let staticExtension = 'json'
@@ -266,11 +280,17 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
         const params = getRouterParams(event)
         const query = getQuery(event)
         const { extensions } = def
-        const [ result, extension ] = await loadStatic({ routePath: root, params, verb, query, extensions })
+        const [result, extension] = await loadStatic({
+          routePath: root,
+          params,
+          verb,
+          query,
+          extensions,
+        })
         response = result
         staticExtension = extension
         if (!response) {
-          const [ result, extension ] = await loadScraped({
+          const [result, extension] = await loadScraped({
             routePath: root,
             params,
             verb,
@@ -293,7 +313,7 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
       } catch (e) {
         response = {
           drosse: e.message,
-          stack: e.stack
+          stack: e.stack,
         }
       }
     }
@@ -319,15 +339,9 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
       def.responseType === 'file' ||
       (staticExtension && staticExtension !== 'json')
     ) {
-      // @todo sendfile
-      return {}
-      // return res.sendFile(response, function (err) {
-      //   if (err) {
-      //     logger.error(err.stack)
-      //   } else {
-      //     logger.success('File downloaded successfully')
-      //   }
-      // })
+      // send file
+      const content = await readFile(response)
+      send(event, content, 'application/octet-stream')
     }
 
     return response
@@ -365,15 +379,14 @@ const createAssets = ({ app, assets }) => {
 
       const re = new RegExp(routePath.replaceAll('*', '[^/]*'))
 
-      app.use(mwPath, eventHandler((event) => {
-        if (re.test(`${mwPath}${event.node.req.url}`)) {
-          setResponseHeader(
-            event,
-            'x-wildcard-asset-target',
-            context.target
-          )
-        }
-      }))
+      app.use(
+        mwPath,
+        eventHandler(event => {
+          if (re.test(`${mwPath}${event.node.req.url}`)) {
+            setResponseHeader(event, 'x-wildcard-asset-target', context.target)
+          }
+        })
+      )
 
       _assets.push({ mwPath, fsPath, wildcardPath: routePath })
     } else {
@@ -382,19 +395,29 @@ const createAssets = ({ app, assets }) => {
   })
 
   _assets.forEach(({ mwPath, fsPath, wildcardPath }) => {
-    app.use(mwPath, eventHandler((event) => {
-      const wildcardAssetTarget = getResponseHeader(
-        event,
-        'x-wildcard-asset-target'
-      )
+    app.use(
+      mwPath,
+      eventHandler(async event => {
+        const wildcardAssetTarget = getResponseHeader(
+          event,
+          'x-wildcard-asset-target'
+        )
 
-      if (wildcardAssetTarget) {
-        event.node.req.url = wildcardAssetTarget
-          .replace(join(state.get('assetsPath'), mwPath), '')
-      }
+        if (wildcardAssetTarget) {
+          event.node.req.url = wildcardAssetTarget.replace(
+            join(state.get('assetsPath'), mwPath),
+            ''
+          )
+        }
 
-      return fromNodeMiddleware(serveStatic(fsPath, { redirect: false }))(event)
-    }))
+        await fromNodeMiddleware(
+          serveStatic(fsPath, { changeOrigin: true, redirect: false })
+        )(event)
+
+        // response of fromNodeMiddleware(serveStatic.. is undefined so returning it directly results in a 404 from h3. sending a valid response does not overwrite the result of fromNodeMiddleware however so this trik is working so far...
+        return {}
+      })
+    )
 
     logger.info(
       `-> STATIC ASSETS   ${wildcardPath || mwPath || '/'} => ${fsPath}`
@@ -414,8 +437,9 @@ const createProxies = ({ app, router, proxies }) => {
       app.use(path || '/', getThrottleMiddleware(def))
     }
 
-    app.use(path || '/',
-      eventHandler((event) => {
+    app.use(
+      path || '/',
+      eventHandler(event => {
         // Workaround for h3 not awaiting next
         // => cf. https://github.com/unjs/h3/issues/35
         return new Promise((resolve, reject) => {

@@ -1,0 +1,21 @@
+{
+  "file": {
+    "DROSSE": {
+      "get": {
+        "body": {
+          "download-file": "/file/download/cat.jpg"
+        }
+      }
+    },
+    "download": {
+      ":name": {
+        "DROSSE": {
+          "get": {
+            "service": true,
+            "responseType": "file"
+          }
+        }
+      }
+    }
+  }
+}
