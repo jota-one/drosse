@@ -1,7 +1,6 @@
 # Customize response
 
 ## Throttle
-
 A must have feature if you want to detect your race condition and test your lovely loading animations. You can throttle any endpoint by adding the `throttle` configuration object into it. Just like this:
 
 ```json
@@ -63,10 +62,9 @@ In the example above, the route `GET /api/users` will be throttled between 1 and
 Here all the routes under `/api` will be throttled between 5 and 10 seconds, except the `GET /api/users` that keeps its own 1-2 seconds throttling.
 
 ## Proxy
-
 In Drosse, proxies let you escape from your mock-server for a while. How does it work ?
 
-Anywhere in your routes `tree`, you can define a proxy (inside the `DROSSE` object, like always). All the routes matching the path where your proxy is defined, but NOT matching a subsequent route will be proxied to... your proxy. Okay this sentence is really f\*\*\*-up. Let's have a look to the `routes.json`.
+Anywhere in your routes `tree`, you can define a proxy (inside the `DROSSE` object, like always). All the routes matching the path where your proxy is defined, but NOT matching a subsequent route will be proxied to... your proxy. Okay this sentence is really f***-up. Let's have a look to the `routes.json`.
 
 ```json
 {
@@ -125,9 +123,7 @@ Of course you can still define subroutes in a proxied path. They will take prece
 If we call `http://localhost:8000/api/countries/name/switzerland`, Drosse will not proxy the request as there is a fully qualified path in our routes definition. We will then get the response defined just above and not a proxied response.
 
 ### Advanced proxy settings
-
 If you need advanced proxy settings, you can use an object instead of a string, like this:
-
 ```json
     "countries": {
       "DROSSE": {
@@ -169,37 +165,37 @@ To use a template, you need to create a JS file, store it somewhere in your `[mo
 
 ```js
 // .drosserc.js
-import { defineDrosseServer } from '@jota-one/drosse'
-import response from './templates/response'
-import responseV1 from './templates/responseV1'
+const response = require('./templates/response')
+const responseV1 = require('./templates/responseV1')
 
-export default defineDrosseServer({
+module.exports = {
   name: 'My awesome app',
   port: 8004,
-  templates: { response, responseV1 },
-})
+  templates: { response, responseV1 }
+}
 ```
 
 Here we stored the templates in a `templates` directory, but you can load them from wherever you prefer. You simply need to register each template function in a `templates` property.
+
 
 Here is how the `response` and `responseV1` template could look like:
 
 ```js
 // response.js
-export default response => {
+module.exports = function (response) {
   return {
     version: 'v2',
-    data: response,
+    data: response
   }
 }
 ```
 
 ```js
 // responseV1.js
-export default response => {
+module.exports = function (response) {
   return {
     version: 'v1',
-    ...response,
+    ...response
   }
 }
 ```

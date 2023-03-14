@@ -1,3 +1,4 @@
 module.exports = {
-  name: 'Example JSON app',
+  name: 'File download example',
+  port: 7654
 }

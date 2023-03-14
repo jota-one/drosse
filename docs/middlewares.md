@@ -1,44 +1,48 @@
 # Middlewares
 
-You can create your own middlewares. Simply create a JS file that exports a classic express middleware function. Something like this:
+You can create your own middlewares. Simply create a JS file that exports an
+h3 event handler like this:
 
 ```js
-module.exports = function (req, res, next) {
+export default event => {
   // put your middleware code here
-  next()
+  return { smth: 'cool' }
 }
 ```
 
-You can also define the middleware with a supplementary argument, to place at the first position. It will
-expose the Drosse API inside your middleware, letting you access the `db` instance for example.
+Of course you can use `async` as well in your handler.
+[https://github.com/unjs/h3](Refer to the h3 documentation for more details).
+
+You can also use "old" express-like middlewares (typically if you're using an
+epxress-based middleware package) using the `fromNodeMiddleware` utility function
+from h3:
 
 ```js
-module.exports = function (api, req, res, next) {
-  // (very) naive role checking :)
-  const { db } = api
-  const user = db.get.byId('users', req.params.id)
-  if (user.role !== 'admin') {
-    return next({ some: 'error'})
-  }
+import { fromNodeMiddleware } from 'h3'
+
+export default fromNodeMiddleware((req, res, next) => {
+  // put your middleware code here
+  req.setHeader('x-smth', 'cool')
   next()
-}
+})
 ```
 
-?> As of version 3.0.0, you can write middlewares "the h3 way" without the `next`
-callback. Note that h3 supports express middlewares anyways.
-[https://github.com/unjs/h3](Please refer to the h3 documentation for more details).
+## Use Drosse API in your middleware
+
+Alternatively you can define your middleware with a supplementary argument,
+to place at the first position. It will expose the Drosse API inside your
+middleware, letting you access the `db` instance for example:
 
 ```js
-const { getRouterParams } = require('h3')
+import { getRouterParams } from 'h3'
 
-module.exports = function (api, req, res, next) {
+export default (api, event) => {
   // (very) naive role checking :)
   const { db } = api
   const user = db.get.byId('users', getRouterParams(req).id)
   if (user.role !== 'admin') {
-    return { some: 'error'}
+    return { some: 'error' }
   }
   return
 }
 ```
-

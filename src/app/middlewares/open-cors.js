@@ -1,13 +1,22 @@
 import { handleCors, getRequestHeader } from 'h3'
 
-export default function(event) {
+export default function (event) {
   handleCors(event, {
     origin: getRequestHeader(event, 'origin') || '*',
-    methods: '*',
+    methods: [
+      'GET',
+      'PUT',
+      'POST',
+      'PATCH',
+      'DELETE',
+      'OPTIONS',
+      'HEAD',
+      'CONNECT',
+    ],
     allowHeaders: '*',
     credentials: true,
     preflight: {
-      statusCode: 204
-    }
+      statusCode: 204,
+    },
   })
 }

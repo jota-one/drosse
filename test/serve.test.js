@@ -133,28 +133,32 @@ describe('serve', () => {
   })
 
   it('loads asset from specified file', async () => {
-    let res = await supertest(host).get('/image/dog.jpg')
+    const res = await supertest(host).get('/image/dog.jpg')
     expect(res.statusCode).toBe(200)
     expect(res.headers['content-type']).toBe('image/jpeg')
   })
 
   it('loads asset with wildcard', async () => {
-    let res = await supertest(host).get('/image/animals/bird.jpg')
+    const res = await supertest(host).get('/image/animals/bird.jpg')
     expect(res.statusCode).toBe(200)
     expect(res.headers['content-type']).toBe('image/jpeg')
     expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
+  })
 
-    res = await supertest(host).get('/image/other/bird.jpg')
+  it('loads asset with wildcard (wrong url)', async () => {
+    const res = await supertest(host).get('/image/other/bird.jpg')
     expect(res.statusCode).toBe(404)
   })
 
   it('loads asset with multiple wildcards', async () => {
-    let res = await supertest(host).get('/image/animals/domestic-a/feline-b.jpg')
+    const res = await supertest(host).get('/image/animals/domestic-a/feline-b.jpg')
     expect(res.statusCode).toBe(200)
     expect(res.headers['content-type']).toBe('image/jpeg')
     expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
+  })
 
-    res = await supertest(host).get('/image/animals/domestic-a/feline.jpg')
+  it('loads asset with multiple wildcards (wrong url, missing the second -*)', async () => {
+    const res = await supertest(host).get('/image/animals/domestic-a/feline.jpg')
     expect(res.statusCode).toBe(404)
   })
 })

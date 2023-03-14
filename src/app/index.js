@@ -1,7 +1,13 @@
 import { resolve } from 'path'
 
 import ansiColors from 'ansi-colors'
-import {createApp, createRouter, readBody, eventHandler, toNodeListener} from 'h3'
+import {
+  createApp,
+  createRouter,
+  readBody,
+  eventHandler,
+  toNodeListener,
+} from 'h3'
 import { listen } from 'listhen'
 
 import { curry } from '../helpers'
@@ -103,50 +109,60 @@ const initServer = async () => {
   const router = createRouter()
   await createRoutes(app, router, routesDef)
 
-  if (userConfig.errorHandler) {
-    app.use(userConfig.errorHandler)
-  }
-
   // notify the UI for every request made
-  app.use(eventHandler(req => {
-    if (!Object.values(state.get('reservedRoutes')).includes(req.url)) {
-      emit('request', {
-        url: req.url,
-        method: req.method,
-      })
-    }
-  }))
+  app.use(
+    eventHandler(req => {
+      if (!Object.values(state.get('reservedRoutes')).includes(req.url)) {
+        emit('request', {
+          url: req.url,
+          method: req.method,
+        })
+      }
+    })
+  )
 
   // add reserved UI route
-  app.use(state.get('reservedRoutes').ui, eventHandler(internalMiddlewares['open-cors']))
-  router.get(state.get('reservedRoutes').ui, eventHandler(() => {
-    return { routes: routesDef }
-  }))
+  app.use(
+    state.get('reservedRoutes').ui,
+    eventHandler(internalMiddlewares['open-cors'])
+  )
+  router.get(
+    state.get('reservedRoutes').ui,
+    eventHandler(() => {
+      return { routes: routesDef }
+    })
+  )
 
   // add reserved CMD route
-  app.use(state.get('reservedRoutes').cmd, eventHandler(internalMiddlewares['open-cors']))
-  router.post(state.get('reservedRoutes').cmd, eventHandler(async event => {
-    const body = await readBody(event)
+  app.use(
+    state.get('reservedRoutes').cmd,
+    eventHandler(internalMiddlewares['open-cors'])
+  )
+  router.post(
+    state.get('reservedRoutes').cmd,
+    eventHandler(async event => {
+      const body = await readBody(event)
 
-    if (body.cmd === 'restart') {
-      emit('restart')
-      if (isEsmMode()) {
-        return {
-          restarted: false,
-          comment: RESTART_DISABLED_IN_ESM_MODE
+      if (body.cmd === 'restart') {
+        emit('restart')
+        if (isEsmMode()) {
+          return {
+            restarted: false,
+            comment: RESTART_DISABLED_IN_ESM_MODE,
+          }
+        } else {
+          return { restarted: true }
         }
       } else {
-        return { restarted: true }
-      }
-    } else {
-      const result = await executeCommand({
-        name: body.cmd,
-        params: body
-      })
+        const result = await executeCommand({
+          name: body.cmd,
+          params: body,
+        })
 
-      return result
-    }
-  }))
+        return result
+      }
+    })
+  )
 
   // Register router
   app.use(router)
@@ -175,7 +191,9 @@ export const start = async () => {
     }(version ${ansiColors.magenta(version)}) running at:`
   )
 
-  listener = await listen(toNodeListener(app), { port: port || description.port })
+  listener = await listen(toNodeListener(app), {
+    port: port || description.port,
+  })
 
   // extend server
   if (typeof userConfig.extendServer === 'function') {

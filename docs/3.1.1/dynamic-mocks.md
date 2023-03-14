@@ -1,6 +1,6 @@
 # Dynamic mocks (services)
 
-With the services, we cross some sort of line between pure mocking and an actual alternative backend for our frontend app. But sometimes it can be really useful. For example when you want to test interactivity in your app, or you don't have the backend yet because you're on a big project with separated teams and the backend will be implemented after the frontend, but you still have to deliver a working frontend at the same time as the backend, etc.
+With the services, we cross some sort of line between pure mocking and an actual alternative backend for our frontend app. But sometimes it can be really useful. For example when you want to test interactivity in your app, or you don't have the backend yet because you're on a big project with separated teams and the backend  will be implemented after the frontend, but you still have to deliver a working frontend at the same time as the backend, etc.
 
 > Drosse provides everything you need to implement an interactive mocked backend and let you focus on your frontend usecases.
 
@@ -13,8 +13,8 @@ To define a service, you have to do pretty much the same as to define a static m
       "DROSSE": {
         "get": {
           "body": [
-            { "id": 1, "name": "Jorinho", "premium": false },
-            { "id": 2, "name": "Tadai", "premium": true }
+            {"id": 1, "name": "Jorinho", "premium": false},
+            {"id": 2, "name": "Tadai", "premium": true}
           ]
         },
         "post": {
@@ -46,13 +46,50 @@ Let's just take another example to make it clear. For example for a `PUT /api/us
 Now let's have a look inside these service files.
 
 ## The service file
+A service file must export a function that takes one object argument.
 
-A service file must export a function that takes drosse's api object as argument.
+```js
+module.exports = function ({ req, res, db }) {
+  // a lot of cool stuffs...
+}
+```
 
+?> In esm mode (as of version 3.1.0) you would define your service like so:
+```js
+export default function ({ req, res, db }) {
+  // a lot of cool stuffs...
+}
+```
+or with a lambda function:
+```js
+export default ({ req, res, db }) => {
+  // a lot of cool stuffs...
+}
+```
+or async:
+```js
+export default async ({ req, res, db }) => {
+  // a lot of cool stuffs...
+}
+```
+
+?> As of version 3.1.0 you can use the `defineDrosseService` utility function
+which provides typing:
+
+in commonjs mode:
+```js
+const { defineDrosseService } = require('@jota-one/drosse')
+
+module.exports = defineDrosseService(function ({ req, res, db }) {
+  // a lot of cool stuffs...
+})
+```
+
+in esm mode (with async for example):
 ```js
 import { defineDrosseService } from '@jota-one/drosse'
 
-export default defineDrosseService(async ({ event, db }) => {
+export default defineDrosseService(async ({ req, res, db }) => {
   // a lot of cool stuffs...
 })
 ```
@@ -67,16 +104,37 @@ Let's take a full example.
 2. The function in the file `services/api.users.post.js` is executed.
 3. Let's say it contains this code:
 
+
 ```js
-import { defineDrosseService } from '@jota-one/drosse'
-import { readBody } from 'h3'
-
-export default defineDrosseService(async ({ event, db }) => {
-  const payload = await readBody(event)
-
+module.exports = function ({ req, res, db }) {
+  const payload = req.body
   // do whatever you want with your payload
   return { added: payload.name }
-})
+}
+```
+
+!> As of version 3.0.0 you have to use the `readBody` utility of
+[h3](https://github.com/unjs/h3) like this:
+
+```js
+const { readBody } = require('h3')
+
+module.exports = async function ({ req, res, db }) {
+  const payload = await readBody(req)
+  // do whatever you want with your payload
+  return { added: payload.name }
+}
+```
+
+or in esm mode:
+```js
+import { readBody } from 'h3'
+
+export default async function ({ req, res, db }) {
+  const payload = await readBody(req)
+  // do whatever you want with your payload
+  return { added: payload.name }
+}
 ```
 
 4. Your call returns: `{ added: "John" }`.

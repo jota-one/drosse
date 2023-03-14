@@ -7,7 +7,6 @@ Do you remember, back in the days, these webscrapers ? You just turn them on the
 You can scrape your proxied endpoints either _statically_ or _dynamically_.
 
 ## Static scraping
-
 The easiest one. Just indicate in your `routes.json` file, which endpoint you want to scrape.
 
 ```json
@@ -24,7 +23,6 @@ The easiest one. Just indicate in your `routes.json` file, which endpoint you wa
       }
     }
 ```
-
 In the snippet above, we've told Drosse to scrape any call to the `.../countries/name/....` endpoint.
 
 Concretely, it means that Drosse will copy & save the response of any of those calls into a static JSON file in the `scraped` directory of your `mocks`.
@@ -36,7 +34,6 @@ This can be a convenient way to populate your mocks contents if the backend API 
 Ideally you would rework your scraped contents and create relevant `static` file mocks out of it, maybe add some `templates`, etc. But you can also let them as they are, in the `scraped` directory: Drosse will always fallback on this directory if it doesn't find any match in the `static` directory.
 
 ## Dynamic scraping
-
 The dynamic scraping will let you rework the scraped content and save it exactly how and where you want to.
 
 ```json
@@ -60,18 +57,17 @@ When Drosse encounter that configuration, it will look for a dedicated scraper s
 
 If we take the same example as for the services. For a `GET /api/users/:id/superpowers/:name` the scraper service file will be `api.users.superpowers.js`. No parameters, no verb.
 
+
 ?> As always, the scrapers directory can be renamed in the `.drosserc.js` file, with the `scraperServicesPath` property (see [Configuration](configuration.md)).
 
 Your service must export a function which takes 2 parameters. The first one is the response of your scraped endpoint. It will be a JS object. The second one is the same `api` object as the one you get in a normal Drosse service.
 
-This gives you then access to the `db` object, the whole drosse `config` object, the h3 `event`, etc...
+This gives you then access to the `db` object, the whole drosse `config` object, the `req`, etc...
 
 ```js
-import { defineDrosseScraper } from '@jota-one/drosse'
-
-export default defineDrosseScraper((json, { db, config, req }) {
+module.exports = function (json, { db, config, req }) {
   // rework your json
   // save it in the database
   // create a proper JSON file in the `collections` directory to have your scraped content automatically reloaded in your DB even if you delete your db file.
-})
+}
 ```

@@ -1,5 +1,7 @@
 import { H3Event } from 'h3'
 
+type StaticFileResponse = [filePath: string, fileExtension: string]
+
 export declare type DrosseDbApi = {
   list: {
     all(collection: string, cleanFields?: string[]): Array<any>
@@ -33,7 +35,7 @@ export declare type DrosseDbApi = {
   }
   get: {
     byId(collection: string, id: string|number, cleanFields: string[]): any
-    byRef(refObj, dynamicId, cleanFields: string[]): any
+    byRef(refObj, dynamicId?: string|number, cleanFields?: string[]): any
     byField(
       collection: string,
       field: string,
@@ -89,7 +91,7 @@ export declare type DrosseIoApi = {
     verb: string|null,
     skipVerb:boolean,
     extensions:string[]
-  ): Promise,
+  ): Promise<StaticFileResponse>,
   loadStatic(
     routePath: string,
     params: any,
@@ -97,7 +99,7 @@ export declare type DrosseIoApi = {
     verb: string|null,
     skipVerb:boolean,
     extensions:string[]
-  ): Promise,
+  ): Promise<StaticFileResponse>,
 }
 
 export declare type DrosseLogger = {
@@ -126,7 +128,7 @@ export declare type DrosseServerConfig = {
 
   /** @default {} */
   commands?: {
-    [id: string]: (api: DrosseServiceApi) => Promise
+    [id: string]: (api: DrosseServiceApi) => Record<string, Function>
   }
 
   /** @default 'mocks.json' */
@@ -178,10 +180,10 @@ export declare type DrosseServerConfig = {
 }
 
 type DrosseServiceCallback = (api: DrosseServiceApi) => Promise<any>
+type DrosseScraperCallback = (json: string, api: DrosseServiceApi) => Promise<any>
 
 export declare type DrosseServiceApi = {
-  req: H3Event,
-  res: H3Event,
+  event: H3Event,
   db: DrosseDbApi,
   logger: DrosseLogger,
   io: DrosseIoApi,
@@ -193,3 +195,4 @@ export declare function defineDrosseServer(
 ): DrosseServerConfig
 
 export declare function defineDrosseService(cb: DrosseServiceCallback): void
+export declare function defineDrosseScraper(cb: DrosseScraperCallback): void
