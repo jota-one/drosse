@@ -1,3 +1,21 @@
+# v3.2.0 (Tue Mar 14 2023)
+
+#### 🚀 Enhancement
+
+- Develop [#60](https://github.com/jota-one/drosse/pull/60) ([@jorinho](https://github.com/jorinho) [@tadaii](https://github.com/tadaii))
+
+#### 🐛 Bug Fix
+
+- Develop [#61](https://github.com/jota-one/drosse/pull/61) ([@jorinho](https://github.com/jorinho) [@tadaii](https://github.com/tadaii))
+- Feature/h3 update [#59](https://github.com/jota-one/drosse/pull/59) ([@jorinho](https://github.com/jorinho))
+
+#### Authors: 2
+
+- Jorinho ([@jorinho](https://github.com/jorinho))
+- Tadai ([@tadaii](https://github.com/tadaii))
+
+---
+
 # v3.1.1 (Sat Feb 25 2023)
 
 #### 🐛 Bug Fix
