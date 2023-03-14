@@ -410,12 +410,7 @@ const createAssets = ({ app, assets }) => {
           )
         }
 
-        await fromNodeMiddleware(
-          serveStatic(fsPath, { changeOrigin: true, redirect: false })
-        )(event)
-
-        // response of fromNodeMiddleware(serveStatic.. is undefined so returning it directly results in a 404 from h3. sending a valid response does not overwrite the result of fromNodeMiddleware however so this trik is working so far...
-        return {}
+        return fromNodeMiddleware(serveStatic(fsPath))(event)
       })
     )
 
