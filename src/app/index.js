@@ -109,10 +109,6 @@ const initServer = async () => {
   const router = createRouter()
   await createRoutes(app, router, routesDef)
 
-  if (userConfig.errorHandler) {
-    app.use(userConfig.errorHandler)
-  }
-
   // notify the UI for every request made
   app.use(
     eventHandler(req => {
