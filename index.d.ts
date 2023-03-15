@@ -194,5 +194,5 @@ export declare function defineDrosseServer(
   config: DrosseServerConfig
 ): DrosseServerConfig
 
-export declare function defineDrosseService(cb: DrosseServiceCallback): void
-export declare function defineDrosseScraper(cb: DrosseScraperCallback): void
+export declare function defineDrosseService(cb: DrosseServiceCallback): DrosseServiceCallback
+export declare function defineDrosseScraper(cb: DrosseScraperCallback): DrosseScraperCallback
