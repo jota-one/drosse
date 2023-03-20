@@ -360,10 +360,10 @@
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
   integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
 
-"@jota-one/replacer@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@jota-one/replacer/-/replacer-0.4.0.tgz#cf6a87ec7703e1472ff669c6af70ec5a894ccc59"
-  integrity sha512-I8BFZt7IeeWAxefeGW93q2Kh+OnWVu6GcB14r74USXmpnRcOt+i2pnLwptBfzw0R27LwZZq5C3AcpjSe4qJ7RQ==
+"@jota-one/replacer@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@jota-one/replacer/-/replacer-0.5.0.tgz#4d85d875fa50372616c90c40a32df36b2e3dc598"
+  integrity sha512-nRwOZu2nSKQJkcstiGcpw+wMyAuyRQqZFAMkzAwCyYFtIDvNMI0AFpP0Q7URf1E1H9xJMZ0YZRaS1jAp6icq+w==
 
 "@jridgewell/gen-mapping@^0.1.0":
   version "0.1.1"
