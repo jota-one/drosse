@@ -157,8 +157,32 @@ describe('serve', () => {
     expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
   })
 
+  it('loads asset with multiple wildcards and not ending with any extension', async () => {
+    const res = await supertest(host).get('/image/animals/domestic-a/feline-blabla')
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toBe('image/jpeg')
+    expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
+  })
+
   it('loads asset with multiple wildcards (wrong url, missing the second -*)', async () => {
     const res = await supertest(host).get('/image/animals/domestic-a/feline.jpg')
+    expect(res.statusCode).toBe(404)
+  })
+
+  it('loads asset with full resource as wildcard', async () => {
+    const res = await supertest(host).get('/image/animals/whale/cute')
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toBe('image/jpeg')
+    expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
+  })
+
+  it('loads asset with full resource as wildcard, but bad name after', async () => {
+    const res = await supertest(host).get('/image/animals/whale/ugly')
+    expect(res.statusCode).toBe(404)
+  })
+
+  it.skip('loads asset with full resource as wildcard, but bad name after, but containing the good name', async () => {
+    const res = await supertest(host).get('/image/animals/whale/cute-but-ugly')
     expect(res.statusCode).toBe(404)
   })
 })

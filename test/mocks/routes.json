@@ -96,6 +96,13 @@
       }
     },
     "animals": {
+      "*": {
+        "cute": {
+          "DROSSE": {
+            "assets": "image/cat.jpg"
+          }
+        }
+      },
       "*.jpg": {
         "DROSSE": {
           "assets": "image/cat.jpg"
