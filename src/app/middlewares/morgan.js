@@ -1,7 +1,6 @@
 import { fromNodeMiddleware } from 'h3'
 import ansiColors from 'ansi-colors'
 import morgan, { token } from 'morgan'
-import { getResponseHeader } from 'h3'
 
 import useState from '../composables/useState'
 
@@ -24,13 +23,13 @@ token('method', function (req, res) {
 
 token('url', function (req, res) {
   const url = req.originalUrl || req.url
-  return getResponseHeader(res, 'x-proxied')
+  return res.getHeader('x-proxied')
     ? ansiColors.cyan(url)
     : ansiColors[color(res.statusCode)](url)
 })
 
 token('proxied', function (req, res) {
-  return getResponseHeader(res, 'x-proxied')
+  return res.getHeader('x-proxied')
     ? ansiColors.cyanBright('🔀 proxied')
     : ''
 })
