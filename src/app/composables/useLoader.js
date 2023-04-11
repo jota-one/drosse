@@ -1,13 +1,12 @@
-import { dirname, resolve } from 'path'
+import { resolve } from 'path'
 import { createRequire } from 'module'
-import { fileURLToPath } from 'url'
 import jiti from 'jiti'
 
 import useState from './useState'
 
 let cjsRequire
-const esmMode = import.meta.url.endsWith('.mjs') ||
-  process.argv[1].endsWith('.mjs')
+const esmMode =
+  import.meta.url.endsWith('.mjs') || process.argv[1].endsWith('.mjs')
 
 const getFullPath = path => {
   const state = useState()
@@ -15,7 +14,7 @@ const getFullPath = path => {
   return resolve(root, path)
 }
 
-const load = async function(path) {
+const load = async function (path) {
   let module
   const fullPath = getFullPath(path)
 
@@ -37,7 +36,7 @@ const load = async function(path) {
   return module
 }
 
-const isEsmMode = function() {
+const isEsmMode = function () {
   return esmMode
 }
 
