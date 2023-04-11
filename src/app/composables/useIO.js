@@ -27,6 +27,22 @@ const fileExists = async path => {
   return exists
 }
 
+const getScriptFile = async path => {
+  let scriptFile = `${path}.js`
+
+  if (await fileExists(scriptFile)) {
+    return scriptFile
+  }
+
+  scriptFile = `${path}.ts`
+
+  if (await fileExists(scriptFile)) {
+    return scriptFile
+  }
+
+  throw new Error(`File not found: ${scriptFile}`)
+}
+
 const checkRoutesFile = async () => {
   const filePath = join(
     state.get('root'),
@@ -42,9 +58,10 @@ const checkRoutesFile = async () => {
 }
 
 const getUserConfig = async root => {
-  const rcFilePath = join(root || state.get('root') || '', '.drosserc.js')
   try {
-    await fs.stat(rcFilePath)
+    const rcFilePath = await getScriptFile(
+      join(root || state.get('root') || '', '.drosserc')
+    )
     return load(rcFilePath)
   } catch (e) {
     console.error('Could not load any user config.')
@@ -54,14 +71,14 @@ const getUserConfig = async root => {
 }
 
 const loadService = async (routePath, verb) => {
-  const serviceFile =
+  const serviceFile = await getScriptFile(
     join(
       state.get('root'),
       state.get('servicesPath'),
       routePath.filter(el => el[0] !== ':').join('.')
-    ) + `.${verb}.js`
+    ) + `.${verb}`)
 
-  if (!(await fileExists(serviceFile))) {
+  if (!serviceFile) {
     return function () {
       logger.error(`service [${serviceFile}] not found`)
     }
@@ -72,14 +89,14 @@ const loadService = async (routePath, verb) => {
 }
 
 const loadScraperService = async routePath => {
-  const serviceFile =
+  const serviceFile = await getScriptFile(
     join(
       state.get('root'),
       state.get('scraperServicesPath'),
       routePath.filter(el => el[0] !== ':').join('.')
-    ) + '.js'
+    ))
 
-  if (!(await fileExists(serviceFile))) {
+  if (!serviceFile) {
     return function () {
       logger.error(`scraper service [${serviceFile}] not found`)
     }

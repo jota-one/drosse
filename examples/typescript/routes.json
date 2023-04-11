@@ -1,0 +1,11 @@
+{
+  "expose": {
+    "config": {
+      "DROSSE": {
+        "get": {
+          "service": true
+        }
+      }
+    }
+  }
+}

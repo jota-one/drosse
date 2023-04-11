@@ -1,5 +1,7 @@
-import { resolve } from 'path'
+import { dirname, resolve } from 'path'
 import { createRequire } from 'module'
+import { fileURLToPath } from 'url'
+import jiti from 'jiti'
 
 import useState from './useState'
 
@@ -19,7 +21,9 @@ const load = async function(path) {
 
   // console.debug(`🗂  loading ${esmMode ? 'esm ' : ''}module ${fullPath}`)
 
-  if (esmMode) {
+  if (fullPath.endsWith('.ts')) {
+    module = jiti(null, { interopDefault: true })(`file://${fullPath}`)
+  } else if (esmMode) {
     module = (await import(fullPath)).default
   } else {
     if (!cjsRequire) {
