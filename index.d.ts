@@ -34,7 +34,7 @@ export declare type DrosseDbApi = {
     ): Array<any>
   }
   get: {
-    byId(collection: string, id: string|number, cleanFields: string[]): any
+    byId(collection: string, id: string|number, cleanFields?: string[]): any
     byRef(refObj, dynamicId?: string|number, cleanFields?: string[]): any
     byField(
       collection: string,
@@ -48,8 +48,8 @@ export declare type DrosseDbApi = {
       value: any,
       cleanFields?: string[]
     ): any
-    find(collection: string, query: Object, cleanFields: string[]): any
-    where(collection: string, searchFn: Function, cleanFields: string[]): any
+    find(collection: string, query: Object, cleanFields?: string[]): any
+    where(collection: string, searchFn: Function, cleanFields?: string[]): any
   }
 
   query: {
