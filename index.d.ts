@@ -40,13 +40,13 @@ export declare type DrosseDbApi = {
       collection: string,
       field: string,
       value: any,
-      cleanFields: string[]
+      cleanFields?: string[]
     ): any
     byFields(
       collection: string,
       fields: string[],
       value: any,
-      cleanFields: string[]
+      cleanFields?: string[]
     ): any
     find(collection: string, query: Object, cleanFields: string[]): any
     where(collection: string, searchFn: Function, cleanFields: string[]): any
