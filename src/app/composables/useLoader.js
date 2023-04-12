@@ -21,7 +21,7 @@ const load = async function (path) {
   // console.debug(`🗂  loading ${esmMode ? 'esm ' : ''}module ${fullPath}`)
 
   if (fullPath.endsWith('.ts')) {
-    module = jiti(null, { interopDefault: true })(`file://${fullPath}`)
+    module = jiti(`file://${fullPath}`)
   } else if (esmMode) {
     module = (await import(fullPath)).default
   } else {
