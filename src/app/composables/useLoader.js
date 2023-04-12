@@ -18,10 +18,18 @@ const load = async function (path) {
   let module
   const fullPath = getFullPath(path)
 
+  const isTs = fullPath.endsWith('.ts')
+
   // console.debug(`🗂  loading ${esmMode ? 'esm ' : ''}module ${fullPath}`)
 
-  if (fullPath.endsWith('.ts')) {
-    module = jiti(`file://${fullPath}`)
+  if (isTs && esmMode) {
+    throw new Error(
+      'ESM mode is not compatible with typescript. Please run drosse in standard (non-esm) mode.'
+    )
+  }
+
+  if (isTs) {
+    module = jiti(null, { interopDefault: true })(`file://${fullPath}`)
   } else if (esmMode) {
     module = (await import(fullPath)).default
   } else {
