@@ -15,6 +15,7 @@ import {
 } from 'http-proxy-middleware'
 import serveStatic from 'serve-static'
 
+import config from './config'
 import { isEmpty } from '../helpers'
 import logger from './logger'
 import internalMiddlewares from './middlewares'
@@ -36,17 +37,15 @@ const getThrottle = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-const getThrottleMiddleware = def =>
-  eventHandler(
-    () =>
-      new Promise(resolve => {
-        const delay = getThrottle(
-          def.throttle.min || 0,
-          def.throttle.max || def.throttle.min
-        )
-        setTimeout(resolve, delay)
-      })
-  )
+const throttle = def =>
+  new Promise(resolve => {
+    const delay = getThrottle(
+      def.throttle.min || 0,
+      def.throttle.max || def.throttle.min
+    )
+    logger.info(`${config.icons.plugin.throttle} throttling [${delay} ms]...`)
+    setTimeout(resolve, delay)
+  })
 
 const getProxy = function (def) {
   return typeof def.proxy === 'string' ? { target: def.proxy } : def.proxy
@@ -255,14 +254,39 @@ const createRoute = async function (def, root, defHierarchy) {
 const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
   const path = `${state.get('basePath')}/${root.join('/')}`
 
-  if (Object.keys(def.throttle).length) {
-    app.use(path, getThrottleMiddleware(def))
-  }
+  const handlerType = def.service ? 'service' : def.static ? 'static' : 'body'
+
+  const handlerPlugins = Object.entries(def).reduce((list, [k, v]) => {
+    if (k === 'template') {
+      list.push('template')
+    }
+
+    if (k === 'throttle' && Object.keys(v).length) {
+      list.push('throttle')
+    }
+
+    if (k === 'proxy') {
+      list.push('proxy')
+    }
+
+    return list
+  }, [])
 
   const handler = async event => {
     let response
     let applyTemplate = true
     let staticExtension = 'json'
+
+    setResponseHeader(event, 'x-drosse-handler-type', handlerType)
+    setResponseHeader(
+      event,
+      'x-drosse-handler-plugins',
+      handlerPlugins.join(',')
+    )
+
+    if (Object.keys(def.throttle).length) {
+      await throttle(def)
+    }
 
     if (def.service) {
       const api = useAPI(event)
@@ -354,10 +378,17 @@ const setRoute = async (app, router, def, verb, root, inheritsProxy) => {
     router[verb](path, eventHandler(handler))
   }
 
+  const summary = {
+    verb: verb.toUpperCase().padEnd(7),
+    route: `${state.get('basePath')}/${root.join('/')}`,
+    handler: config.icons.handler[handlerType],
+    plugins: handlerPlugins
+      .map(plugin => config.icons.plugin[plugin])
+      .join(' '),
+  }
+
   logger.success(
-    `-> ${verb.toUpperCase().padEnd(7)} ${state.get('basePath')}/${root.join(
-      '/'
-    )}`
+    `-> ${summary.verb} ${summary.handler} ${summary.route} ${summary.plugins}`
   )
 }
 

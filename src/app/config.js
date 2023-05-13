@@ -2,6 +2,20 @@ export default {
   db: {
     reservedFields: ['DROSSE', 'meta', '$loki'],
   },
+  icons: {
+    handler: {
+      asset: '📁',
+      body: '🪝 ',
+      service: '🛠️ ',
+      static: '📌',
+    },
+    plugin: {
+      proxy: '🔀',
+      middleware: '🧩',
+      template: '📜',
+      throttle: '⏳',
+    },
+  },
   state: {
     assetsPath: 'assets',
     baseUrl: '',
