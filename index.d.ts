@@ -173,6 +173,9 @@ export declare type DrosseServerConfig = {
   /** @default 'static' */
   staticPath?: string
 
+  /** @default 'uploadedFiles' */
+  uploadPath?: string
+
   /** @default {} */
   templates?: {
     [id: string]: Function;

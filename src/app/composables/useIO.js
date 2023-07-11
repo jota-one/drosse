@@ -115,6 +115,23 @@ const writeScrapedFile = async (filename, content) => {
   return true
 }
 
+const writeUploadedFile = async (filename, binary) => {
+  const root = join(state.get('root'), state.get('uploadPath'))
+  const path = join(root, filename)
+  await fs.writeFile(
+    path,
+    binary
+  )
+  return path
+}
+
+const deleteAllUploadedFiles = async () => {
+  const directory = join(state.get('root'), state.get('uploadPath'))
+  for (const file of await fs.readdir(directory)) {
+    await fs.unlink(join(directory, file));
+  }
+}
+
 const loadStatic = async ({
   routePath,
   params = {},
@@ -319,6 +336,7 @@ const findStatic = async ({
 export default function useIO() {
   return {
     checkRoutesFile,
+    deleteAllUploadedFiles,
     getRoutesDef,
     getStaticFileName,
     getUserConfig,
@@ -328,5 +346,6 @@ export default function useIO() {
     loadScraped,
     loadUuid,
     writeScrapedFile,
+    writeUploadedFile,
   }
 }

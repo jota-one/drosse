@@ -32,6 +32,7 @@ export default {
     servicesPath: 'services',
     shallowCollections: [],
     staticPath: 'static',
+    uploadPath: 'uploadedFiles',
     uuid: '',
   },
   cli: null,
