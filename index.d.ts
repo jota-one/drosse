@@ -1,4 +1,5 @@
 import { H3Event } from 'h3'
+import { Stream } from "node:stream";
 
 type StaticFileResponse = [filePath: string, fileExtension: string]
 
@@ -100,6 +101,10 @@ export declare type DrosseIoApi = {
     skipVerb:boolean,
     extensions:string[]
   ): Promise<StaticFileResponse>,
+  writeUploadedFile(
+    filename: string,
+    binary: string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView> | Stream
+  ): Promise<string>
 }
 
 export declare type DrosseLogger = {
