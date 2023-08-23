@@ -1,3 +1,3 @@
 module.exports = {
-  name: 'Example JSON app',
+  name: 'Example File Download app',
 }

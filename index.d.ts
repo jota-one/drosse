@@ -1,4 +1,5 @@
 import { H3Event } from 'h3'
+import { Stream } from "node:stream";
 
 type StaticFileResponse = [filePath: string, fileExtension: string]
 
@@ -34,22 +35,22 @@ export declare type DrosseDbApi = {
     ): Array<any>
   }
   get: {
-    byId(collection: string, id: string|number, cleanFields: string[]): any
+    byId(collection: string, id: string|number, cleanFields?: string[]): any
     byRef(refObj, dynamicId?: string|number, cleanFields?: string[]): any
     byField(
       collection: string,
       field: string,
       value: any,
-      cleanFields: string[]
+      cleanFields?: string[]
     ): any
     byFields(
       collection: string,
       fields: string[],
       value: any,
-      cleanFields: string[]
+      cleanFields?: string[]
     ): any
-    find(collection: string, query: Object, cleanFields: string[]): any
-    where(collection: string, searchFn: Function, cleanFields: string[]): any
+    find(collection: string, query: Object, cleanFields?: string[]): any
+    where(collection: string, searchFn: Function, cleanFields?: string[]): any
   }
 
   query: {
@@ -100,6 +101,10 @@ export declare type DrosseIoApi = {
     skipVerb:boolean,
     extensions:string[]
   ): Promise<StaticFileResponse>,
+  writeUploadedFile(
+    filename: string,
+    binary: string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView> | Stream
+  ): Promise<string>
 }
 
 export declare type DrosseLogger = {
@@ -172,6 +177,9 @@ export declare type DrosseServerConfig = {
 
   /** @default 'static' */
   staticPath?: string
+
+  /** @default 'uploadedFiles' */
+  uploadPath?: string
 
   /** @default {} */
   templates?: {

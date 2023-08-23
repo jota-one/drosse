@@ -2,6 +2,20 @@ export default {
   db: {
     reservedFields: ['DROSSE', 'meta', '$loki'],
   },
+  icons: {
+    handler: {
+      asset: '📁',
+      body: '🪝 ',
+      service: '🛠️ ',
+      static: '📌',
+    },
+    plugin: {
+      proxy: '🔀',
+      middleware: '🧩',
+      template: '📜',
+      throttle: '⏳',
+    },
+  },
   state: {
     assetsPath: 'assets',
     baseUrl: '',
@@ -18,13 +32,14 @@ export default {
     servicesPath: 'services',
     shallowCollections: [],
     staticPath: 'static',
+    uploadPath: 'uploadedFiles',
     uuid: '',
   },
   cli: null,
   commands: {},
   errorHandler: null,
   extendServer: null,
-  middlewares: [],
+  middlewares: ['morgan'],
   templates: {},
   onHttpUpgrade: null,
 }

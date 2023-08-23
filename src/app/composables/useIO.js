@@ -27,6 +27,22 @@ const fileExists = async path => {
   return exists
 }
 
+const getScriptFile = async path => {
+  let scriptFile = `${path}.js`
+
+  if (await fileExists(scriptFile)) {
+    return scriptFile
+  }
+
+  scriptFile = `${path}.ts`
+
+  if (await fileExists(scriptFile)) {
+    return scriptFile
+  }
+
+  throw new Error(`File not found: ${scriptFile}`)
+}
+
 const checkRoutesFile = async () => {
   const filePath = join(
     state.get('root'),
@@ -42,9 +58,10 @@ const checkRoutesFile = async () => {
 }
 
 const getUserConfig = async root => {
-  const rcFilePath = join(root || state.get('root') || '', '.drosserc.js')
   try {
-    await fs.stat(rcFilePath)
+    const rcFilePath = await getScriptFile(
+      join(root || state.get('root') || '', '.drosserc')
+    )
     return load(rcFilePath)
   } catch (e) {
     console.error('Could not load any user config.')
@@ -54,14 +71,14 @@ const getUserConfig = async root => {
 }
 
 const loadService = async (routePath, verb) => {
-  const serviceFile =
+  const serviceFile = await getScriptFile(
     join(
       state.get('root'),
       state.get('servicesPath'),
       routePath.filter(el => el[0] !== ':').join('.')
-    ) + `.${verb}.js`
+    ) + `.${verb}`)
 
-  if (!(await fileExists(serviceFile))) {
+  if (!serviceFile) {
     return function () {
       logger.error(`service [${serviceFile}] not found`)
     }
@@ -72,14 +89,14 @@ const loadService = async (routePath, verb) => {
 }
 
 const loadScraperService = async routePath => {
-  const serviceFile =
+  const serviceFile = await getScriptFile(
     join(
       state.get('root'),
       state.get('scraperServicesPath'),
       routePath.filter(el => el[0] !== ':').join('.')
-    ) + '.js'
+    ))
 
-  if (!(await fileExists(serviceFile))) {
+  if (!serviceFile) {
     return function () {
       logger.error(`scraper service [${serviceFile}] not found`)
     }
@@ -96,6 +113,23 @@ const writeScrapedFile = async (filename, content) => {
     'utf-8'
   )
   return true
+}
+
+const writeUploadedFile = async (filename, binary) => {
+  const root = join(state.get('root'), state.get('uploadPath'))
+  const path = join(root, filename)
+  await fs.writeFile(
+    path,
+    binary
+  )
+  return path
+}
+
+const deleteAllUploadedFiles = async () => {
+  const directory = join(state.get('root'), state.get('uploadPath'))
+  for (const file of await fs.readdir(directory)) {
+    await fs.unlink(join(directory, file));
+  }
 }
 
 const loadStatic = async ({
@@ -302,6 +336,7 @@ const findStatic = async ({
 export default function useIO() {
   return {
     checkRoutesFile,
+    deleteAllUploadedFiles,
     getRoutesDef,
     getStaticFileName,
     getUserConfig,
@@ -311,5 +346,6 @@ export default function useIO() {
     loadScraped,
     loadUuid,
     writeScrapedFile,
+    writeUploadedFile,
   }
 }

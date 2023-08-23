@@ -7,7 +7,9 @@ const version = 'test'
 
 describe('serve', () => {
   let emitted, host
-  const emit = event => { emitted = event }
+  const emit = event => {
+    emitted = event
+  }
 
   beforeAll(async () => {
     await init(root, emit, version)
@@ -41,18 +43,18 @@ describe('serve', () => {
           DROSSE: {
             throttle: {
               min: 3000,
-              max: 3000
-            }
-          }
+              max: 3000,
+            },
+          },
         },
         static: {
           DROSSE: {
             get: {
-              static: true
-            }
-          }
-        }
-      }
+              static: true,
+            },
+          },
+        },
+      },
     })
   })
 
@@ -67,22 +69,29 @@ describe('serve', () => {
     expect(res.statusCode).toBe(200)
   })
 
+  it('throttles dynamic route', async () => {
+    const res = await supertest(host).get('/throttle/10')
+    expect(res.statusCode).toBe(200)
+  })
+
   it('applies template', async () => {
     let res = await supertest(host).get('/template/hateoas')
     expect(JSON.parse(res.text)).toMatchObject({
-      links: [{
-        rel: 'link1',
-        href: 'http://somehost/link/1'
-      }]
+      links: [
+        {
+          rel: 'link1',
+          href: 'http://somehost/link/1',
+        },
+      ],
     })
 
     res = await supertest(host).get('/template/hal')
     expect(JSON.parse(res.text)).toMatchObject({
       _links: {
         link1: {
-          href: 'http://somehost/link/1'
-        }
-      }
+          href: 'http://somehost/link/1',
+        },
+      },
     })
   })
 
@@ -91,13 +100,14 @@ describe('serve', () => {
     const d = describeDrosse()
     const port2 = listener.server.address().port
     const host2 = `${d.proto}://127.0.0.1:${port2}`
-    const trim = str => str.replace(/[\n\r\s\t]?/gmi, '')
+    const trim = str => str.replace(/[\n\r\s\t]?/gim, '')
 
     const res1 = await supertest(host).get('/template/hal')
     const res2 = await supertest(host2).get('/proxy/hal')
 
-    expect(trim(res1.text).replaceAll('http://somehost/', '/'))
-      .toEqual(trim(res2.text))
+    expect(trim(res1.text).replaceAll('http://somehost/', '/')).toEqual(
+      trim(res2.text)
+    )
 
     await stop()
   })
@@ -151,14 +161,44 @@ describe('serve', () => {
   })
 
   it('loads asset with multiple wildcards', async () => {
-    const res = await supertest(host).get('/image/animals/domestic-a/feline-b.jpg')
+    const res = await supertest(host).get(
+      '/image/animals/domestic-a/feline-b.jpg'
+    )
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toBe('image/jpeg')
+    expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
+  })
+
+  it('loads asset with multiple wildcards and not ending with any extension', async () => {
+    const res = await supertest(host).get(
+      '/image/animals/domestic-a/feline-blabla'
+    )
     expect(res.statusCode).toBe(200)
     expect(res.headers['content-type']).toBe('image/jpeg')
     expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
   })
 
   it('loads asset with multiple wildcards (wrong url, missing the second -*)', async () => {
-    const res = await supertest(host).get('/image/animals/domestic-a/feline.jpg')
+    const res = await supertest(host).get(
+      '/image/animals/domestic-a/feline.jpg'
+    )
+    expect(res.statusCode).toBe(404)
+  })
+
+  it('loads asset with full resource as wildcard', async () => {
+    const res = await supertest(host).get('/image/animals/whale/cute')
+    expect(res.statusCode).toBe(200)
+    expect(res.headers['content-type']).toBe('image/jpeg')
+    expect(res.headers['x-wildcard-asset-target']).toBe('assets/image/cat.jpg')
+  })
+
+  it('loads asset with full resource as wildcard, but bad name after', async () => {
+    const res = await supertest(host).get('/image/animals/whale/ugly')
+    expect(res.statusCode).toBe(404)
+  })
+
+  it.skip('loads asset with full resource as wildcard, but bad name after, but containing the good name', async () => {
+    const res = await supertest(host).get('/image/animals/whale/cute-but-ugly')
     expect(res.statusCode).toBe(404)
   })
 })

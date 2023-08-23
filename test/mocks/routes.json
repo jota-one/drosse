@@ -8,6 +8,17 @@
       "get": {
         "body": "you've been throttled!"
       }
+    },
+    ":id": {
+      "DROSSE": {
+        "throttle": {
+          "min": 2000,
+          "max": 2000
+        },
+        "get": {
+          "body": "throttle on dynamic route"
+        }
+      }
     }
   },
   "static": {
@@ -33,11 +44,16 @@
         "get": {
           "body": {
             "someResource": {
-              "links": [{
-                "rel": "link2",
-                "href": "http://somehost/link/2",
-                "verbs": ["get", "put"]
-              }]
+              "links": [
+                {
+                  "rel": "link2",
+                  "href": "http://somehost/link/2",
+                  "verbs": [
+                    "get",
+                    "put"
+                  ]
+                }
+              ]
             }
           }
         }
@@ -61,7 +77,10 @@
               "_links": {
                 "link2": {
                   "href": "http://somehost/link/2",
-                  "verbs": ["get", "put"]
+                  "verbs": [
+                    "get",
+                    "put"
+                  ]
                 }
               },
               "sub": {
@@ -96,6 +115,13 @@
       }
     },
     "animals": {
+      "*": {
+        "cute": {
+          "DROSSE": {
+            "assets": "image/cat.jpg"
+          }
+        }
+      },
       "*.jpg": {
         "DROSSE": {
           "assets": "image/cat.jpg"
@@ -114,7 +140,10 @@
     "DROSSE": {
       "proxy": {
         "target": "http://127.0.0.1:3636/template",
-        "responseRewriters": ["hal-links", "hateoas-links"]
+        "responseRewriters": [
+          "hal-links",
+          "hateoas-links"
+        ]
       }
     },
     "hal": {
