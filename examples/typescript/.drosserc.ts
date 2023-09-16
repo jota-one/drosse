@@ -1,4 +1,4 @@
-import { defineDrosseServer } from '../../src/index.js'
+import { defineDrosseServer } from '../../'
 
 export default defineDrosseServer ({
   name: 'Example typescript app',

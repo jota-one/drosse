@@ -1,0 +1,16 @@
+{
+  "api": {
+    "DROSSE": {
+      "get": {
+        "service": true
+      }
+    },
+    "custom": {
+      "DROSSE": {
+        "get": {
+          "service": true
+        }
+      }  
+    }
+  }
+}

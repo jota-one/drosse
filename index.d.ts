@@ -1,4 +1,4 @@
-import { H3Event } from 'h3'
+import { H3Error, H3Event } from 'h3'
 import { Stream } from "node:stream";
 
 type StaticFileResponse = [filePath: string, fileExtension: string]
@@ -187,6 +187,7 @@ export declare type DrosseServerConfig = {
   }
 }
 
+type DrosseErrorHandler = (error: H3Error, event: H3Event) => Promise<{ statusCode: number, response: any }>
 type DrosseServiceCallback = (api: DrosseServiceApi) => Promise<any>
 type DrosseScraperCallback = (json: string, api: DrosseServiceApi) => Promise<any>
 
@@ -204,3 +205,4 @@ export declare function defineDrosseServer(
 
 export declare function defineDrosseService(cb: DrosseServiceCallback): DrosseServiceCallback
 export declare function defineDrosseScraper(cb: DrosseScraperCallback): DrosseScraperCallback
+export declare function defineErrorHandler(cb: DrosseErrorHandler): DrosseErrorHandler
