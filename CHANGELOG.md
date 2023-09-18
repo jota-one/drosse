@@ -1,3 +1,22 @@
+# v3.6.0 (Wed Aug 23 2023)
+
+#### 🚀 Enhancement
+
+- Release 3.6.0 [#65](https://github.com/jota-one/drosse/pull/65) ([@jorinho](https://github.com/jorinho) [@tadaii](https://github.com/tadaii) [@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### 🔩 Dependency Updates
+
+- build(deps): bump semver from 5.7.1 to 5.7.2 [#69](https://github.com/jota-one/drosse/pull/69) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- build(deps): bump vite from 3.2.5 to 3.2.7 [#68](https://github.com/jota-one/drosse/pull/68) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 3
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- Jorinho ([@jorinho](https://github.com/jorinho))
+- Tadai ([@tadaii](https://github.com/tadaii))
+
+---
+
 # v3.2.0 (Mon Mar 20 2023)
 
 #### 🚀 Enhancement
