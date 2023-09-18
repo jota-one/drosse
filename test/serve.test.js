@@ -27,12 +27,12 @@ describe('serve', () => {
     expect(res.statusCode).toBe(404)
   })
 
-  it.skip('exposes reserved routes', async () => {
+  it('exposes reserved routes', async () => {
     let res = await supertest(host).get('/UI')
     expect(res.statusCode).toBe(200)
 
     res = await supertest(host).get('/CMD')
-    expect(res.statusCode).toBe(405)
+    expect(res.statusCode).toBe(404)
   })
 
   it('returns routes definition via /UI', async () => {
