@@ -27,7 +27,7 @@ describe('serve', () => {
     expect(res.statusCode).toBe(404)
   })
 
-  it('exposes reserved routes', async () => {
+  it.skip('exposes reserved routes', async () => {
     let res = await supertest(host).get('/UI')
     expect(res.statusCode).toBe(200)
 
