@@ -16,6 +16,7 @@
 // export const pick = _pick.default
 // export const set = _set.default
 
+import { promises as fs } from 'fs'
 import mergician from 'mergician'
 
 function cleanIndexInpath(pathPart) {
@@ -203,4 +204,13 @@ export function cloneDeep(obj) {
  */
 export function merge(obj1, obj2) {
   return mergician(obj1, obj2)
+}
+
+export async function fileExists(path) {
+  try {
+    await fs.access(path)
+    return true
+  } catch(_) {
+    return false
+  }
 }

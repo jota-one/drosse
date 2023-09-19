@@ -14,6 +14,7 @@ import useIO from './app/composables/useIO'
 export const defineDrosseServer = userConfig => userConfig
 export const defineDrosseScraper = handler => handler
 export const defineDrosseService = handler => handler
+export const defineErrorHandler = handler => handler
 
 process.title = `node drosse ${process.argv[1]}`
 

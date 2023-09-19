@@ -7,6 +7,9 @@ import {
   readBody,
   eventHandler,
   toNodeListener,
+  setResponseStatus,
+  send,
+  sendError
 } from 'h3'
 import { listen } from 'listhen'
 
@@ -66,7 +69,20 @@ export const init = async (_root, _emit, _version, _port) => {
 }
 
 const initServer = async () => {
-  app = createApp({ debug: true })
+  let onError = undefined
+  
+  if (userConfig.errorHandler) {
+    onError = async (error, event) => {
+      const { statusCode, response } = await userConfig.errorHandler(error, event)
+      setResponseStatus(event, statusCode)
+      return send(event, JSON.stringify(response))
+    }
+  }
+
+  app = createApp({
+    debug: true,
+    ...(onError ? { onError } : {})
+  })
 
   // start and populate database as early as possible
   await loadDb()

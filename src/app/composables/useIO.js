@@ -5,7 +5,7 @@ import { replace } from '@jota-one/replacer'
 import { async as rrdir } from 'rrdir'
 import { v4 as uuidv4 } from 'uuid'
 
-import { isEmpty, cloneDeep } from '../../helpers'
+import { isEmpty, cloneDeep, fileExists } from '../../helpers'
 
 import useLoader from './useLoader'
 import useState from './useState'
@@ -13,19 +13,6 @@ import logger from '../logger'
 
 const state = useState()
 const { load } = useLoader()
-
-const fileExists = async path => {
-  let exists
-
-  try {
-    await fs.access(path)
-    exists = true
-  } catch {
-    exists = false
-  }
-
-  return exists
-}
 
 const getScriptFile = async path => {
   let scriptFile = `${path}.js`
@@ -127,8 +114,11 @@ const writeUploadedFile = async (filename, binary) => {
 
 const deleteAllUploadedFiles = async () => {
   const directory = join(state.get('root'), state.get('uploadPath'))
-  for (const file of await fs.readdir(directory)) {
-    await fs.unlink(join(directory, file));
+
+  if (await fileExists(directory)) {
+    for (const file of await fs.readdir(directory)) {
+      await fs.unlink(join(directory, file));
+    } 
   }
 }
 

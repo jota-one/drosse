@@ -32,7 +32,7 @@ describe('serve', () => {
     expect(res.statusCode).toBe(200)
 
     res = await supertest(host).get('/CMD')
-    expect(res.statusCode).toBe(405)
+    expect(res.statusCode).toBe(404)
   })
 
   it('returns routes definition via /UI', async () => {
