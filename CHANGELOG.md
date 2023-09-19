@@ -1,3 +1,17 @@
+# v3.6.1 (Tue Sep 19 2023)
+
+#### 🐛 Bug Fix
+
+- Release 3.6.1 [#76](https://github.com/jota-one/drosse/pull/76) ([@tadaii](https://github.com/tadaii))
+- Fix/uploaded files error [#75](https://github.com/jota-one/drosse/pull/75) ([@tadaii](https://github.com/tadaii))
+- feat: handle custom error handling [#72](https://github.com/jota-one/drosse/pull/72) ([@tadaii](https://github.com/tadaii))
+
+#### Authors: 1
+
+- Tadai ([@tadaii](https://github.com/tadaii))
+
+---
+
 # v3.6.0 (Wed Aug 23 2023)
 
 #### 🚀 Enhancement
