@@ -9,11 +9,10 @@ import {
   toNodeListener,
   setResponseStatus,
   send,
-  sendError
 } from 'h3'
 import { listen } from 'listhen'
 
-import { curry } from '../helpers'
+import { curry, get } from '../helpers'
 import { RESTART_DISABLED_IN_ESM_MODE } from '../messages'
 
 import config from './config'
@@ -29,6 +28,7 @@ import useLoader from './composables/useLoader'
 import useMiddlewares from './composables/useMiddlewares'
 import useState from './composables/useState'
 import useTemplates from './composables/useTemplates'
+import { dropDatabase } from './cli/db'
 
 const api = useAPI()
 const { executeCommand } = useCommand()
@@ -70,10 +70,13 @@ export const init = async (_root, _emit, _version, _port) => {
 
 const initServer = async () => {
   let onError = undefined
-  
+
   if (userConfig.errorHandler) {
     onError = async (error, event) => {
-      const { statusCode, response } = await userConfig.errorHandler(error, event)
+      const { statusCode, response } = await userConfig.errorHandler(
+        error,
+        event
+      )
       setResponseStatus(event, statusCode)
       return send(event, JSON.stringify(response))
     }
@@ -81,7 +84,7 @@ const initServer = async () => {
 
   app = createApp({
     debug: true,
-    ...(onError ? { onError } : {})
+    ...(onError ? { onError } : {}),
   })
 
   // start and populate database as early as possible
@@ -169,10 +172,17 @@ const initServer = async () => {
         } else {
           return { restarted: true }
         }
+      } else if (
+        body.cmd === 'db drop' ||
+        (body.cmd === 'db' && (body.args || [])[0] === 'drop')
+      ) {
+        const dbDropped = await dropDatabase(state.get())
+        emit('restart')
+        return { dbDropped, restarted: true }
       } else {
         const result = await executeCommand({
           name: body.cmd,
-          params: body,
+          params: body.params,
         })
 
         return result
