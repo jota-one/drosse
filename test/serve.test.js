@@ -64,6 +64,14 @@ describe('serve', () => {
     expect(emitted).toBe('restart')
   })
 
+  it('drops the db via /CMD', async () => {
+    const res = await supertest(host).post('/CMD').send({ cmd: 'db drop' })
+    expect(JSON.parse(res.text)).toMatchObject({
+      restarted: true,
+      dbDropped: true,
+    })
+  })
+
   it('throttles request', async () => {
     const res = await supertest(host).get('/throttle')
     expect(res.statusCode).toBe(200)

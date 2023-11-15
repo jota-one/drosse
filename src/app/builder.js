@@ -460,7 +460,10 @@ const createProxies = ({ app, router, proxies }) => {
     const proxyMw = createProxyMiddleware({ ...context, logLevel: 'warn' })
 
     if (Object.keys(def.throttle || {}).length) {
-      app.use(path || '/', getThrottleMiddleware(def))
+      app.use(
+        path || '/',
+        eventHandler(async () => await throttle(def))
+      )
     }
 
     app.use(
