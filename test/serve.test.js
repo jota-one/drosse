@@ -68,7 +68,7 @@ describe('serve', () => {
     const res = await supertest(host).post('/CMD').send({ cmd: 'db drop' })
     expect(JSON.parse(res.text)).toMatchObject({
       restarted: true,
-      dbDropped: trze,
+      dbDropped: true,
     })
   })
 
