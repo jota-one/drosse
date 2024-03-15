@@ -23,7 +23,7 @@
 
 **Drosse is a stateful and programmable mock server written in javascript.**
 
-Based on [h3](https://github.com/unjs/h3), Drosse uses [loki](https://github.com/techfort/LokiJS)
+Based on [h3](https://h3.unjs.io/), Drosse uses [loki](https://github.com/techfort/LokiJS)
 to store your mock data in memory so you can modify them in your
 `POST`, `PUT`, `PATCH` and `DELETE` requests.
 
