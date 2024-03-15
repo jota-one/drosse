@@ -17,8 +17,9 @@
 
 #drosse-hero {
   text-align: center;
-  padding:3rem 2rem 2rem;
+  padding: 3rem 2rem 2rem;
   border-bottom: 1px solid rgba(128,128,128, 0.2);
+  margin-bottom: 40px;
   background: hsla(var(--md-hue),15%,14%,1);
 }
 

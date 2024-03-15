@@ -12,7 +12,6 @@ extra:
       link: https://www.npmjs.com/package/@jota-one/drosse
     - icon: simple/github
       link: https://github.com/jota-one/drosse
-
 nav:
   - index.md
   - getting-started.md
@@ -35,13 +34,19 @@ markdown_extensions:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
+      linenums: false
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
+      auto_title: false
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.snippets
   - pymdownx.superfences
+  - toc:
+      title: On this page
+      permalink: true
+      permalink_title: Anchor link to this section for reference
 theme:
   name: material
   features:
@@ -49,6 +54,7 @@ theme:
     - content.code.copy
     - navigation.footer
     - navigation.tracking
+    - navigation.sections
   logo: assets/drosse-logo-header.svg
   favicon: assets/favicon.ico
   icon:
