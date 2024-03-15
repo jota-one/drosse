@@ -8,3 +8,4 @@ node_modules/
 mocks.db
 mocks.json
 yarn-*.log
+venv/

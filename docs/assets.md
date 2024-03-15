@@ -2,7 +2,7 @@
 
 You can use the `assets` property in the `DROSSE` object to tell a path to serve only static contents. Let's check the following example:
 
-```json
+``` json
 {
   "content": {
     "DROSSE": {
@@ -23,4 +23,5 @@ In this example, all calls done to `/content` will be done statically on the `as
 
 The example reveals another feature: you can rewrite the path through the `assets` property. If you call `http://localhost:8000/content/imgs/background_whatever.jpg`, Drosse will statically serve the `[your mocks root]/assets/content/imgs/background_whatever.jpg` file.
 
-?> You can redefine this `assets` directory name in your `.drosserc.js` file (see [Configuration](configuration.md)).
+!!! info
+    You can redefine this `assets` folder name in your `.drosserc.js` file (see [Configuration](configuration.md)).

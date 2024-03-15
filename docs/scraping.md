@@ -2,7 +2,8 @@
 
 Do you remember, back in the days, these webscrapers ? You just turn them on then browse a website and they will eventually save the whole website on your machine? Well Drosse provides something similar, but a little less brutal as you can define precisely which endpoint you would like to scrape.
 
-!> Endpoint scraping come along with the [Proxy](customize-response.md#proxy) feature. You won't scrape your own defined mocks, right?
+!!! warning
+    Endpoint scraping come along with the [Proxy](customize-response.md#proxy) feature. You won't scrape your own defined mocks, right?
 
 You can scrape your proxied endpoints either _statically_ or _dynamically_.
 
@@ -29,7 +30,8 @@ In the snippet above, we've told Drosse to scrape any call to the `.../countries
 
 Concretely, it means that Drosse will copy & save the response of any of those calls into a static JSON file in the `scraped` directory of your `mocks`.
 
-?> As usual, you can redefine this `scraped` directory name in your `.drosserc.js` file (see [Configuration](configuration.md)).
+!!! info
+    As usual, you can redefine this `scraped` directory name in your `.drosserc.js` file (see [Configuration](configuration.md)).
 
 This can be a convenient way to populate your mocks contents if the backend API already exists. Just configure your mocks to proxy the existing API and activate the scraper. When you have enought contents, remove the proxy and redefine your mocked routes as `static` mocks.
 
@@ -60,7 +62,8 @@ When Drosse encounter that configuration, it will look for a dedicated scraper s
 
 If we take the same example as for the services. For a `GET /api/users/:id/superpowers/:name` the scraper service file will be `api.users.superpowers.js`. No parameters, no verb.
 
-?> As always, the scrapers directory can be renamed in the `.drosserc.js` file, with the `scraperServicesPath` property (see [Configuration](configuration.md)).
+!!! info
+    As always, the scrapers directory can be renamed in the `.drosserc.js` file, with the `scraperServicesPath` property (see [Configuration](configuration.md)).
 
 Your service must export a function which takes 2 parameters. The first one is the response of your scraped endpoint. It will be a JS object. The second one is the same `api` object as the one you get in a normal Drosse service.
 

@@ -6,7 +6,7 @@ This file holds your mock server general configuration. It's optional as all its
 
 Here is a typical example of what it could contain.
 
-```js
+```js title=".drosserc.ts"
 import { defineDrosseServer } from '@jota-one/drosse'
 
 export default defineDrosseServer({
