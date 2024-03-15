@@ -9,3 +9,4 @@ mocks.db
 mocks.json
 yarn-*.log
 venv/
+.venv/

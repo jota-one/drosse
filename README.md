@@ -75,6 +75,55 @@ Find example code in the [examples](./examples) folder.
 - Build using `yarn build` or `yarn build:stub` for live rebuild
 - Run drosse with `yarn serve examples/<example-folder-name>`
 
+### Running the documentation website locally with mkdocs
+
+[Drosse's website](https://drosse.dev) is built with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/)
+and uses the markdown form the [./docs](./docs/) folder as its content source.
+
+Head up to the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) website for detailed documentation about how to use it.
+
+For running it locally, you need `python3` installed on your computer.
+
+#### Install
+```sh
+# Create a virtual environment
+python3 -m venv .venv
+
+# Activate the virtual environment.
+source .venv/bin/activate
+
+# If `pip` is not installed => https://pip.pypa.io/en/stable/installation/
+
+# Install python dependencies
+pip install -r requirements.txt
+```
+
+#### Run
+If not already done, activate the virtual environment:
+```sh
+source .venv/bin/activate
+```
+
+Run the documentation website with:
+```sh
+mkdocs serve
+```
+
+
+
+#### Publish a new version of the documentation
+```sh
+mike deploy --push --update-aliases <major>.<minor> latest
+```
+
+where `<major>.<minor>` is the current version you've written new documentation for.
+`mike` is the versionning plugin used by mkdocs and has already been installed in the virtual environment.
+
+More info in `mike` can be found here:
+- [Material for MkDocs - Versioning](https://squidfunk.github.io/mkdocs-material/setup/setting-up-versioning/?h=version)
+- [`mike`'s' official documentation](https://github.com/jimporter/mike)
+
+
 ## Credits & License
 
 **Drosse** is crafted by [Jota](https://jota.one) and licensed under the [MIT license](https://github.com/jota-one/drosse/blob/master/LICENSE).
