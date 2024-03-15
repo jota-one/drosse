@@ -1,3 +1,38 @@
+# v3.6.2 (Wed Nov 15 2023)
+
+#### 🐛 Bug Fix
+
+- Release 3.6.2 [#81](https://github.com/jota-one/drosse/pull/81) ([@tadaii](https://github.com/tadaii) [@jorinho](https://github.com/jorinho))
+- Feature/dbdrop via api [#80](https://github.com/jota-one/drosse/pull/80) ([@tadaii](https://github.com/tadaii))
+
+#### 🔩 Dependency Updates
+
+- build(deps): bump get-func-name from 2.0.0 to 2.0.2 [#77](https://github.com/jota-one/drosse/pull/77) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- build(deps): bump postcss from 8.4.20 to 8.4.31 [#78](https://github.com/jota-one/drosse/pull/78) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- build(deps): bump @babel/traverse from 7.20.5 to 7.23.2 [#79](https://github.com/jota-one/drosse/pull/79) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 3
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- Jorinho ([@jorinho](https://github.com/jorinho))
+- Tadai ([@tadaii](https://github.com/tadaii))
+
+---
+
+# v3.6.1 (Tue Sep 19 2023)
+
+#### 🐛 Bug Fix
+
+- Release 3.6.1 [#76](https://github.com/jota-one/drosse/pull/76) ([@tadaii](https://github.com/tadaii))
+- Fix/uploaded files error [#75](https://github.com/jota-one/drosse/pull/75) ([@tadaii](https://github.com/tadaii))
+- feat: handle custom error handling [#72](https://github.com/jota-one/drosse/pull/72) ([@tadaii](https://github.com/tadaii))
+
+#### Authors: 1
+
+- Tadai ([@tadaii](https://github.com/tadaii))
+
+---
+
 # v3.6.0 (Wed Aug 23 2023)
 
 #### 🚀 Enhancement
