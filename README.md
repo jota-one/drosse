@@ -109,8 +109,6 @@ Run the documentation website with:
 mkdocs serve
 ```
 
-
-
 #### Publish a new version of the documentation
 ```sh
 mike deploy --push --update-aliases <major>.<minor> latest
@@ -118,6 +116,20 @@ mike deploy --push --update-aliases <major>.<minor> latest
 
 where `<major>.<minor>` is the current version you've written new documentation for.
 `mike` is the versionning plugin used by mkdocs and has already been installed in the virtual environment.
+
+**Note that** the `mike` command will generate the webiste in the (git-ignored) `site` folder and will
+push it to the `gh-pages` branch remotely, so you don't need to checkout the `gh-pages` branch locally.
+
+If you want/need to delete a version, use:
+```sh
+mike delete <major>.<minor> --push
+```
+
+If you want/need to delete everythin, use:
+```sh
+mike delete --all --push
+```
+
 
 More info in `mike` can be found here:
 - [Material for MkDocs - Versioning](https://squidfunk.github.io/mkdocs-material/setup/setting-up-versioning/?h=version)
