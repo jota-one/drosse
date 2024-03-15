@@ -1,10 +1,11 @@
-<div align="center" style="padding-bottom:1rem;margin-bottom:2rem;border-bottom:1px solid rgba(128,128,128, 0.2)">
-  <h1 style="margin-bottom:0">
-    <img src="https://raw.githubusercontent.com/jota-one/drosse/master/docs/_media/drosse-logo.svg"/>
-    <br>
-    Drosse
+<div id="drosse-hero">
+  <h1>
+    <img src="assets/drosse-logo.svg" height="100px" width="100px"/>
+    <img src="assets/drosse-title.svg" height="180px" width="180px"/>
   </h1>
-  <p><strong>Stateful & programmable mock server</strong></p>
+  <p>
+    Stateful & programmable<br>mock server
+  </p>
 </div>
 
 # Introduction
