@@ -59,6 +59,7 @@ Everything happens inside the `DROSSE` object. You can insert a `DROSSE` object 
 > :triumph: I WANT TO MOCK MY ROUTES!!! WHERE DO I PUT MY MOCKED CONTENTS???
 
 There we go! You can mock your datas in 3 different ways:
+
 1. directly inside the `routes.json` file, using the `body` key (see [Inline mocks](inline-mocks.md)).
 2. in a static JSON file with a constrained name (see [Static mocks](static-mocks.md))
 3. in a dynamic JS file (we consider it a service) with a constrained name (see [Dynamic mocks](dynamic-mocks.md))
