@@ -36,7 +36,8 @@
     "static:esm": "node ./dist/index.mjs static",
     "test": "vitest run",
     "test:watch": "vitest",
-    "doc": "docsify serve docs"
+    "docs:serve": "mkdocs serve",
+    "docs:publish": "mike deploy --push --update-aliases"
   },
   "repository": {
     "type": "git",

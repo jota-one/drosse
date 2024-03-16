@@ -107,11 +107,17 @@ source .venv/bin/activate
 Run the documentation website with:
 ```sh
 mkdocs serve
+
+# or with an npm script:
+yarn docs:serve
 ```
 
 #### Publish a new version of the documentation
 ```sh
 mike deploy --push --update-aliases <major>.<minor> latest
+
+# or with an npm script:
+yarn docs:publish -- <major>.<minor> latest
 ```
 
 where `<major>.<minor>` is the current version you've written new documentation for.
