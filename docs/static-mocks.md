@@ -38,7 +38,8 @@ To define a `static mock`, simply set the `static` property of your `DROSSE` obj
 
 With such a definition, when you call `GET /api/users/65?withDetails=1`, drosse will look for a specific file in the `static` subdirectory of your mocks directory.
 
-?> You can redefine this `static` directory name in your `.drosserc.js` file (see [Configuration](configuration.md)).
+!!! info
+    You can redefine this `static` directory name in your `.drosserc.js` file (see [Configuration](configuration.md)).
 
 Drosse will look for different filenames, from the more precise to the more generic until it finds one that matches. Let's keep the above example and see which filenames will be looked for:
 
@@ -64,7 +65,8 @@ api.users.{id}.posts.read.get.json
 api.users.{id}.posts.unread.get.json
 ```
 
-?> If you are not sure of the precedence for a given route, just try and check the drosse console. It will log each failed attempts.
+!!! tip
+    If you are not sure of the precedence for a given route, just try and check the drosse console. It will log each failed attempts.
 
 If we try to call `GET /api/users/3` and we have defined the following static mocks files in our `static` directory.
 
@@ -74,7 +76,7 @@ api.users.2.json
 api.users.{id}.json
 ```
 
-```shell
+```sh
 1:11:29 AM App Example JSON static app running at:
 1:11:29 AM  - http://localhost:8000
 1:11:29 AM  - http://172.22.22.178:8000
@@ -87,4 +89,5 @@ api.users.{id}.json
 ```
 You can see above that the system has first tried with the most precise `api.users.3.get.json` (resolved parameter + verb). Then it tries the same without verb (`api.users.3.json`). As it still fails, it tries without resolving the parameter, but again with the verb (`api.users.{id}.get.json`) and finally find a corresponding mock file with `api.users.{id}.json`. Of course this last one is not logged as it was found.
 
-?> if Drosse really doesn't find any file corresponding to the requested endpoint, it will give an ultimate look in the `scraped` static files. More on this in the [Scraping](scraping.md) section.
+!!! note
+    If Drosse really doesn't find any file corresponding to the requested endpoint, it will give an ultimate look in the `scraped` static files. More on this in the [Scraping](scraping.md) section.

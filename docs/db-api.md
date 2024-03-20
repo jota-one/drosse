@@ -15,15 +15,17 @@ To provide some contents to your database, you need to create a `collections` di
 
 In the end it's the same. Drosse will process either the directory or the big JSON file and insert it as a new collection full of documents in your database.
 
-?> You can redefine the `mocks.json` database file and the `collections` directory name in your `.drosserc.js` file (see [Configuration](configuration.md)).
+!!! note
+    You can redefine the `mocks.json` database file and the `collections` directory name in your `.drosserc.js` file (see [Configuration](configuration.md)).
 
 By default, on each startup Drosse will check the `collections` directory and see if the collection already exists in the database. If not, it will import it. If the collection already exists, Drosse won't import it again; even if you added new files in the collection directory.
 
 If you want a fresh database, simply delete the `mocks.json` file and restart Drosse.
 
-?> You can also type directly `db drop` in the Drosse CLI to achieve the same goal.
+!!! tip
+    You can also type directly `db drop` in the Drosse CLI to achieve the same goal.
 
-> :sweat_smile: That's a bit violent! Is there a smoother way?
+> :sweat_smile: That's a bit hard! Is there a smoother way?
 
 You ask it, we provide.
 
@@ -289,7 +291,8 @@ Generate a hash to link a specific document field value to the document ids (or 
 
 Returns a correspondance hash with the chosen field value as key and the corresponding id as value.
 
-!> Be aware that if the chosen `fieldname` hasn't unique values for each document in collection, the later documents will overwrite the formers.
+!!! warning
+    Be aware that if the chosen `fieldname` hasn't unique values for each document in collection, the later documents will overwrite the formers.
 
 #### chain
 `db.query.chain(collection)`
@@ -313,9 +316,11 @@ Creates a cleaning function that will remove all listed fields from the passed o
 
 Returns a function that takes a javascript Object as unique argument
 
-?> Even if no fields are passed, the function will be configured to remove the `reseserved words` from Drosse and Loki, aka: `$loki`, `meta` and `DROSSE`.
+!!! note
+    Even if no fields are passed, the function will be configured to remove the `reseserved words` from Drosse and Loki, aka: `$loki`, `meta` and `DROSSE`.
 
-!> This function is used in all other methods to clean up the results and merges the optional `cleanFields` with the `reserved words`.
+!!! info
+    This function is used in all other methods to clean up the results and merges the optional `cleanFields` with the `reserved words`.
 
 ### insert
 `db.insert(collection, ids, payload)`

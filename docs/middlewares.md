@@ -11,7 +11,7 @@ export default event => {
 ```
 
 Of course you can use `async` as well in your handler.
-[https://github.com/unjs/h3](Refer to the h3 documentation for more details).
+[Refer to the h3 documentation for more details](https://github.com/unjs/h3).
 
 You can also use "old" express-like middlewares (typically if you're using an
 epxress-based middleware package) using the `fromNodeMiddleware` utility function

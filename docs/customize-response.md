@@ -29,7 +29,8 @@ A must have feature if you want to detect your race condition and test your love
 
 In the example above, the route `GET /api/users` will be throttled between 1 and 2 seconds (randomly chosen in the boundaries).
 
-?> Of course, you can put your throttle at any level of your routes tree and it will be inherited in all the sub routes that don't have their own `throttle` configuration.
+!!! tip
+    Of course, you can put your throttle at any level of your routes tree and it will be inherited in all the sub routes that don't have their own `throttle` configuration.
 
 ```json
 {
@@ -206,4 +207,5 @@ export default response => {
 
 You can also use these templates to perform intermediate transformations in your services (see [Dynamic mocks](dynamic-mocks.md)) as they are also simple JS functions...
 
-?> You need to register your templates in the `.drosserc.js` file only if you want to use them in the `routes.json` file.
+!!! note
+    You need to register your templates in the `.drosserc.js` file only if you want to use them in the `routes.json` file.

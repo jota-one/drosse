@@ -1,12 +1,14 @@
 # Dynamic mocks (services)
 
-With the services, we cross some sort of line between pure mocking and an actual alternative backend for our frontend app. But sometimes it can be really useful. For example when you want to test interactivity in your app, or you don't have the backend yet because you're on a big project with separated teams and the backend will be implemented after the frontend, but you still have to deliver a working frontend at the same time as the backend, etc.
+With the services, we cross some sort of line between pure mocking and an actual alternative backend for our frontend app. But sometimes it can be really useful.
+
+For example when you want to test interactivity in your app, or you don't have the backend yet because you're on a big project with separated teams and the backend will be implemented after the frontend, but you still have to deliver a working frontend at the same time as the backend, etc.
 
 > Drosse provides everything you need to implement an interactive mocked backend and let you focus on your frontend usecases.
 
 To define a service, you have to do pretty much the same as to define a static mock. Look at this example where we replace the previous "POST users" inline mock by a service:
 
-```json
+```json title="routes.json"
 {
   "api": {
     "users": {
@@ -33,11 +35,12 @@ To define a service, you have to do pretty much the same as to define a static m
 }
 ```
 
-See ? From the `routes.json` file, it's quite a piece of cake :cake: !
+See? From the `routes.json` file, it's quite a piece of cake :cake: !
 
 Now of course, there is no magic (yet!) here. You have to create a file with the proper name and put it in the `services` subdirectory of your mocks directory.
 
-?> Like for the others subdirectories, you can redefine this `services` directory name in your `.drosserc.js` file (see [Configuration](configuration.md)).
+!!! info
+    Like for the others subdirectories, you can redefine the `services` directory name in your `.drosserc.js` file (see [Configuration](configuration.md)).
 
 To name your file, the rule is even simpler as for the static files. Here you just take in account the non-parameter nodes of your route path. In our case we don't have any parameter node. Our `POST /api/users` route will resolve into a `api.users.post.js` service file.
 
@@ -49,7 +52,7 @@ Now let's have a look inside these service files.
 
 A service file must export a function that takes drosse's api object as argument.
 
-```js
+```js title="services/api.users.get.ts"
 import { defineDrosseService } from '@jota-one/drosse'
 
 export default defineDrosseService(async ({ event, db }) => {
@@ -59,7 +62,8 @@ export default defineDrosseService(async ({ event, db }) => {
 
 As you can see, the object argument gives you access to the well known `req` and `res` objects. With those two and the full power of javascript, you can already do more than what you will ever need in a mock-server.
 
-?> The return value of your function will be passed to the associated route response (optionally modified by a [template](customize-response.md#templates)</a>).
+!!! note
+    The return value of your function will be passed to the associated route response (optionally modified by a [template](customize-response.md#templates)</a>).
 
 Let's take a full example.
 
@@ -82,4 +86,6 @@ export default defineDrosseService(async ({ event, db }) => {
 4. Your call returns: `{ added: "John" }`.
 5. That's all folks!
 
-?> But there is more! The `db` object gives you access to the embedded Drosse database and its super-fancy API. This part requires a full chapter.
+!!! tip
+    But there is more! The `db` object gives you access to the embedded Drosse
+    database and its super-fancy API. This part requires a full chapter.

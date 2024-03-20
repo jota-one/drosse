@@ -6,7 +6,7 @@ This file holds your mock server general configuration. It's optional as all its
 
 Here is a typical example of what it could contain.
 
-```js
+```js title=".drosserc.ts"
 import { defineDrosseServer } from '@jota-one/drosse'
 
 export default defineDrosseServer({
@@ -36,6 +36,6 @@ export default defineDrosseServer({
 | `dbAdapter`           | `LokiFsAdapter` | IO adapter to use for database persistence.                                                                                                                                                                                                                                                  |
 | `middlewares`         | `['morgan']`    | List of global middlewares. Drosse provides 2 built-in middlewares, 1 being added by default. The second one is 'open-cors'.                                                                                                                                                                 |
 | `templates`           | `{}`            | Templates to be used in `routes.json`. See [Templates](customize-response.md#templates) documentation.                                                                                                                                                                                       |
-| `extendServer`        | -               | Used to set custom instructions to the server application. Must be a function with the following signature: `function ({ server, app, db }) {}`. `server` being the node http.Server instance, `app` the [h3](https://github.com/unjs/h3) instance and `db` the [drosse db api](db-api#api). |
+| `extendServer`        | -               | Used to set custom instructions to the server application. Must be a function with the following signature: `function ({ server, app, db }) {}`. `server` being the node http.Server instance, `app` the [h3](https://github.com/unjs/h3) instance and `db` the [drosse db api](db-api.md#api). |
 | `onHttpUpgrade`       | `null`          | A function that initiates a websocket connection. This is happening once during HTTP protocol upgrade handshake. Must be a function with the following signature: `function (request, socket, head) { ... }`.                                                                                |
 | `commands`            | -               | Used to extend Drosse CLI with custom commands. Must be a function with the following signature: function (vorpal, drosse) { ... }. See the [CLI commands](commands.md) documentation.                                                                                                       |

@@ -1,0 +1,92 @@
+site_name: Drosse
+site_url: https://drosse.dev/
+copyright: '&copy; 2020 - 2023 Jota One'
+extra_css:
+  - style.css
+repo_name: jota-one/drosse
+repo_url: https://github.com/jota-one/drosse
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: simple/npm
+      link: https://www.npmjs.com/package/@jota-one/drosse
+    - icon: simple/github
+      link: https://github.com/jota-one/drosse
+nav:
+  - index.md
+  - getting-started.md
+  - routes.md
+  - customize-response.md
+  - assets.md
+  - inline-mocks.md
+  - static-mocks.md
+  - dynamic-mocks.md
+  - db-api.md
+  - middlewares.md
+  - configuration.md
+  - scraping.md
+  - commands.md
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      linenums: false
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      auto_title: false
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - toc:
+      title: On this page
+      permalink: true
+      permalink_title: Anchor link to this section for reference
+theme:
+  name: material
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - navigation.footer
+    - navigation.tracking
+    - navigation.sections
+  logo: assets/drosse-logo-header.svg
+  favicon: assets/favicon.ico
+  icon:
+    repo: fontawesome/brands/github
+  font:
+    text: Inter
+    code: Fira Code
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: amber
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: amber
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+plugins:
+  - search
+  - open-in-new-tab
