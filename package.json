@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-c8": "^0.23.2",
-    "auto": "^10.37.6",
+    "auto": "^11.3.0",
     "express-session": "^1.17.3",
     "pkg": "^5.8.0",
     "sockjs": "^0.3.24",
