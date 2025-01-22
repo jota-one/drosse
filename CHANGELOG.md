@@ -1,3 +1,21 @@
+# v3.6.3 (Wed Jan 22 2025)
+
+#### 🐛 Bug Fix
+
+- feat: export types for modules [#87](https://github.com/jota-one/drosse/pull/87) (tadaii@jota.one)
+
+#### 🔩 Dependency Updates
+
+- build(deps): bump follow-redirects from 1.15.2 to 1.15.4 [#82](https://github.com/jota-one/drosse/pull/82) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- build(deps): bump vite from 3.2.7 to 3.2.8 [#83](https://github.com/jota-one/drosse/pull/83) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 2
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+- Tadai ([@tadaii](https://github.com/tadaii))
+
+---
+
 # v3.6.2 (Wed Nov 15 2023)
 
 #### 🐛 Bug Fix
