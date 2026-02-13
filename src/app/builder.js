@@ -82,7 +82,7 @@ const createRoutes = async (app, router, routes) => {
 const createRoute = async function (def, root, defHierarchy) {
   const { router, app, proxies, assets } = this
   const inheritance = []
-  const verbs = ['get', 'post', 'put', 'delete'].filter(verb => def[verb])
+  const verbs = ['get', 'post', 'put', 'delete', 'patch'].filter(verb => def[verb])
 
   for (const verb of verbs) {
     // set throttling
