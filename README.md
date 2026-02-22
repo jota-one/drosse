@@ -70,10 +70,10 @@ Find example code in the [examples](./examples) folder.
 ## Development
 
 - Clone this repository
-- Install yarn globally using `npm install -g yarn`
-- Install dependencies using `yarn`
-- Build using `yarn build` or `yarn build:stub` for live rebuild
-- Run drosse with `yarn serve examples/<example-folder-name>`
+- Install pnpm (see https://pnpm.io/installation)
+- Install dependencies using `npm i`
+- Build using `pnpm build` or `pnpm build:stub` for live rebuild
+- Run drosse with `pnpm serve examples/<example-folder-name>`
 
 ## Credits & License
 

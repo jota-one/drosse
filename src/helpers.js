@@ -17,7 +17,7 @@
 // export const set = _set.default
 
 import { promises as fs } from 'fs'
-import mergician from 'mergician'
+import { mergician } from 'mergician'
 
 function cleanIndexInpath(pathPart) {
   return pathPart.startsWith('[') ? pathPart.replace(/\D/g, '') : pathPart

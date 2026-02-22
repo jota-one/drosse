@@ -10,6 +10,8 @@
 npm install --save-dev @jota-one/drosse
 # or yarn
 yarn add -D @jota-one/drosse
+# or pnpm
+pnpm i -D @jota-one/drosse
 ```
 2. Define a script in your `package.json` file for simpler usage
 ```json

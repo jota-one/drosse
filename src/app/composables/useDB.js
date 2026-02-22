@@ -3,7 +3,7 @@ import { join, sep } from 'path'
 
 import Loki from 'lokijs'
 import { cloneDeep, get, set, omit } from '../../helpers'
-import { async as rrdir } from 'rrdir'
+import { rrdirAsync as rrdir } from 'rrdir'
 
 import config from '../config'
 import logger from '../logger'

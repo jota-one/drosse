@@ -32,6 +32,7 @@ describe('session', async () => {
   })
 
   it('allows access once session is started', async () => {
+    console.log('cookies', cookies)
     const res = await supertest(host).get('/').set('Cookie', cookies).send()
     expect(res.statusCode).toBe(200)
     expect(JSON.parse(res.text)).toMatchObject({ connected: true })
