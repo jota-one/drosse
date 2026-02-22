@@ -1,47 +1,105 @@
-name: Release
+# .github/workflows/release.yml
+
+name: 'Release'
 
 on:
-  push:
-    branches:
-      - master
-      - next
   pull_request:
+    types: [closed]
     branches:
       - master
 
 jobs:
-  autorelease:
+  publish:
+    # This job's condition is key:
+    # It runs if the PR was merged AND one of these is true:
+    # 1. The source branch was 'next' (for major releases).
+    # 2. The PR has a 'release:patch' or 'release:minor' label.
+    if: |
+      github.event.pull_request.merged == true &&
+      (
+        github.event.pull_request.head.ref == 'next' ||
+        contains(github.event.pull_request.labels.*.name, 'release:patch') ||
+        contains(github.event.pull_request.labels.*.name, 'release:minor')
+      )
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
+
+    permissions:
+      id-token: write  # Required for OIDC publishing to npm.
+      contents: write  # Required for creating the GitHub tag and release.
+      pull-requests: read # Required to read the PR labels and branch name.
+
+    environment:
+      name: npm-release # Links to the environment configured in GitHub Settings and on npmjs.com
+      url: https://www.npmjs.com/package/your-package-name # The URL to your package
+
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Prepare repository
-        run: git fetch --unshallow --tags
-
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
         with:
-          node-version: 16.x
+          # Fetch all history and tags so `gh release create` can generate changelogs.
+          fetch-depth: 0
 
-      - name: Cache node modules
-        uses: actions/cache@v3
+      - name: 'Setup Node.js and Configure npm'
+        uses: actions/setup-node@v4
         with:
-          path: node_modules
-          key: yarn-deps-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-deps-${{ hashFiles('yarn.lock') }}
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Install
-        run: yarn install --frozen-lockfile
+      - name: 'Install Dependencies with pnpm'
+        uses: pnpm/action-setup@v3
+        with:
+          version: latest
+      - run: pnpm install --frozen-lockfile
 
-      - name: Test
-        run: yarn test
-
-      - name: Create Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: 'Security Audit'
         run: |
-          yarn build
-          npx auto shipit
+          pnpm audit --audit-level high
+
+      - name: 'Build Project'
+        run: pnpm build
+
+      - name: 'Run Tests'
+        run: pnpm test
+
+      - name: 'Determine Version Bump Type'
+        id: version_bump
+        run: |
+          # The source branch of the merged PR is available in the event context.
+          if [[ "${{ github.event.pull_request.head.ref }}" == "next" ]]; then
+            echo "PR is from 'next' branch. This will be a major release."
+            echo "BUMP_TYPE=major" >> $GITHUB_OUTPUT
+          else
+            # If not from 'next', determine bump from labels.
+            LABELS_JSON='${{ toJSON(github.event.pull_request.labels.*.name) }}'
+            if [[ $LABELS_JSON == *'release:minor'* ]]; then
+              echo "BUMP_TYPE=minor" >> $GITHUB_OUTPUT
+            else
+              # The job's `if` condition ensures this defaults to patch only when 'release:patch' is present.
+              echo "BUMP_TYPE=patch" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: 'Bump Version and Publish to npm'
+        run: |
+          BUMP=${{ steps.version_bump.outputs.BUMP_TYPE }}
+          echo "Version bump type determined to be: $BUMP"
+
+          # pnpm's version command is similar to npm's
+          pnpm version $BUMP --no-git-tag
+
+          echo "Publishing to npm..."
+          pnpm publish --no-git-checks
+
+      - name: 'Create GitHub Tag and Release'
+        env:
+          # The GITHUB_TOKEN is automatically provided by GitHub Actions.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Extract the newly bumped version from the local package.json.
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "Creating GitHub release for new version: v$NEW_VERSION"
+
+          # Use the GitHub CLI to create a tag and a release entry.
+          # The `--generate-notes` flag will automatically create release notes
+          # based on the merged PRs since the last tag.
+          gh release create "v$NEW_VERSION" --generate-notes

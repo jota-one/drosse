@@ -219,6 +219,7 @@ export const start = async () => {
 
   listener = await listen(toNodeListener(app), {
     port: port || description.port,
+    // hostname: '127.0.0.1',
   })
 
   // extend server
