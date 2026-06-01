@@ -79,7 +79,7 @@
     "sockjs": "^0.3.24",
     "supertest": "^6.2.4",
     "unbuild": "^0.8.10",
-    "vitest": "^0.23.2",
+    "vitest": "^4.1.0",
     "ws": "^8.8.1"
   },
   "engines": {
