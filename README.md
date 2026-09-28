@@ -71,7 +71,7 @@ Find example code in the [examples](./examples) folder.
 
 - Clone this repository
 - Install pnpm (see https://pnpm.io/installation)
-- Install dependencies using `npm i`
+- Install dependencies using `pnpm i`
 - Build using `pnpm build` or `pnpm build:stub` for live rebuild
 - Run drosse with `pnpm serve examples/<example-folder-name>`
 
