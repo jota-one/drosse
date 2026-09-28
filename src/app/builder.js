@@ -240,8 +240,12 @@ const createRoute = async function (def, root, defHierarchy) {
           pathRewrite: {
             [path.join('/')]: '/',
           },
-          onProxyReq,
-          onProxyRes: applyProxyRes(proxyResHooks, def),
+          on: {
+            proxyReq: onProxyReq,
+            ...(proxyResHooks.length && {
+              proxyRes: applyProxyRes(proxyResHooks, def),
+            }),
+          },
         },
         def,
       })
@@ -457,7 +461,7 @@ const createProxies = ({ app, router, proxies }) => {
   }
 
   proxies.forEach(({ path, context, def }) => {
-    const proxyMw = createProxyMiddleware({ ...context, logLevel: 'warn' })
+    const proxyMw = createProxyMiddleware(context)
 
     if (Object.keys(def.throttle || {}).length) {
       app.use(
