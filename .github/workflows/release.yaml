@@ -1,47 +1,102 @@
-name: Release
+name: 'Release'
 
 on:
-  push:
-    branches:
-      - master
-      - next
   pull_request:
+    types: [closed]
     branches:
       - master
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
-  autorelease:
+  publish:
+    # Runs if the PR was merged AND one of these is true:
+    # 1. The source branch was 'next' (major release).
+    # 2. The PR has a 'release:patch', 'release:minor' or 'release:major' label.
+    if: |
+      github.event.pull_request.merged == true &&
+      (
+        github.event.pull_request.head.ref == 'next' ||
+        contains(github.event.pull_request.labels.*.name, 'release:patch') ||
+        contains(github.event.pull_request.labels.*.name, 'release:minor') ||
+        contains(github.event.pull_request.labels.*.name, 'release:major')
+      )
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
+
+    permissions:
+      id-token: write # Required for npm trusted publishing (OIDC) and provenance.
+      contents: write # Required for creating the GitHub tag and release.
+      pull-requests: read # Required to read the PR labels and branch name.
+
+    environment:
+      name: npm-release # Must match the trusted publisher configured on npmjs.com
+      url: https://www.npmjs.com/package/@jota-one/drosse
+
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Prepare repository
-        run: git fetch --unshallow --tags
-
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - name: 'Checkout merge commit'
+        uses: actions/checkout@v7
         with:
-          node-version: 16.x
+          # Build and tag the actual commit on master, not the PR merge ref.
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          # Fetch all history and tags so `gh release create` can generate notes.
+          fetch-depth: 0
 
-      - name: Cache node modules
-        uses: actions/cache@v3
+      - name: 'Setup pnpm'
+        uses: pnpm/action-setup@v6 # Version is read from `packageManager` in package.json
+
+      - name: 'Setup Node.js (ships npm 11, required for trusted publishing)'
+        uses: actions/setup-node@v7
         with:
-          path: node_modules
-          key: yarn-deps-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            yarn-deps-${{ hashFiles('yarn.lock') }}
+          node-version: '24.x'
+          cache: 'pnpm'
 
-      - name: Install
-        run: yarn install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
 
-      - name: Test
-        run: yarn test
+      - name: 'Security Audit'
+        run: pnpm audit --prod --audit-level high
 
-      - name: Create Release
+      - name: 'Build Project'
+        run: pnpm build
+
+      - name: 'Run Tests'
+        run: pnpm test
+
+      - name: 'Determine Version Bump Type'
+        id: version_bump
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ' ') }}
         run: |
-          yarn build
-          npx auto shipit
+          if [[ "$HEAD_REF" == "next" || "$LABELS" == *'release:major'* ]]; then
+            BUMP_TYPE=major
+          elif [[ "$LABELS" == *'release:minor'* ]]; then
+            BUMP_TYPE=minor
+          else
+            BUMP_TYPE=patch
+          fi
+          echo "Version bump type: $BUMP_TYPE"
+          echo "BUMP_TYPE=$BUMP_TYPE" >> $GITHUB_OUTPUT
+
+      - name: 'Bump Version and Publish to npm'
+        env:
+          BUMP: ${{ steps.version_bump.outputs.BUMP_TYPE }}
+        run: |
+          # package.json holds a placeholder version: start from the latest published one.
+          PUBLISHED=$(npm view @jota-one/drosse version)
+          echo "Latest published version: $PUBLISHED"
+
+          npm version "$PUBLISHED" --no-git-tag-version --allow-same-version
+          npm version "$BUMP" --no-git-tag-version
+
+          npm publish --access public --provenance
+
+      - name: 'Create GitHub Tag and Release'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "Creating GitHub release v$NEW_VERSION"
+          gh release create "v$NEW_VERSION" --target "$TARGET_SHA" --generate-notes

@@ -17,7 +17,7 @@ export default function (root, port, proxy) {
   if (proxy) {
     const proxyMw = createProxyMiddleware({
       target: proxy,
-      changeOriging: true,
+      changeOrigin: true,
     })
 
     app.use(async (req, res) => {
@@ -48,5 +48,5 @@ export default function (root, port, proxy) {
     app.use('/', fromNodeMiddleware(staticMw))
   }
 
-  listen(toNodeListener(app), { port })
+  listen(toNodeListener(app), { port, public: true, qr: false })
 }

@@ -219,6 +219,8 @@ export const start = async () => {
 
   listener = await listen(toNodeListener(app), {
     port: port || description.port,
+    public: true,
+    qr: false,
   })
 
   // extend server
